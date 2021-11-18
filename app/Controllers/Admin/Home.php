@@ -7,7 +7,169 @@ class Home extends BaseController
 {
     public function index()
     {
+
+        $SampleModel = model("SampleModel");
+
+        $this->data['num_sample'] = $SampleModel->countAllResults();
+
         return view($this->data['content'], $this->data);
+    }
+    public function table()
+    {
+        $SampleModel = model("SampleModel", false);
+        $SampleTimeModel = model("SampleTimeModel", false);
+        $limit = $this->request->getVar('length');
+        $start = $this->request->getVar('start');
+        $search = $this->request->getPost('search')['value'];
+        $type = $this->request->getVar('type');
+        $page = ($start / $limit) + 1;
+        $where = $SampleModel;
+        switch ($type) {
+            case "w":
+                $rows = $SampleTimeModel->where("YEARWEEK(`date_theory`, 1) = YEARWEEK(CURDATE())")->orderby("date_theory", "DESC")->findAll();
+                break;
+            case "M":
+                $rows = $SampleTimeModel->where("MONTH(`date_theory`) = MONTH(CURRENT_DATE()) AND YEAR(`date_theory`) = YEAR(CURRENT_DATE())")->orderby("date_theory", "DESC")->findAll();
+                break;
+            default:
+                $rows = $SampleTimeModel->where("date_theory = CURRENT_DATE()")->orderby("date_theory", "DESC")->findAll();
+                break;
+        }
+        // echo "<pre>";
+        // print_r($rows);
+        // die();
+        $list_sample = [];
+        $list = [];
+        foreach ($rows as $row) {
+            $list_sample[] = $row['sample_id'];
+            $list[$row['sample_id']] = $row['date_theory'];
+        }
+        if (!empty($list_sample)) {
+            $where->whereIn("id", $list_sample);
+        } else {
+            $where->where("0=1");
+        }
+        // echo "<pre>";
+        // print_r($where);
+        $totalData = $where->countAllResults(false);
+
+        //echo "<pre>";
+        //print_r($totalData);
+        //die();
+        $totalFiltered = $totalData;
+
+        if (empty($search)) {
+            // $where = $Document_model;
+            // echo "1";die();
+        } else {
+            $where->like("name", $search);
+            $totalFiltered = $where->countAllResults(false);
+        }
+
+        // $where = $Document_model;
+        $posts = $where->asObject()->orderby("id", "DESC")->paginate($limit, '', $page);
+
+        // echo "<pre>";
+        // print_r($posts);
+        // die();
+        $data = array();
+        if (!empty($posts)) {
+            foreach ($posts as $post) {
+                $nestedData['id'] =  '<a href="' . base_url("admin/sample/edit/" . $post->id) . '"><i class="fas fa-pencil-alt mr-2"></i>' . $post->id . '</a>';
+                $nestedData['name'] = '<a href="' . base_url("admin/sample/edit/" . $post->id) . '">' . $post->name . '</a>';
+                $nestedData['code'] = $post->code;
+                $nestedData['code_research'] = $post->code_research;
+                $nestedData['outline_number'] = $post->outline_number;
+                $nestedData['code_batch'] = $post->code_batch;
+                $nestedData['code_analysis'] = $post->code_analysis;
+                $nestedData['date_manufacture'] = $post->date_manufacture;
+                $nestedData['date_storage'] = $post->date_storage;
+                $nestedData['date_theory'] = $list[$post->id];
+                $data[] = $nestedData;
+            }
+        }
+
+        $json_data = array(
+            "draw" => intval($this->request->getVar('draw')),
+            "recordsTotal" => intval($totalData),
+            "recordsFiltered" => intval($totalFiltered),
+            "data" => $data
+        );
+
+        echo json_encode($json_data);
+    }
+    public function table1()
+    {
+        $SampleModel = model("SampleModel", false);
+        $SampleTimeModel = model("SampleTimeModel", false);
+        $limit = $this->request->getVar('length');
+        $start = $this->request->getVar('start');
+        $search = $this->request->getPost('search')['value'];
+        $page = ($start / $limit) + 1;
+        $where = $SampleModel;
+        $rows = $SampleTimeModel->where("(date_reality IS NULL OR date_reality = '0000-00-00') AND date_theory < CURDATE()")->orderby("date_theory", "DESC")->findAll();
+        // echo "<pre>";
+        // print_r($rows);
+        // die();
+        $list_sample = [];
+        $list = [];
+        foreach ($rows as $row) {
+            $list_sample[] = $row['sample_id'];
+            $list[$row['sample_id']] = $row['date_theory'];
+        }
+        if (!empty($list_sample)) {
+            $where->whereIn("id", $list_sample);
+        } else {
+            $where->where("0=1");
+        }
+        // echo "<pre>";
+        // print_r($where);
+        $totalData = $where->countAllResults(false);
+
+        //echo "<pre>";
+        //print_r($totalData);
+        //die();
+        $totalFiltered = $totalData;
+
+        if (empty($search)) {
+            // $where = $Document_model;
+            // echo "1";die();
+        } else {
+            $where->like("name", $search);
+            $totalFiltered = $where->countAllResults(false);
+        }
+
+        // $where = $Document_model;
+        $posts = $where->asObject()->orderby("id", "DESC")->paginate($limit, '', $page);
+
+        // echo "<pre>";
+        // print_r($posts);
+        // die();
+        $data = array();
+        if (!empty($posts)) {
+            foreach ($posts as $post) {
+                $nestedData['id'] =  '<a href="' . base_url("admin/sample/edit/" . $post->id) . '"><i class="fas fa-pencil-alt mr-2"></i>' . $post->id . '</a>';
+                $nestedData['name'] = '<a href="' . base_url("admin/sample/edit/" . $post->id) . '">' . $post->name . '</a>';
+                $nestedData['code'] = $post->code;
+                $nestedData['code_research'] = $post->code_research;
+                $nestedData['outline_number'] = $post->outline_number;
+                $nestedData['code_batch'] = $post->code_batch;
+                $nestedData['code_analysis'] = $post->code_analysis;
+                $nestedData['date_manufacture'] = $post->date_manufacture;
+                $nestedData['date_storage'] = $post->date_storage;
+                $nestedData['date_theory'] = $list[$post->id];
+                $data[] = $nestedData;
+            }
+        }
+
+        $json_data = array(
+            "draw" => intval($this->request->getVar('draw')),
+            "recordsTotal" => intval($totalData),
+            "recordsFiltered" => intval($totalFiltered),
+            "data" => $data
+        );
+
+        echo json_encode($json_data);
     }
     public function listqrcode()
     {

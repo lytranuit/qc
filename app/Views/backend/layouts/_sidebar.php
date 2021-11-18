@@ -41,16 +41,16 @@
                 </li>
                 </li>
                 <li class="app-sidebar__heading">Lưu mẫu</li>
-                <li class="">
-                    <a href="<?= base_url() ?>/admin/document" class="">
-                        <i class="metismenu-icon fas fa-file"></i>
-                        Mẫu
-                    </a>
-                </li>
                 <li>
-                    <a href="<?= base_url() ?>/admin/status" class="">
+                    <a href="<?= base_url() ?>/admin/env" class="">
                         <i class="metismenu-icon fas fa-info-circle"></i>
                         Điều kiện
+                    </a>
+                </li>
+                <li class="">
+                    <a href="<?= base_url() ?>/admin/sample" class="">
+                        <i class="metismenu-icon fas fa-file"></i>
+                        Mẫu
                     </a>
                 </li>
                 <!-- <li class="app-sidebar__heading">Auditrail</li>

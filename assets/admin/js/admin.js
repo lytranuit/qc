@@ -16,7 +16,6 @@ $(document).ready(function () {
 });
 
 var fillForm = function (form, data) {
-  console.log(data);
   var ProductExt = data['ProductExt'];
   $("input, select, textarea", form)
     .not("[type=file]")
