@@ -2,7 +2,19 @@
 
 <?= $this->section('content') ?>
 <div class="row justify-content-center">
-    <div class="col-md-6 col-lg-3">
+    <div class="col">
+        <div class="card report-card bg-purple-gradient shadow-purple box-hover" data-id="1">
+            <div class="card-body">
+                <div class="float-right">
+                    <i class="fa fa-print report-main-icon bg-icon-danger"></i>
+                </div>
+                <span class="badge badge-light text-purple">Sản phẩm</span>
+                <h3 class="my-3"><?= $num_product ?></h3>
+            </div>
+            <!--end card-body-->
+        </div>
+    </div>
+    <div class="col">
         <div class="card report-card bg-purple-gradient shadow-purple box-hover" data-id="1">
             <div class="card-body">
                 <div class="float-right">
@@ -10,6 +22,42 @@
                 </div>
                 <span class="badge badge-light text-purple">Mẫu</span>
                 <h3 class="my-3"><?= $num_sample ?></h3>
+            </div>
+            <!--end card-body-->
+        </div>
+    </div>
+    <div class="col">
+        <div class="card report-card bg-purple-gradient shadow-purple box-hover" data-id="1">
+            <div class="card-body">
+                <div class="float-right">
+                    <i class="fa fa-print report-main-icon bg-icon-danger"></i>
+                </div>
+                <span class="badge badge-light text-purple">Mẫu chưa lấy</span>
+                <h3 class="my-3"><?= $num_sample_incomplete ?></h3>
+            </div>
+            <!--end card-body-->
+        </div>
+    </div>
+    <div class="col">
+        <div class="card report-card bg-purple-gradient shadow-purple box-hover" data-id="1">
+            <div class="card-body">
+                <div class="float-right">
+                    <i class="fa fa-print report-main-icon bg-icon-danger"></i>
+                </div>
+                <span class="badge badge-light text-purple">Mẫu đã lấy</span>
+                <h3 class="my-3"><?= $num_sample_complete ?></h3>
+            </div>
+            <!--end card-body-->
+        </div>
+    </div>
+    <div class="col">
+        <div class="card report-card bg-purple-gradient shadow-purple box-hover" data-id="1">
+            <div class="card-body">
+                <div class="float-right">
+                    <i class="fa fa-print report-main-icon bg-icon-danger"></i>
+                </div>
+                <span class="badge badge-light text-purple">Mẫu quá hạn</span>
+                <h3 class="my-3"><?= $num_sample_expire ?></h3>
             </div>
             <!--end card-body-->
         </div>

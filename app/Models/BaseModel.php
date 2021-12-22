@@ -109,7 +109,7 @@ class BaseModel extends Model
         return $this->db->table('user_audit_trails')->insert(
             array(
                 'user_id' => user_id(),
-                'name' => user()->name,
+                'name' => user() ? user()->name : '',
                 'event' => $event,
                 'table_name' => $table,
                 'old_values' => $old_value,

@@ -9,8 +9,13 @@ class Home extends BaseController
     {
 
         $SampleModel = model("SampleModel");
+        $SampleTimeModel = model("SampleTimeModel");
 
-        $this->data['num_sample'] = $SampleModel->countAllResults();
+        $this->data['num_product'] = $SampleModel->countAllResults();
+        $this->data['num_sample'] = $SampleTimeModel->countAllResults();
+        $this->data['num_sample_incomplete'] = $SampleTimeModel->where("date_reality", NULL)->countAllResults();
+        $this->data['num_sample_complete'] = $SampleTimeModel->where("date_reality !=", NULL)->countAllResults();
+        $this->data['num_sample_expire'] = $SampleTimeModel->where("date_reality", NULL)->where("date_theory < ", date("Y-m-d"))->countAllResults();
 
         return view($this->data['content'], $this->data);
     }
