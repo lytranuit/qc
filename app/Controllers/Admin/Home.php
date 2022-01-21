@@ -80,8 +80,8 @@ class Home extends BaseController
         $data = array();
         if (!empty($posts)) {
             foreach ($posts as $post) {
-                $nestedData['id'] =  '<a href="' . base_url("admin/sample/edit/" . $post->id) . '"><i class="fas fa-pencil-alt mr-2"></i>' . $post->sample_id . '</a>';
-                $nestedData['name'] = '<a href="' . base_url("admin/sample/edit/" . $post->id) . '">' . $post->name_sample . '</a>';
+                $nestedData['id'] =  '<a href="' . base_url("admin/sample/edit/" . $post->sample_id) . '"><i class="fas fa-pencil-alt mr-2"></i>' . $post->sample_id . '</a>';
+                $nestedData['name'] = '<a href="' . base_url("admin/sample/edit/" . $post->sample_id) . '">' . $post->name_sample . '</a>';
                 $nestedData['code'] = $post->code;
                 $nestedData['code_research'] = $post->code_research;
                 $nestedData['outline_number'] = $post->outline_number;
@@ -154,8 +154,8 @@ class Home extends BaseController
         $data = array();
         if (!empty($posts)) {
             foreach ($posts as $post) {
-                $nestedData['id'] =  '<a href="' . base_url("admin/sample/edit/" . $post->id) . '"><i class="fas fa-pencil-alt mr-2"></i>' . $post->sample_id . '</a>';
-                $nestedData['name'] = '<a href="' . base_url("admin/sample/edit/" . $post->id) . '">' . $post->name_sample . '</a>';
+                $nestedData['id'] =  '<a href="' . base_url("admin/sample/edit/" . $post->sample_id) . '"><i class="fas fa-pencil-alt mr-2"></i>' . $post->sample_id . '</a>';
+                $nestedData['name'] = '<a href="' . base_url("admin/sample/edit/" . $post->sample_id) . '">' . $post->name_sample . '</a>';
                 $nestedData['code'] = $post->code;
                 $nestedData['code_research'] = $post->code_research;
                 $nestedData['outline_number'] = $post->outline_number;
