@@ -22,38 +22,38 @@ class Home extends BaseController
     public function table()
     {
         $SampleModel = model("SampleModel", false);
-        $SampleTimeModel = model("SampleTimeModel", false);
+        // $SampleTimeModel = model("SampleTimeModel", false);
         $limit = $this->request->getVar('length');
         $start = $this->request->getVar('start');
         $search = $this->request->getPost('search')['value'];
         $type = $this->request->getVar('type');
         $page = ($start / $limit) + 1;
-        $where = $SampleModel;
+        $where = $SampleModel->join("sample_time", "sample.id = sample_time.sample_id")->select("*,sample.name as name_sample");
         switch ($type) {
             case "w":
-                $rows = $SampleTimeModel->where("YEARWEEK(`date_theory`, 1) = YEARWEEK(CURDATE())")->orderby("date_theory", "DESC")->findAll();
+                $where = $where->where("YEARWEEK(`date_theory`, 1) = YEARWEEK(CURDATE())");
                 break;
             case "M":
-                $rows = $SampleTimeModel->where("MONTH(`date_theory`) = MONTH(CURRENT_DATE()) AND YEAR(`date_theory`) = YEAR(CURRENT_DATE())")->orderby("date_theory", "DESC")->findAll();
+                $where = $where->where("MONTH(`date_theory`) = MONTH(CURRENT_DATE()) AND YEAR(`date_theory`) = YEAR(CURRENT_DATE())");
                 break;
             default:
-                $rows = $SampleTimeModel->where("date_theory = CURRENT_DATE()")->orderby("date_theory", "DESC")->findAll();
+                $where = $where->where("date_theory = CURRENT_DATE()");
                 break;
         }
         // echo "<pre>";
         // print_r($rows);
         // die();
-        $list_sample = [];
-        $list = [];
-        foreach ($rows as $row) {
-            $list_sample[] = $row['sample_id'];
-            $list[$row['sample_id']] = $row['date_theory'];
-        }
-        if (!empty($list_sample)) {
-            $where->whereIn("id", $list_sample);
-        } else {
-            $where->where("0=1");
-        }
+        // $list_sample = [];
+        // $list = [];
+        // foreach ($rows as $row) {
+        //     $list_sample[] = $row['sample_id'];
+        //     $list[$row['sample_id']] = $row['date_theory'];
+        // }
+        // if (!empty($list_sample)) {
+        //     $where->whereIn("id", $list_sample);
+        // } else {
+        //     $where->where("0=1");
+        // }
         // echo "<pre>";
         // print_r($where);
         $totalData = $where->countAllResults(false);
@@ -67,12 +67,12 @@ class Home extends BaseController
             // $where = $Document_model;
             // echo "1";die();
         } else {
-            $where->like("name", $search);
+            $where->like("sample.name", $search);
             $totalFiltered = $where->countAllResults(false);
         }
 
         // $where = $Document_model;
-        $posts = $where->asObject()->orderby("id", "DESC")->paginate($limit, '', $page);
+        $posts = $where->asObject()->orderby("date_theory", "DESC")->paginate($limit, '', $page);
 
         // echo "<pre>";
         // print_r($posts);
@@ -80,8 +80,8 @@ class Home extends BaseController
         $data = array();
         if (!empty($posts)) {
             foreach ($posts as $post) {
-                $nestedData['id'] =  '<a href="' . base_url("admin/sample/edit/" . $post->id) . '"><i class="fas fa-pencil-alt mr-2"></i>' . $post->id . '</a>';
-                $nestedData['name'] = '<a href="' . base_url("admin/sample/edit/" . $post->id) . '">' . $post->name . '</a>';
+                $nestedData['id'] =  '<a href="' . base_url("admin/sample/edit/" . $post->id) . '"><i class="fas fa-pencil-alt mr-2"></i>' . $post->sample_id . '</a>';
+                $nestedData['name'] = '<a href="' . base_url("admin/sample/edit/" . $post->id) . '">' . $post->name_sample . '</a>';
                 $nestedData['code'] = $post->code;
                 $nestedData['code_research'] = $post->code_research;
                 $nestedData['outline_number'] = $post->outline_number;
@@ -89,7 +89,8 @@ class Home extends BaseController
                 $nestedData['code_analysis'] = $post->code_analysis;
                 $nestedData['date_manufacture'] = $post->date_manufacture;
                 $nestedData['date_storage'] = $post->date_storage;
-                $nestedData['date_theory'] = $list[$post->id];
+                $nestedData['date_theory'] = $post->date_theory;
+                $nestedData['env'] = $post->name;
                 $data[] = $nestedData;
             }
         }
@@ -106,27 +107,27 @@ class Home extends BaseController
     public function table1()
     {
         $SampleModel = model("SampleModel", false);
-        $SampleTimeModel = model("SampleTimeModel", false);
+        // $SampleTimeModel = model("SampleTimeModel", false);
         $limit = $this->request->getVar('length');
         $start = $this->request->getVar('start');
         $search = $this->request->getPost('search')['value'];
         $page = ($start / $limit) + 1;
-        $where = $SampleModel;
-        $rows = $SampleTimeModel->where("(date_reality IS NULL OR date_reality = '0000-00-00') AND date_theory < CURDATE()")->orderby("date_theory", "DESC")->findAll();
+        $where = $SampleModel->join("sample_time", "sample.id = sample_time.sample_id")->select("*,sample.name as name_sample");
+        $rows = $where->where("(date_reality IS NULL OR date_reality = '0000-00-00') AND date_theory < CURDATE()");
         // echo "<pre>";
         // print_r($rows);
         // die();
-        $list_sample = [];
-        $list = [];
-        foreach ($rows as $row) {
-            $list_sample[] = $row['sample_id'];
-            $list[$row['sample_id']] = $row['date_theory'];
-        }
-        if (!empty($list_sample)) {
-            $where->whereIn("id", $list_sample);
-        } else {
-            $where->where("0=1");
-        }
+        // $list_sample = [];
+        // $list = [];
+        // foreach ($rows as $row) {
+        //     $list_sample[] = $row['sample_id'];
+        //     $list[$row['sample_id']] = $row['date_theory'];
+        // }
+        // if (!empty($list_sample)) {
+        //     $where->whereIn("id", $list_sample);
+        // } else {
+        //     $where->where("0=1");
+        // }
         // echo "<pre>";
         // print_r($where);
         $totalData = $where->countAllResults(false);
@@ -140,12 +141,12 @@ class Home extends BaseController
             // $where = $Document_model;
             // echo "1";die();
         } else {
-            $where->like("name", $search);
+            $where->like("sample.name", $search);
             $totalFiltered = $where->countAllResults(false);
         }
 
         // $where = $Document_model;
-        $posts = $where->asObject()->orderby("id", "DESC")->paginate($limit, '', $page);
+        $posts = $where->asObject()->orderby("date_theory", "DESC")->paginate($limit, '', $page);
 
         // echo "<pre>";
         // print_r($posts);
@@ -153,8 +154,8 @@ class Home extends BaseController
         $data = array();
         if (!empty($posts)) {
             foreach ($posts as $post) {
-                $nestedData['id'] =  '<a href="' . base_url("admin/sample/edit/" . $post->id) . '"><i class="fas fa-pencil-alt mr-2"></i>' . $post->id . '</a>';
-                $nestedData['name'] = '<a href="' . base_url("admin/sample/edit/" . $post->id) . '">' . $post->name . '</a>';
+                $nestedData['id'] =  '<a href="' . base_url("admin/sample/edit/" . $post->id) . '"><i class="fas fa-pencil-alt mr-2"></i>' . $post->sample_id . '</a>';
+                $nestedData['name'] = '<a href="' . base_url("admin/sample/edit/" . $post->id) . '">' . $post->name_sample . '</a>';
                 $nestedData['code'] = $post->code;
                 $nestedData['code_research'] = $post->code_research;
                 $nestedData['outline_number'] = $post->outline_number;
@@ -162,7 +163,8 @@ class Home extends BaseController
                 $nestedData['code_analysis'] = $post->code_analysis;
                 $nestedData['date_manufacture'] = $post->date_manufacture;
                 $nestedData['date_storage'] = $post->date_storage;
-                $nestedData['date_theory'] = $list[$post->id];
+                $nestedData['date_theory'] = $post->date_theory;
+                $nestedData['env'] = $post->name;
                 $data[] = $nestedData;
             }
         }

@@ -20,7 +20,7 @@ class Import extends BaseController
     {
 
         //Đường dẫn file
-        $file = APPPATH . '../assets/up/FILE THEO DÕI CHO CÁC KHOẢNG THỬ NGHIỆM LINH (1).xlsx';
+        $file = APPPATH . '../assets/up/FILE THEO DÕI CHO CÁC KHOẢNG THỬ NGHIỆM LINH GUI ANH TRAN.xlsx';
 
         /** Load $inputFileName to a Spreadsheet Object  **/
         // $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($file);
@@ -93,7 +93,7 @@ class Import extends BaseController
             }
 
 
-            echo "<pre>";
+            // echo "<pre>";
             // echo $sheet_name . "<br>";
             // print_r($data);
             // die();
@@ -118,25 +118,25 @@ class Import extends BaseController
                 if (is_numeric($row[8])) {
                     $date_manufacture = date("Y-m-d", \PhpOffice\PhpSpreadsheet\Shared\Date::excelToTimestamp($row[8]));
                 } else {
-                    $date_manufacture = '';
+                    $date_manufacture = NULL;
                 }
                 if (is_numeric($row[9])) {
                     $date_storage = date("Y-m-d", \PhpOffice\PhpSpreadsheet\Shared\Date::excelToTimestamp($row[9]));
                 } else {
-                    $date_storage = '';
+                    $date_storage = NULL;
                 }
                 $time_text = $row[10];
 
                 if (is_numeric($row[11])) {
                     $date_theory = date("Y-m-d", \PhpOffice\PhpSpreadsheet\Shared\Date::excelToTimestamp($row[11]));
                 } else {
-                    $date_theory = '';
+                    $date_theory = NULL;
                 }
 
                 if (is_numeric($row[12])) {
                     $date_reality = date("Y-m-d", \PhpOffice\PhpSpreadsheet\Shared\Date::excelToTimestamp($row[12]));
                 } else {
-                    $date_reality = '';
+                    $date_reality = NULL;
                 }
                 $env_name = $row[13];
                 $note = $row[14];

@@ -8,7 +8,7 @@
                 <div class="float-right">
                     <i class="fa fa-print report-main-icon bg-icon-danger"></i>
                 </div>
-                <span class="badge badge-light text-purple">Sản phẩm</span>
+                <span class="badge badge-light text-purple">Số Lô</span>
                 <h3 class="my-3"><?= $num_product ?></h3>
             </div>
             <!--end card-body-->
@@ -85,6 +85,7 @@
                                 <th>Tên sản phẩm</th>
                                 <th>Mã số sản phẩm</th>
                                 <th>Số lô</th>
+                                <th>Điều kiện</th>
                                 <th>Ngày lấy mẫu</th>
                             </tr>
                         </thead>
@@ -109,6 +110,7 @@
                                 <th>Tên sản phẩm</th>
                                 <th>Mã số sản phẩm</th>
                                 <th>Số lô</th>
+                                <th>Điều kiện</th>
                                 <th>Ngày lấy mẫu</th>
                             </tr>
                         </thead>
@@ -167,6 +169,9 @@
                     "data": "code_batch"
                 },
                 {
+                    "data": "env"
+                },
+                {
                     "data": "date_theory"
                 }
             ]
@@ -199,6 +204,9 @@
                 },
                 {
                     "data": "code_batch"
+                },
+                {
+                    "data": "env"
                 },
                 {
                     "data": "date_theory"

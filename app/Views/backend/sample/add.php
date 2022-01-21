@@ -39,7 +39,7 @@
                                 <div class="col-12 col-lg-4 pt-1">
                                     <input class="form-control form-control-sm" type='date' name="date_manufacture" required="" placeholder="Ngày sản xuất" />
                                 </div>
-                                <b class="col-12 col-lg-2 col-form-label">Ngày lưu mẫu vào tủ:<i class="text-danger">*</i></b>
+                                <b class="col-12 col-lg-2 col-form-label">Ngày lưu mẫu:<i class="text-danger">*</i></b>
                                 <div class="col-12 col-lg-4 pt-1">
                                     <input class="form-control form-control-sm" type='date' name="date_storage" required="" placeholder="Ngày lưu mẫu vào tủ" />
                                 </div>
@@ -144,7 +144,7 @@
             <input type="date" name="date_reality" class="form-control form-control-sm date_reality" placeholder="Ngày lấy mẫu thực tế">
         </div>
         <div class="col-2">
-            <textarea type="text" name="note" class="form-control form-control-sm note" placeholder="Ghi chú" style="width:70%;display:inline-block;vertical-align: middle;"></textarea>
+            <textarea type="text" name="note" class="form-control form-control-sm note" placeholder="Ghi chú" style="width:60%;display:inline-block;vertical-align: middle;"></textarea>
             <button class="btn btn-sm btn-danger remove_time d-inline-block"><i class="fas fa-trash-alt"></i> Xóa</button>
         </div>
     </div>
