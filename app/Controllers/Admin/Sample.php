@@ -185,7 +185,7 @@ class Sample extends BaseController
                 $nestedData['outline_number'] = $post->outline_number;
                 $nestedData['code_batch'] = $post->code_batch;
                 $nestedData['code_analysis'] = $post->code_analysis;
-                
+
                 $nestedData['date_manufacture'] = date("d/m/Y", strtotime($post->date_manufacture));
                 $nestedData['date_storage'] = date("d/m/Y", strtotime($post->date_storage));
 
@@ -207,5 +207,88 @@ class Sample extends BaseController
         );
 
         echo json_encode($json_data);
+    }
+    public function exportexcel()
+    {
+        $SampleModel = model("SampleModel", false);
+        $limit = $this->request->getVar('length');
+        $start = $this->request->getVar('start');
+        $search = $this->request->getPost('search')['value'];
+        $page = ($start / $limit) + 1;
+        $where = $SampleModel;
+        // echo "<pre>";
+        // print_r($where);
+        $totalData = $where->countAllResults(false);
+
+        //echo "<pre>";
+        //print_r($totalData);
+        //die();
+        $totalFiltered = $totalData;
+
+        if (empty($search)) {
+            // $where = $Document_model;
+            // echo "1";die();
+        } else {
+            $where->like("name", $search);
+            $totalFiltered = $where->countAllResults(false);
+        }
+
+        // $where = $Document_model;
+        $posts = $where->orderby("id", "ASC")->asObject()->findAll();
+        $SampleModel->relation($posts, array("time"));
+        // echo "<pre>";
+        // print_r($posts);
+        // die();
+        $file = APPPATH . '../assets/template/template.xlsx';
+        $inputFileType = \PhpOffice\PhpSpreadsheet\IOFactory::identify($file);
+        /**  Create a new Reader of the type defined in $inputFileType  **/
+        $reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReader($inputFileType);
+        // echo "<pre>";
+        // print_r($reader);
+        // die();
+        /**  Load $inputFileName to a Spreadsheet Object  **/
+        $spreadsheet = $reader->load($file);
+        $sheet = $spreadsheet->getActiveSheet();
+        if (!empty($posts)) {
+            $rows = 2;
+            $key = 0;
+            foreach ($posts as $post) {
+                $sheet->insertNewRowBefore($rows + 1, 1);
+                $sheet->getStyle("A$rows:N$rows")->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('858687');
+                $rows++;
+                if (isset($post->time)) {
+                    $sheet->insertNewRowBefore($rows + 1, count($post->time));
+                    foreach ($post->time as $time) {
+                        $sheet->setCellValue('A' . $rows, ++$key);
+                        $sheet->setCellValue('B' . $rows, $post->code);
+                        $sheet->setCellValue('C' . $rows, $post->name);
+                        $sheet->setCellValue('D' . $rows, $post->code_research);
+                        $sheet->setCellValue('E' . $rows, $post->code);
+                        $sheet->setCellValue('F' . $rows, $post->code_batch);
+                        $sheet->setCellValue('G' . $rows, $post->code_analysis);
+                        $sheet->setCellValue('H' . $rows, $post->date_manufacture != "" ? \PhpOffice\PhpSpreadsheet\Shared\Date::PHPToExcel($post->date_manufacture) : "");
+                        $sheet->setCellValue('I' . $rows, $post->date_storage != "" ? \PhpOffice\PhpSpreadsheet\Shared\Date::PHPToExcel($post->date_storage) : "");
+                        $sheet->setCellValue('J' . $rows, $time->time . " " . ($time->type_time == "M" ? "Tháng" : ($time->type_time == "d" ? "Ngày" : ($time->type_time == "w" ? "Tuần" : ($time->type_time == "y" ? "Năm" : "")))));
+                        $sheet->setCellValue('K' . $rows, $time->date_theory != "" ? \PhpOffice\PhpSpreadsheet\Shared\Date::PHPToExcel($time->date_theory) : "");
+                        $sheet->setCellValue('L' . $rows, $time->date_reality != "" ? \PhpOffice\PhpSpreadsheet\Shared\Date::PHPToExcel($time->date_reality) : "");
+                        $sheet->setCellValue('M' . $rows, $time->name);
+                        $sheet->setCellValue('N' . $rows, $time->note);
+
+                        $sheet->getStyle('H' . $rows)->getNumberFormat()->setFormatCode("yyyy/mm/dd");
+                        $sheet->getStyle('I' . $rows)->getNumberFormat()->setFormatCode("yyyy/mm/dd");
+                        $sheet->getStyle('K' . $rows)->getNumberFormat()->setFormatCode("yyyy/mm/dd");
+                        $sheet->getStyle('L' . $rows)->getNumberFormat()->setFormatCode("yyyy/mm/dd");
+
+                        $rows++;
+                    }
+                }
+            }
+        }
+        $sheet->getRowDimension(1)->setRowHeight(-1);
+
+        $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
+        $file = "assets/excel/" . time() . ".xlsx";
+        $writer->save($file);
+        echo json_encode(base_url($file));
     }
 }
