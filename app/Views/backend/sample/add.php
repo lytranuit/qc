@@ -116,7 +116,7 @@
 </div>
 
 <template class="times">
-    <div class="form-group row pt-1 item" data-id="{{id}}">
+    <div class="form-group row py-2 item" data-id="{{id}}">
         <div class="col-2">
             <input type="text" name="name" class="form-control form-control-sm name" placeholder="Điều kiện">
         </div>
