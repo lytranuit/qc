@@ -96,6 +96,7 @@ class Home extends BaseController
                 $nestedData['date_storage'] = $post->date_storage;
                 $nestedData['date_theory'] = $post->date_theory;
                 $nestedData['env'] = $post->name;
+                $nestedData['time'] = $post->time . " " . ($post->type_time == "M" ? "Tháng" : ($post->type_time == "d" ? "Ngày" : ($post->type_time == "w" ? "Tuần" : ($post->type_time == "y" ? "Năm" : ""))));
                 $data[] = $nestedData;
             }
         }
@@ -170,6 +171,7 @@ class Home extends BaseController
                 $nestedData['date_storage'] = $post->date_storage;
                 $nestedData['date_theory'] = $post->date_theory;
                 $nestedData['env'] = $post->name;
+                $nestedData['time'] = $post->time . " " . ($post->type_time == "M" ? "Tháng" : ($post->type_time == "d" ? "Ngày" : ($post->type_time == "w" ? "Tuần" : ($post->type_time == "y" ? "Năm" : ""))));
                 $data[] = $nestedData;
             }
         }

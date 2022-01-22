@@ -89,6 +89,7 @@
                                 <th>Mã số sản phẩm</th>
                                 <th>Số lô</th>
                                 <th>Điều kiện</th>
+                                <th>Thời gian</th>
                                 <th>Ngày lấy mẫu</th>
                             </tr>
                         </thead>
@@ -114,6 +115,7 @@
                                 <th>Mã số sản phẩm</th>
                                 <th>Số lô</th>
                                 <th>Điều kiện</th>
+                                <th>Thời gian</th>
                                 <th>Ngày lấy mẫu</th>
                             </tr>
                         </thead>
@@ -189,6 +191,9 @@
                     "data": "env"
                 },
                 {
+                    "data": "time"
+                },
+                {
                     "data": "date_theory"
                 }
             ]
@@ -224,6 +229,9 @@
                 },
                 {
                     "data": "env"
+                },
+                {
+                    "data": "time"
                 },
                 {
                     "data": "date_theory"

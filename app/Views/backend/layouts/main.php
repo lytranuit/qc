@@ -44,7 +44,7 @@
     <!-- ============================================================== -->
     <!-- main wrapper -->
     <!-- ============================================================== -->
-    <div class="app-container app-theme-white body-tabs-shadow fixed-header">
+    <div class="app-container app-theme-white body-tabs-shadow fixed-header closed-sidebar">
         <!-- ============================================================== -->
         <!-- header -->
         <!-- ============================================================== -->
