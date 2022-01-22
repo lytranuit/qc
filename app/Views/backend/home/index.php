@@ -74,7 +74,10 @@
                     <button type="button" class="btn btn-light active" data-value="d">Ngày</button>
                     <button type="button" class="btn btn-light" data-value="w">Tuần</button>
                     <button type="button" class="btn btn-light" data-value="M">Tháng</button>
+                    <input type="text" class="daterange btn btn-light" value="Date" />
                 </div>
+
+
             </div>
             <div class="card-body">
                 <div class="table-responsive-md">
@@ -127,6 +130,7 @@
 <!-- Style --->
 <?= $this->section("style") ?>
 <link rel="stylesheet" href="<?= base_url("assets/lib/datatables/datatables.min.css") ?> " ?>
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 <?= $this->endSection() ?>
 
 <!-- Script --->
@@ -134,9 +138,17 @@
 
 <script src="<?= base_url('assets/lib/datatables/datatables.min.js') ?>"></script>
 <script src="<?= base_url('assets/lib/datatables/jquery.highlight.js') ?>"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 <script type='text/javascript'>
     $(document).ready(function() {
         let id = 1;
+        $('.daterange').daterangepicker({
+            autoUpdateInput: false,
+            locale: {
+                cancelLabel: 'Clear'
+            }
+        });
         let table = $('#quanly').DataTable({
             "stateSave": true,
             "processing": true,
@@ -148,6 +160,11 @@
                 'data': function(data) {
                     data['<?= csrf_token() ?>'] = "<?= csrf_hash() ?>";
                     let type = $(".type_sample .btn.active").data("value");
+                    let picker = $('.daterange').data("daterangepicker");
+                    let startDate = picker.startDate.format('YYYY-MM-DD');
+                    let endDate = picker.endDate.format('YYYY-MM-DD');
+                    data['startDate'] = startDate;
+                    data['endDate'] = endDate;
                     data['type'] = type;
                     let orders = data['order'];
                     for (let i in orders) {
@@ -218,6 +235,16 @@
             $(this).addClass("active");
             table.ajax.reload();
         })
+
+        $('.daterange').on('apply.daterangepicker', function(ev, picker) {
+            $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
+            // console.log(picker);
+            table.ajax.reload();
+        });
+
+        $('.daterange').on('cancel.daterangepicker', function(ev, picker) {
+            $(this).val('');
+        });
         // $(".box-hover").click(function() {
         //     let name = $(this).find(".badge").text();
         //     id = $(this).data("id");

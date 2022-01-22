@@ -27,6 +27,8 @@ class Home extends BaseController
         $start = $this->request->getVar('start');
         $search = $this->request->getPost('search')['value'];
         $type = $this->request->getVar('type');
+        $startDate = $this->request->getVar('startDate');
+        $endDate = $this->request->getVar('endDate');
         $page = ($start / $limit) + 1;
         $where = $SampleModel->join("sample_time", "sample.id = sample_time.sample_id")->select("*,sample.name as name_sample");
         switch ($type) {
@@ -36,8 +38,11 @@ class Home extends BaseController
             case "M":
                 $where = $where->where("MONTH(`date_theory`) = MONTH(CURRENT_DATE()) AND YEAR(`date_theory`) = YEAR(CURRENT_DATE())");
                 break;
-            default:
+            case "d":
                 $where = $where->where("date_theory = CURRENT_DATE()");
+                break;
+            default:
+                $where = $where->where("date_theory BETWEEN '$startDate' AND '$endDate'");
                 break;
         }
         // echo "<pre>";
