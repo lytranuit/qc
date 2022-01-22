@@ -94,7 +94,7 @@ class Home extends BaseController
                 $nestedData['code_analysis'] = $post->code_analysis;
                 $nestedData['date_manufacture'] = $post->date_manufacture;
                 $nestedData['date_storage'] = $post->date_storage;
-                $nestedData['date_theory'] = $post->date_theory;
+                $nestedData['date_theory'] = date("d/m/Y", strtotime($post->date_theory));
                 $nestedData['env'] = $post->name;
                 $nestedData['time'] = $post->time . " " . ($post->type_time == "M" ? "Tháng" : ($post->type_time == "d" ? "Ngày" : ($post->type_time == "w" ? "Tuần" : ($post->type_time == "y" ? "Năm" : ""))));
                 $data[] = $nestedData;
@@ -169,7 +169,7 @@ class Home extends BaseController
                 $nestedData['code_analysis'] = $post->code_analysis;
                 $nestedData['date_manufacture'] = $post->date_manufacture;
                 $nestedData['date_storage'] = $post->date_storage;
-                $nestedData['date_theory'] = $post->date_theory;
+                $nestedData['date_theory'] = date("d/m/Y", strtotime($post->date_theory));
                 $nestedData['env'] = $post->name;
                 $nestedData['time'] = $post->time . " " . ($post->type_time == "M" ? "Tháng" : ($post->type_time == "d" ? "Ngày" : ($post->type_time == "w" ? "Tuần" : ($post->type_time == "y" ? "Năm" : ""))));
                 $data[] = $nestedData;
