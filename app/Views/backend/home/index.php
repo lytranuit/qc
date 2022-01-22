@@ -2,7 +2,7 @@
 
 <?= $this->section('content') ?>
 <div class="row justify-content-center">
-    <div class="col">
+    <div class="col pt-3">
         <div class="card report-card bg-purple-gradient shadow-purple box-hover" data-id="1">
             <div class="card-body">
                 <div class="float-right">
@@ -14,7 +14,7 @@
             <!--end card-body-->
         </div>
     </div>
-    <div class="col">
+    <div class="col pt-3">
         <div class="card report-card bg-purple-gradient shadow-purple box-hover" data-id="1">
             <div class="card-body">
                 <div class="float-right">
@@ -26,7 +26,7 @@
             <!--end card-body-->
         </div>
     </div>
-    <div class="col">
+    <div class="col pt-3">
         <div class="card report-card bg-purple-gradient shadow-purple box-hover" data-id="1">
             <div class="card-body">
                 <div class="float-right">
@@ -38,7 +38,7 @@
             <!--end card-body-->
         </div>
     </div>
-    <div class="col">
+    <div class="col pt-3">
         <div class="card report-card bg-purple-gradient shadow-purple box-hover" data-id="1">
             <div class="card-body">
                 <div class="float-right">
@@ -50,7 +50,7 @@
             <!--end card-body-->
         </div>
     </div>
-    <div class="col">
+    <div class="col pt-3">
         <div class="card report-card bg-purple-gradient shadow-purple box-hover" data-id="1">
             <div class="card-body">
                 <div class="float-right">
