@@ -30,6 +30,22 @@
         </span>
     </div>
     <div class="app-header__content">
+        <div class="app-header-left">
+            <div class="mb-2 mr-2 btn-group b-dropdown dropdown" id="__BVID__8137">
+                <button class="btn btn-light dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <?= session()->factory_name ?>
+                </button>
+                <div role="menu" tabindex="-1" class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <?php foreach ($list_factories as $factory) : ?>
+                        <?php if ($factory->factory_id != session()->factory_id) : ?>
+                            <a type="button" tabindex="0" class="dropdown-item select_factory" href="<?= base_url("admin/factory/change/$factory->factory_id") ?>"><?= $factory->name ?></a>
+                        <?php else : ?>
+                            <h6 tabindex="-1" class="dropdown-header"><?= $factory->name ?></h6>
+                        <?php endif ?>
+                    <?php endforeach ?>
+                </div>
+            </div>
+        </div>
         <div class="app-header-right">
             <div class="header-dots">
             </div>

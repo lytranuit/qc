@@ -25,15 +25,20 @@
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <b class="col-12 col-lg-2 col-form-label">Số đề cương:</b>
+                                <b class="col-12 col-lg-2 col-form-label">Số lô:<i class="text-danger">*</i></b>
                                 <div class="col-12 col-lg-4 pt-1">
-                                    <input class="form-control form-control-sm" type='text' name="outline_number" placeholder="Số đề cương" />
+                                    <input class="form-control form-control-sm" type='text' name="code_batch" required="" placeholder="Số lô" />
                                 </div>
-                                <b class="col-12 col-lg-2 col-form-label">Số phân tích:</b>
+                                <b class="col-12 col-lg-2 col-form-label">Vị trí lưu mẫu:<i class="text-danger">*</i></b>
                                 <div class="col-12 col-lg-4 pt-1">
-                                    <input class="form-control form-control-sm" type='text' name="code_analysis" placeholder="Số phân tích" />
+                                    <select class="form-control form-control-sm" name="location_id" require>
+                                        <?php foreach ($location as $row) : ?>
+                                            <option value="<?= $row->id ?>"><?= $row->name ?></option>
+                                        <?php endforeach ?>
+                                    </select>
                                 </div>
                             </div>
+
                             <div class="form-group row">
                                 <b class="col-12 col-lg-2 col-form-label">Ngày sản xuất:<i class="text-danger">*</i></b>
                                 <div class="col-12 col-lg-4 pt-1">
@@ -44,18 +49,36 @@
                                     <input class="form-control form-control-sm" type='date' name="date_storage" required="" placeholder="Ngày lưu mẫu vào tủ" />
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-md-4">
                             <div class="form-group row">
-                                <b class="col-12 col-lg-4 col-form-label">Số lô:<i class="text-danger">*</i></b>
-                                <div class="col-12 col-lg-8 pt-1">
-                                    <input class="form-control form-control-sm" type='text' name="code_batch" required="" placeholder="Số lô" />
+                                <b class="col-12 col-lg-2 col-form-label">Số đề cương:</b>
+                                <div class="col-12 col-lg-4 pt-1">
+                                    <input class="form-control form-control-sm" type='text' name="outline_number" placeholder="Số đề cương" />
+                                </div>
+                                <b class="col-12 col-lg-2 col-form-label">Số phân tích:</b>
+                                <div class="col-12 col-lg-4 pt-1">
+                                    <input class="form-control form-control-sm" type='text' name="code_analysis" placeholder="Số phân tích" />
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <b class="col-12 col-lg-4 col-form-label">Mã số nghiên cứu:</b>
-                                <div class="col-12 col-lg-8 pt-1">
+                                <b class="col-12 col-lg-2 col-form-label">Mã số nghiên cứu:</b>
+                                <div class="col-12 col-lg-4 pt-1">
                                     <input class="form-control form-control-sm" type='text' name="code_research" placeholder="Mã số nghiên cứu" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="row">
+                                <div class="col-12 pt-2 pt-md-0">
+                                    <div class="card no-shadow border">
+                                        <div class="card-header">
+                                            QR code
+                                        </div>
+                                        <div class="card-body">
+                                            <a href="<?= base_url($tin->image_url) ?>" target="_blank" class="text-center d-block">
+                                                <img src="<?= base_url($tin->image_url) ?>" class="img-fluid w-50">
+                                            </a>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>

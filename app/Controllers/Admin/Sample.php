@@ -50,9 +50,13 @@ class Sample extends BaseController
             $EnvModel = model("EnvModel");
             $envs = $EnvModel->asObject()->findAll();
             $EnvModel->relation($envs, array("time"));
-            // print_r($envs);
 
             $this->data['envs'] = $envs;
+
+            $LocationModel = model("LocationModel");
+            $location = $LocationModel->asObject()->findAll();
+
+            $this->data['location'] = $location;
             return view($this->data['content'], $this->data);
         }
     }
@@ -133,6 +137,11 @@ class Sample extends BaseController
             // print_r($envs);
 
             $this->data['envs'] = $envs;
+            
+            $LocationModel = model("LocationModel");
+            $location = $LocationModel->asObject()->findAll();
+
+            $this->data['location'] = $location;
             return view($this->data['content'], $this->data);
         }
     }
@@ -151,7 +160,7 @@ class Sample extends BaseController
         $start = $this->request->getVar('start');
         $search = $this->request->getPost('search')['value'];
         $page = ($start / $limit) + 1;
-        $where = $SampleModel;
+        $where = $SampleModel->where("factory_id", session()->factory_id);
         // echo "<pre>";
         // print_r($where);
         $totalData = $where->countAllResults(false);

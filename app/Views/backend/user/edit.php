@@ -68,6 +68,17 @@
                                     </div>
                                 </div>
                             </div>
+
+                            <div class="form-group row">
+                                <b class="col-12 col-lg-2 col-form-label">Nhà máy:</b>
+                                <div class="col-lg-4 pt-1">
+                                    <select name="factories[]" style="width: 200px;" multiple="">
+                                        <?php foreach ($factories as $row) : ?>
+                                            <option value="<?= $row['id'] ?>"><?= $row['name'] ?></option>
+                                        <?php endforeach ?>
+                                    </select>
+                                </div>
+                            </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group row">
@@ -113,7 +124,7 @@
     $(document).ready(function() {
         $(".image_ft").imageFeature();
 
-        $("select[name='groups[]']").chosen();
+        $("select[name='groups[]'],select[name='factories[]']").chosen();
         //$('.edit').froalaEditor({
         //    heightMin: 200,
         //    heightMax: 500, // Set the image upload URL.

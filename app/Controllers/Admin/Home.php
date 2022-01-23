@@ -11,11 +11,11 @@ class Home extends BaseController
         $SampleModel = model("SampleModel");
         $SampleTimeModel = model("SampleTimeModel");
 
-        $this->data['num_product'] = $SampleModel->countAllResults();
-        $this->data['num_sample'] = $SampleTimeModel->countAllResults();
-        $this->data['num_sample_incomplete'] = $SampleTimeModel->where("date_reality", NULL)->countAllResults();
-        $this->data['num_sample_complete'] = $SampleTimeModel->where("date_reality !=", NULL)->countAllResults();
-        $this->data['num_sample_expire'] = $SampleTimeModel->where("date_reality", NULL)->where("date_theory < ", date("Y-m-d"))->countAllResults();
+        $this->data['num_product'] = $SampleModel->where("factory_id", session()->factory_id)->countAllResults();
+        $this->data['num_sample'] = $SampleTimeModel->where("factory_id", session()->factory_id)->countAllResults();
+        $this->data['num_sample_incomplete'] = $SampleTimeModel->where("factory_id", session()->factory_id)->where("date_reality", NULL)->countAllResults();
+        $this->data['num_sample_complete'] = $SampleTimeModel->where("factory_id", session()->factory_id)->where("date_reality !=", NULL)->countAllResults();
+        $this->data['num_sample_expire'] = $SampleTimeModel->where("factory_id", session()->factory_id)->where("date_reality", NULL)->where("date_theory < ", date("Y-m-d"))->countAllResults();
 
         return view($this->data['content'], $this->data);
     }
@@ -31,6 +31,7 @@ class Home extends BaseController
         $endDate = $this->request->getVar('endDate');
         $page = ($start / $limit) + 1;
         $where = $SampleModel->join("sample_time", "sample.id = sample_time.sample_id")->select("*,sample.name as name_sample");
+        $where = $where->where("sample_time.factory_id", session()->factory_id);
         switch ($type) {
             case "w":
                 $where = $where->where("YEARWEEK(`date_theory`, 1) = YEARWEEK(CURDATE())");
@@ -119,7 +120,9 @@ class Home extends BaseController
         $search = $this->request->getPost('search')['value'];
         $page = ($start / $limit) + 1;
         $where = $SampleModel->join("sample_time", "sample.id = sample_time.sample_id")->select("*,sample.name as name_sample");
-        $rows = $where->where("(date_reality IS NULL OR date_reality = '0000-00-00') AND date_theory < CURDATE()");
+        $where = $where->where("(date_reality IS NULL OR date_reality = '0000-00-00') AND date_theory < CURDATE()");
+        
+        $where = $where->where("sample_time.factory_id", session()->factory_id);
         // echo "<pre>";
         // print_r($rows);
         // die();

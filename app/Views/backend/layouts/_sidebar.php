@@ -42,6 +42,12 @@
                 </li>
                 <li class="app-sidebar__heading">Lưu mẫu</li>
                 <li>
+                    <a href="<?= base_url() ?>/admin/location" class="">
+                        <i class="metismenu-icon fas fa-map-marker-alt"></i>
+                        Vị trí lưu mẫu
+                    </a>
+                </li>
+                <li>
                     <a href="<?= base_url() ?>/admin/env" class="">
                         <i class="metismenu-icon fas fa-info-circle"></i>
                         Điều kiện
@@ -68,6 +74,14 @@
                             Cài đặt chung
                         </a>
                     </li>
+
+                    <li>
+                        <a href="<?= base_url() ?>/admin/factory" class="">
+                            <i class="metismenu-icon fas fa-industry"></i>
+                            Nhà máy
+                        </a>
+                    </li>
+
                     <li>
                         <a href="<?= base_url() ?>/admin/user/">
                             <i class="metismenu-icon fa fa-lock"></i>

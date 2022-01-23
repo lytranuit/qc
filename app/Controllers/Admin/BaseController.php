@@ -49,6 +49,21 @@ class BaseController extends Controller
         //$class = $this->router->fetch_class(); // class = controller
         //$method = $this->router->fetch_method();
         helper('auth');
+        //Factory
+        // $session = \Config\Services::session();
+        $User_model = model("Myth\Auth\Authorization\UserModel");
+        $user = $User_model->where(array('id' => user_id()))->asObject()->first();
+        $User_model->relation($user, array("factories"));
+        // print_r(session()->factory_id);
+        // print_r()
+        // die();
+
+        $session = session();
+        if (!isset($session->factory_id) && !empty($user->factories)) {
+            $session->set('factory_id', $user->factories[0]->factory_id);
+            $session->set('factory_name', $user->factories[0]->name);
+        }
+        $this->data['list_factories'] = $user->factories;
         // if (!in_groups("admin")) {
         //     // session()->set('redirect_url', current_url());
         //     return redirect('login');

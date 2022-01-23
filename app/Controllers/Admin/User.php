@@ -38,6 +38,17 @@ class User extends BaseController
                         $group_model->addUserToGroup($id, $row);
                     }
                 }
+                if (isset($data['factories'])) {
+
+                    $UserFactoryModel = model("UserFactoryModel");
+                    foreach ($data['factories'] as $row) {
+                        $array = array(
+                            'user_id' => $id,
+                            'factory_id' => $row
+                        );
+                        $UserFactoryModel->insert($array);
+                    }
+                }
                 return redirect()->to(base_url('admin/user'));
             } else {
                 print_r($User_model->errors());
@@ -49,6 +60,9 @@ class User extends BaseController
 
             $group_model = model("Myth\Auth\Authorization\GroupModel");
             $this->data['groups'] = $group_model->asArray()->findAll();
+
+            $FactoryModel = model("FactoryModel");
+            $this->data['factories'] = $FactoryModel->asArray()->findAll();
             return view($this->data['content'], $this->data);
         }
     }
@@ -66,13 +80,23 @@ class User extends BaseController
 
             // print_r($User_model->errors());
             // die();
+            $group_model = model("Myth\Auth\Authorization\GroupModel");
+            $group_model->removeUserFromAllGroups($id);
             if (isset($data['groups'])) {
-                $group_model = model("Myth\Auth\Authorization\GroupModel");
-                // print_r($Myth\Auth\Authorization\GroupModel);
-                // die();
-                $group_model->removeUserFromAllGroups($id);
                 foreach ($data['groups'] as $row) {
                     $group_model->addUserToGroup($id, $row);
+                }
+            }
+
+            $UserFactoryModel = model("UserFactoryModel");
+            $UserFactoryModel->where("user_id", $id)->delete();
+            if (isset($data['factories'])) {
+                foreach ($data['factories'] as $row) {
+                    $array = array(
+                        'user_id' => $id,
+                        'factory_id' => $row
+                    );
+                    $UserFactoryModel->insert($array);
                 }
             }
 
@@ -81,16 +105,23 @@ class User extends BaseController
         } else {
             $User_model = model("Myth\Auth\Authorization\UserModel");
             $tin = $User_model->where(array('id' => $id))->asObject()->first();
-            $User_model->relation($tin, array("groups"));
+            $User_model->relation($tin, array("groups", "factories"));
             $tin->groups = array_map(function ($item) {
                 return $item['group_id'];
             }, $tin->groups);
-            //echo "<pre>";
-            //print_r($tin);
-            //die();
+
+            $tin->factories = array_map(function ($item) {
+                return $item->factory_id;
+            }, $tin->factories);
+            // echo "<pre>";
+            // print_r($tin);
+            // die();
 
             $group_model = model("Myth\Auth\Authorization\GroupModel");
             $this->data['groups'] = $group_model->asArray()->findAll();
+
+            $FactoryModel = model("FactoryModel");
+            $this->data['factories'] = $FactoryModel->asArray()->findAll();
             $this->data['tin'] = $tin;
             return view($this->data['content'], $this->data);
         }

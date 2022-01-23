@@ -134,6 +134,11 @@ class UserModel extends BaseModel
                         $builder = $this->db->table('cf_file');
                         $row->image = $builder->where('id', $image_id)->limit(1)->get()->getFirstRow();
                     }
+                    if (in_array("factories", $relation)) {
+                        $user_id = $row->id;
+                        $builder = $this->db->table('user_factory')->join("factory", "factory.id = user_factory.factory_id");
+                        $row->factories = $builder->where('user_id', $user_id)->get()->getResult();
+                    }
                     if (in_array("groups", $relation)) {
                         $user_id = $row->id;
                         $groups = model(GroupModel::class)->getGroupsForUser($user_id);
@@ -148,7 +153,11 @@ class UserModel extends BaseModel
                         $builder = $this->db->table('cf_file');
                         $row['image'] = $builder->where('id', $image_id)->limit(1)->get()->getFirstRow("array");
                     }
-
+                    if (in_array("factories", $relation)) {
+                        $user_id = $row['id'];
+                        $builder = $this->db->table('user_factory')->join("factory", "factory.id = user_factory.factory_id");
+                        $row['factories'] =  $builder->where('user_id', $user_id)->get()->getResult('array');
+                    }
                     if (in_array("groups", $relation)) {
                         $user_id = $data['id'];
                         $groups = model(GroupModel::class)->getGroupsForUser($user_id);
@@ -165,6 +174,11 @@ class UserModel extends BaseModel
                 $builder = $this->db->table('cf_file');
                 $data['image'] = $builder->where('id', $image_id)->limit(1)->get()->getFirstRow('array');
             }
+            if (in_array("factories", $relation)) {
+                $user_id = $data['id'];
+                $builder = $this->db->table('user_factory')->join("factory", "factory.id = user_factory.factory_id");
+                $data['factories'] = $builder->where('user_id', $user_id)->get()->getResult('array');
+            }
             if (in_array("groups", $relation)) {
                 $user_id = $data['id'];
                 $groups = model(GroupModel::class)->getGroupsForUser($user_id);
@@ -179,6 +193,11 @@ class UserModel extends BaseModel
                 $image_id = $data->image_id;
                 $builder = $this->db->table('cf_file');
                 $data->image = $builder->where('id', $image_id)->limit(1)->get()->getFirstRow();
+            }
+            if (in_array("factories", $relation)) {
+                $user_id = $data->id;
+                $builder = $this->db->table('user_factory')->join("factory", "factory.id = user_factory.factory_id");
+                $data->factories = $builder->where('user_id', $user_id)->get()->getResult();
             }
             if (in_array("groups", $relation)) {
                 $user_id = $data->id;
