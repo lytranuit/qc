@@ -4,13 +4,18 @@ namespace App\Models;
 
 
 use App\Models\BaseModel;
+use App\Libraries\Ciqrcode;
 
 class SampleModel extends BaseModel
 {
     protected $table      = 'sample';
-    protected $returnType     = 'array';
     protected $afterInsert = ['insertTrail', 'create_qr'];
 
+    protected function initialize()
+    {
+
+        $this->ciqrcode = new Ciqrcode();
+    }
 
     function format_row($row_a, $relation)
     {
@@ -20,21 +25,30 @@ class SampleModel extends BaseModel
                 $builder = $this->db->table('sample_time');
                 $row_a->time = $builder->where('sample_id', $id)->get()->getResult();
             }
+            if (in_array("location", $relation)) {
+                $location_id = $row_a->location_id;
+                $builder = $this->db->table('location');
+                $row_a->location = $builder->where('id', $location_id)->get()->getFirstRow();
+            }
         } else {
             if (in_array("time", $relation)) {
                 $id = $row_a['id'];
                 $builder = $this->db->table('sample_time');
                 $row_a['time'] = $builder->where('sample_id', $id)->get()->getResult("array");
             }
+            if (in_array("location", $relation)) {
+                $location_id = $row_a['location_id'];
+                $builder = $this->db->table('location');
+                $row_a['location'] = $builder->where('id', $location_id)->get()->getFirstRow("array");
+            }
         }
         return $row_a;
     }
     public function create_qr($params)
     {
-        // print_r($params);
-        // die();
         $id = $params['id'];
         $sample = $this->find($id);
+        
         $data_qr = base_url("qrcode/sample") . "/" . urlencode($sample->uuid);
         $dir = FCPATH . "assets/qrcode/";
         $save_name =  $id . "_" . time()  . '.png';

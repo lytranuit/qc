@@ -21,6 +21,7 @@ class Location extends BaseController
             }
             $LocationModel = model("LocationModel");
             $data = $this->request->getPost();
+            $data['factory_id'] = session()->factory_id;
             $obj = $LocationModel->create_object($data);
             $LocationModel->insert($obj);
             return redirect()->to(base_url('admin/' . $this->data['controller']));
@@ -67,7 +68,7 @@ class Location extends BaseController
         $start = $this->request->getVar('start');
         $search = $this->request->getPost('search')['value'];
         $page = ($start / $limit) + 1;
-        $where = $LocationModel;
+        $where = $LocationModel->where("factory_id", session()->factory_id);
         // echo "<pre>";
         // print_r($where);
         $totalData = $where->countAllResults(false);

@@ -101,6 +101,7 @@ class Import extends BaseController
             $SampleTimeModel = model("SampleTimeModel");
             $prev_name = "";
             $prev_code_batch = "";
+            $prev_env_name = "";
             foreach ($data as $row) {
 
                 $name = $row[3];
@@ -138,12 +139,29 @@ class Import extends BaseController
                 } else {
                     $date_reality = NULL;
                 }
-                $env_name = $row[13];
+                $env_name = trim($row[13]);
                 $note = $row[14];
+                $location_id = null;
+                switch ($env_name) {
+                    case "lão hóa cấp tốc":
+                        $location_id = 4;
+                        break;
+                    case "dài hạn (ASEAN)":
+                        $location_id = 1;
+                        break;
+                    case "dài hạn (25 ̊C-60RH)":
+                        $location_id = 2;
+                        break;
+                    case "Trung gian":
+                        $location_id = 3;
+                        break;
+                }
+                $factory_id = 1;
 
-                if ($name != $prev_name || $code_batch != $prev_code_batch) {
+                if ($name != $prev_name || $code_batch != $prev_code_batch || $prev_env_name != $env_name) {
                     $prev_name = $name;
                     $prev_code_batch = $code_batch;
+                    $prev_env_name = $env_name;
                     $array = array(
                         // 'other' => $explode,
                         'code' => $code,
@@ -153,7 +171,9 @@ class Import extends BaseController
                         'name' => $name,
                         'code_batch' => $code_batch,
                         'date_manufacture' => $date_manufacture,
-                        'date_storage' => $date_storage
+                        'date_storage' => $date_storage,
+                        'factory_id' => $factory_id,
+                        'location_id' => $location_id
                     );
                     // print_r($array);
                     $id = $SampleModel->insert($array);
@@ -189,7 +209,9 @@ class Import extends BaseController
                     'based' => $based,
                     'time' => $time,
                     'sample_id' => $id,
-                    'type_time' => $type_time
+                    'type_time' => $type_time,
+                    'factory_id' => $factory_id,
+                    'location_id' => $location_id
                 );
                 // print_r($array);
 

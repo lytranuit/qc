@@ -25,6 +25,8 @@ class Sample extends BaseController
             $obj = $SampleModel->create_object($data);
             $id = $SampleModel->insert($obj);
 
+            $factory_id = session()->factory_id;
+            $location_id = $data['location_id'];
             if (isset($data['time'])) {
                 if (isset($data['time']['insert'])) {
                     foreach ($data['time']['insert']['name'] as $key => $row) {
@@ -37,6 +39,8 @@ class Sample extends BaseController
                             'date_reality' => $data['time']['insert']['date_reality'][$key],
                             'note' => $data['time']['insert']['note'][$key],
                             'sample_id' => $id,
+                            'factory_id' => $factory_id,
+                            'location_id' => $location_id
                         );
                         $obj = $SampleTimeModel->create_object($array);
                         $SampleTimeModel->insert($obj);
@@ -74,6 +78,8 @@ class Sample extends BaseController
             // print_r($obj);die();
             $SampleModel->update($id, $obj);
 
+            $factory_id = session()->factory_id;
+            $location_id = $data['location_id'];
             if (isset($data['time'])) {
                 // echo "<pre>";
                 // print_r($data['time']);
@@ -90,6 +96,8 @@ class Sample extends BaseController
                             'date_reality' => $data['time']['insert']['date_reality'][$key],
                             'note' => $data['time']['insert']['note'][$key],
                             'sample_id' => $id,
+                            'factory_id' => $factory_id,
+                            'location_id' => $location_id
                         );
                         $obj = $SampleTimeModel->create_object($array);
                         $SampleTimeModel->insert($obj);
@@ -107,6 +115,8 @@ class Sample extends BaseController
                             'date_reality' => $data['time']['update']['date_reality'][$key],
                             'note' => $data['time']['update']['note'][$key],
                             'sample_id' => $id,
+                            'factory_id' => $factory_id,
+                            'location_id' => $location_id
                         );
                         $obj = $SampleTimeModel->create_object($array);
                         $SampleTimeModel->update($row, $obj);
@@ -137,7 +147,7 @@ class Sample extends BaseController
             // print_r($envs);
 
             $this->data['envs'] = $envs;
-            
+
             $LocationModel = model("LocationModel");
             $location = $LocationModel->asObject()->findAll();
 
@@ -225,26 +235,18 @@ class Sample extends BaseController
         $search = $this->request->getPost('search')['value'];
         $page = ($start / $limit) + 1;
         $where = $SampleModel;
-        // echo "<pre>";
-        // print_r($where);
-        $totalData = $where->countAllResults(false);
 
-        //echo "<pre>";
-        //print_r($totalData);
-        //die();
-        $totalFiltered = $totalData;
 
         if (empty($search)) {
             // $where = $Document_model;
             // echo "1";die();
         } else {
             $where->like("name", $search);
-            $totalFiltered = $where->countAllResults(false);
         }
 
         // $where = $Document_model;
         $posts = $where->orderby("id", "ASC")->asObject()->findAll();
-        $SampleModel->relation($posts, array("time"));
+        $SampleModel->relation($posts, array("time", "location"));
         // echo "<pre>";
         // print_r($posts);
         // die();
@@ -282,6 +284,7 @@ class Sample extends BaseController
                         $sheet->setCellValue('L' . $rows, $time->date_reality != "" ? \PhpOffice\PhpSpreadsheet\Shared\Date::PHPToExcel($time->date_reality) : "");
                         $sheet->setCellValue('M' . $rows, $time->name);
                         $sheet->setCellValue('N' . $rows, $time->note);
+                        $sheet->setCellValue('P' . $rows, isset($post->locaiton->name) ? $post->locaiton->name : "");
 
                         $sheet->getStyle('H' . $rows)->getNumberFormat()->setFormatCode("yyyy/mm/dd");
                         $sheet->getStyle('I' . $rows)->getNumberFormat()->setFormatCode("yyyy/mm/dd");
