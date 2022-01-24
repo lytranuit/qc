@@ -59,6 +59,12 @@
                         Mẫu
                     </a>
                 </li>
+                <li class="">
+                    <a href="<?= base_url() ?>/admin/sample/take" class="">
+                        <i class="metismenu-icon fas fa-hand-holding"></i>
+                        Lấy mẫu bằng QR
+                    </a>
+                </li>
                 <!-- <li class="app-sidebar__heading">Auditrail</li>
                 <li>
                     <a href="<?= base_url() ?>/admin/history" class="">
