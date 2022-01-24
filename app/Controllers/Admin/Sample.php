@@ -303,4 +303,23 @@ class Sample extends BaseController
         $writer->save($file);
         echo json_encode(base_url($file));
     }
+    public function take()
+    {
+        $LocationModel = model("LocationModel");
+        $location = $LocationModel->where("factory_id", session()->factory_id)->asObject()->findAll();
+
+        $this->data['location'] = $location;
+        return view($this->data['content'], $this->data);
+    }
+    public function gettime($uuid)
+    {
+        $SampleModel = model("SampleModel");
+        $sample = $SampleModel->where('uuid', $uuid)->first();
+        if (!empty($sample)) {
+            $id = $sample->id;
+            return redirect()->to(base_url("admin/sample/edit/$sample->id"));
+        } else {
+            throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound(lang('Auth.notEnoughPrivilege'));
+        }
+    }
 }

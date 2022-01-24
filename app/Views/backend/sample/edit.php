@@ -72,6 +72,9 @@
                                     <div class="card no-shadow border">
                                         <div class="card-header">
                                             QR code
+                                            <div class="ml-auto">
+                                                <a class="btn btn-success text-white" onclick="printJS('<?= base_url($tin->image_url) ?>', 'image')"><i class="fas fa-print"></i> Print</a>
+                                            </div>
                                         </div>
                                         <div class="card-body">
                                             <a href="<?= base_url($tin->image_url) ?>" target="_blank" class="text-center d-block">
@@ -178,11 +181,13 @@
 
 <!-- Style --->
 <?= $this->section("style") ?>
+<link rel="stylesheet" type="text/css" href="<?= base_url("assets/lib/printjs/print.min.css") ?>">">
 <?= $this->endSection() ?>
 
 <!-- Script --->
 <?= $this->section('script') ?>
 
+<script src="<?= base_url("assets/lib/printjs/print.min.js") ?>"></script>
 <script src="<?= base_url("assets/lib/mustache/mustache.min.js") ?>"></script>
 <script src="<?= base_url("assets/lib/moment/js/moment.js") ?>"></script>
 <script type='text/javascript'>
