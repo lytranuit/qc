@@ -58,7 +58,7 @@ class Sample extends BaseController
             $this->data['envs'] = $envs;
 
             $LocationModel = model("LocationModel");
-            $location = $LocationModel->asObject()->findAll();
+            $location = $LocationModel->where("factory_id", session()->factory_id)->asObject()->findAll();
 
             $this->data['location'] = $location;
             return view($this->data['content'], $this->data);
@@ -149,7 +149,7 @@ class Sample extends BaseController
             $this->data['envs'] = $envs;
 
             $LocationModel = model("LocationModel");
-            $location = $LocationModel->asObject()->findAll();
+            $location = $LocationModel->where("factory_id", session()->factory_id)->asObject()->findAll();
 
             $this->data['location'] = $location;
             return view($this->data['content'], $this->data);
