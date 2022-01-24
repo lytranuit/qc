@@ -305,21 +305,52 @@ class Sample extends BaseController
     }
     public function take()
     {
-        $LocationModel = model("LocationModel");
-        $location = $LocationModel->where("factory_id", session()->factory_id)->asObject()->findAll();
+        if (isset($_POST['dangtin'])) {
 
-        $this->data['location'] = $location;
-        return view($this->data['content'], $this->data);
+            $SampleTimeModel = model("SampleTimeModel");
+            $data = $this->request->getPost();
+            $sample_time_id  = $data['sample_time_id'];
+            $sample_id  = $data['id'];
+            unset($data['id']);
+            if ($sample_time_id > 0) {
+
+                $obj = $SampleTimeModel->create_object($data);
+                $SampleTimeModel->update($sample_time_id, $obj);
+                $description = "User " . user()->name . " take a Sample";
+                $SampleTimeModel->trail(1, 'update', $obj, array(), $description);
+                return redirect()->to(base_url('admin/' . $this->data['controller'] . "/edit/" . $sample_id));
+            } else {
+                return redirect()->to(base_url('admin/' . $this->data['controller']));
+            }
+        } else {
+            $LocationModel = model("LocationModel");
+            $location = $LocationModel->where("factory_id", session()->factory_id)->asObject()->findAll();
+
+            $this->data['location'] = $location;
+            return view($this->data['content'], $this->data);
+        }
     }
     public function gettime($uuid)
     {
         $SampleModel = model("SampleModel");
-        $sample = $SampleModel->where('uuid', $uuid)->first();
+        $SampleTimeModel = model("SampleTimeModel");
+        $sample = $SampleModel->where('uuid', $uuid)->asArray()->first();
         if (!empty($sample)) {
-            $id = $sample->id;
-            return redirect()->to(base_url("admin/sample/edit/$sample->id"));
+            $id = $sample['id'];
+            $time = $SampleTimeModel->where("sample_id = $id AND date_reality IS NULL AND CURDATE() BETWEEN DATE_SUB(date_theory, INTERVAL 7 DAY) AND DATE_ADD(date_theory, INTERVAL 7 DAY)")->asArray()->first();
+            if (!empty($time)) {
+                $sample['env_name'] = $time['name'];
+                $sample['date_theory'] = $time['date_theory'];
+                $sample['date_reality'] = date("Y-m-d");
+                $sample['sample_time_id'] = $time['id'];
+                $sample['time'] = $time['time'] . " " . ($time['type_time'] == "M" ? "Tháng" : ($time['type_time'] == "d" ? "Ngày" : ($time['type_time'] == "w" ? "Tuần" : ($time['type_time'] == "y" ? "Năm" : ""))));
+                echo json_encode(array("success" => 1, "msg" => $sample));
+            } else {
+                echo json_encode(array("success" => 0, "msg" => "Đã lấy mẫu hoặc chưa đến hạn lấy mẫu"));
+            }
+            // return redirect()->to(base_url("admin/sample/edit/$sample->id"));
         } else {
-            throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound(lang('Auth.notEnoughPrivilege'));
+            echo json_encode(array("success" => 0, "msg" => "Không tìm thấy mẫu!"));
         }
     }
 }

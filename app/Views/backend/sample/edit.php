@@ -31,7 +31,7 @@
                                 </div>
                                 <b class="col-12 col-lg-2 col-form-label">Vị trí lưu mẫu:<i class="text-danger">*</i></b>
                                 <div class="col-12 col-lg-4 pt-1">
-                                    <select class="form-control form-control-sm" name="location_id" require>
+                                    <select class="form-control form-control-sm" name="location_id" required>
                                         <?php foreach ($location as $row) : ?>
                                             <option value="<?= $row->id ?>"><?= $row->name ?></option>
                                         <?php endforeach ?>

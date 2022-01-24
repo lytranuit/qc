@@ -17,54 +17,49 @@
                     <div class="row">
                         <div class="col-md-8">
                             <div class="form-group row">
-                                <b class="col-12 col-lg-2 col-form-label">Tên sản phẩm:<i class="text-danger">*</i></b>
+                                <b class="col-12 col-lg-2 col-form-label">Tên sản phẩm:</b>
                                 <div class="col-12 col-lg-4 pt-1">
-                                    <input class="form-control form-control-sm" type='text' name="name" required="" placeholder="Tên" />
+                                    <input class="form-control form-control-sm" type='text' name="name" disabled="" placeholder="Tên" />
                                 </div>
-                                <b class="col-12 col-lg-2 col-form-label">Mã sản phẩm:<i class="text-danger">*</i></b>
+                                <b class="col-12 col-lg-2 col-form-label">Mã sản phẩm:</b>
                                 <div class="col-12 col-lg-4 pt-1">
-                                    <input class="form-control form-control-sm" type='text' name="code" required="" placeholder="Mã sản phẩm" />
+                                    <input class="form-control form-control-sm" type='text' name="code" disabled="" placeholder="Mã sản phẩm" />
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <b class="col-12 col-lg-2 col-form-label">Số lô:<i class="text-danger">*</i></b>
+                                <b class="col-12 col-lg-2 col-form-label">Số lô:</b>
                                 <div class="col-12 col-lg-4 pt-1">
-                                    <input class="form-control form-control-sm" type='text' name="code_batch" required="" placeholder="Số lô" />
+                                    <input class="form-control form-control-sm" type='text' name="code_batch" disabled="" placeholder="Số lô" />
                                 </div>
-                                <b class="col-12 col-lg-2 col-form-label">Vị trí lưu mẫu:<i class="text-danger">*</i></b>
+                                <b class="col-12 col-lg-2 col-form-label">Vị trí lưu mẫu:</b>
                                 <div class="col-12 col-lg-4 pt-1">
-                                    <select class="form-control form-control-sm" name="location_id" require>
+                                    <select class="form-control form-control-sm" name="location_id" disabled>
                                         <?php foreach ($location as $row) : ?>
                                             <option value="<?= $row->id ?>"><?= $row->name ?></option>
                                         <?php endforeach ?>
                                     </select>
                                 </div>
                             </div>
-
                             <div class="form-group row">
-                                <b class="col-12 col-lg-2 col-form-label">Ngày sản xuất:<i class="text-danger">*</i></b>
+                                <b class="col-12 col-lg-2 col-form-label">Điều kiện:</b>
                                 <div class="col-12 col-lg-4 pt-1">
-                                    <input class="form-control form-control-sm" type='date' name="date_manufacture" required="" placeholder="Ngày sản xuất" />
+                                    <input class="form-control form-control-sm" type='text' name="env_name" disabled />
                                 </div>
-                                <b class="col-12 col-lg-2 col-form-label">Ngày lưu mẫu:<i class="text-danger">*</i></b>
+                                <b class="col-12 col-lg-2 col-form-label">Khoảng thời gian:</b>
                                 <div class="col-12 col-lg-4 pt-1">
-                                    <input class="form-control form-control-sm" type='date' name="date_storage" required="" placeholder="Ngày lưu mẫu vào tủ" />
+                                    <input class="form-control form-control-sm" type='text' name="time" disabled />
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <b class="col-12 col-lg-2 col-form-label">Số đề cương:</b>
+                                <b class="col-12 col-lg-2 col-form-label">Ngày lấy mẫu lý thuyết:</b>
                                 <div class="col-12 col-lg-4 pt-1">
-                                    <input class="form-control form-control-sm" type='text' name="outline_number" placeholder="Số đề cương" />
+                                    <input class="form-control form-control-sm" type='date' name="date_theory" disabled />
                                 </div>
-                                <b class="col-12 col-lg-2 col-form-label">Số phân tích:</b>
+                                <b class="col-12 col-lg-2 col-form-label">Ngày lấy mẫu thực tế:</b>
                                 <div class="col-12 col-lg-4 pt-1">
-                                    <input class="form-control form-control-sm" type='text' name="code_analysis" placeholder="Số phân tích" />
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <b class="col-12 col-lg-2 col-form-label">Mã số nghiên cứu:</b>
-                                <div class="col-12 col-lg-4 pt-1">
-                                    <input class="form-control form-control-sm" type='text' name="code_research" placeholder="Mã số nghiên cứu" />
+                                    <input type="hidden" value="0" name="id" />
+                                    <input type="hidden" value="0" name="sample_time_id" />
+                                    <input class="form-control form-control-sm" type='date' name="date_reality" />
                                 </div>
                             </div>
                         </div>
@@ -73,6 +68,11 @@
                     </div>
 
                 </div>
+                <h5 class="card-footer text-center">
+                    <div class="d-inline-block w-100">
+                        <button type="submit" name="dangtin" class="btn btn-sm btn-primary float-center">Lấy mẫu</button>
+                    </div>
+                </h5>
             </section>
         </form>
     </div>
@@ -100,6 +100,23 @@
         if (content == "" || content == prev)
             return;
         prev = content;
+        let anArray = content.split("/");
+        let code = anArray.pop();
+        $.ajax({
+            type: "GET",
+            dataType: "JSON",
+            url: path + "admin/sample/gettime/" + code,
+            success: function(data) {
+                if (data.success) {
+                    let tin = data.msg;
+                    $("#div_video").addClass("d-none");
+                    fillForm($("#form-dang-tin"), tin);
+                } else {
+                    alert(data.msg);
+                    location.reload();
+                }
+            }
+        })
     });
     var select_cam = 0;
     var cameras = [];
