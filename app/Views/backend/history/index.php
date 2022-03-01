@@ -44,8 +44,6 @@
 
 <script type="text/javascript">
     $(document).ready(function() {
-        let data = {};
-        data['<?= csrf_token() ?>'] = "<?= csrf_hash() ?>";
         $('#quanlytin').DataTable({
             "stateSave": true,
             "processing": true,
@@ -54,7 +52,16 @@
                 "url": path + "admin/<?= $controller ?>/table",
                 "dataType": "json",
                 "type": "POST",
-                "data": data
+                'data': function(data) {
+                    data['<?= csrf_token() ?>'] = "<?= csrf_hash() ?>";
+
+                    let orders = data['order'];
+                    for (let i in orders) {
+                        let order = orders[i];
+                        let column = order['column'];
+                        orders[i]['data'] = data['columns'][column]['data'];
+                    }
+                }
             },
             "columns": [{
                     "data": "created_at"
@@ -63,13 +70,15 @@
                 },
                 {
                     "data": "description",
-                    "width":"400px"
+                    "width": "400px"
                 },
                 {
-                    "data": "old_values"
+                    "data": "old_values",
+                    "orderable": false
                 },
                 {
-                    "data": "new_values"
+                    "data": "new_values",
+                    "orderable": false
                 }
             ]
 

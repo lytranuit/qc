@@ -53,7 +53,7 @@
                             <div class="help-info"></div>
                         </div>
                         <div class="form-group">
-                            <b class="form-label"><?= lang("Custom.change_password_new_password_label") ?></b>
+                            <b class="form-label"><?= lang("Custom.change_password_new_password_label", [6]) ?></b>
                             <div class="form-line">
                                 <input type="password" class="form-control" name="newpassword" minlength="6" required="" aria-required="true">
                             </div>

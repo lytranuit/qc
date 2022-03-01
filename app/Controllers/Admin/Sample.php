@@ -169,6 +169,7 @@ class Sample extends BaseController
         $limit = $this->request->getVar('length');
         $start = $this->request->getVar('start');
         $search = $this->request->getPost('search')['value'];
+        $orders = $this->request->getVar('order');
         $page = ($start / $limit) + 1;
         $where = $SampleModel->where("factory_id", session()->factory_id);
         // echo "<pre>";
@@ -187,7 +188,23 @@ class Sample extends BaseController
             $where->like("name", $search);
             $totalFiltered = $where->countAllResults(false);
         }
-
+        if (isset($orders)) {
+            foreach ($orders as $order) {
+                $data = $order['data'];
+                $dir = $order['dir'];
+                switch ($data) {
+                    default:
+                        $where->orderby($data, $dir);
+                        break;
+                    case 'status':
+                        $where->orderby('status_id', $dir);
+                        break;
+                    case 'type':
+                        $where->orderby('type_id', $dir);
+                        break;
+                }
+            }
+        }
         // $where = $Document_model;
         $posts = $where->asObject()->orderby("id", "DESC")->paginate($limit, '', $page);
 

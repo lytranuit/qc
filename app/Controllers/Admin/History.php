@@ -22,10 +22,11 @@ class History extends BaseController
         $History_model = model("HistoryModel");
         $limit = $this->request->getVar('length');
         $start = $this->request->getVar('start');
+        $orders = $this->request->getVar('order');
         $page = ($start / $limit) + 1;
         $where = $History_model;
 
-        $totalData = $where->countAllResults();
+        $totalData = $where->countAllResults(false);
         //echo "<pre>";
         //print_r($totalData);
         //die();
@@ -33,16 +34,30 @@ class History extends BaseController
         if (empty($this->request->getPost('search')['value'])) {
             //            $max_page = ceil($totalFiltered / $limit);
 
-            $where = $History_model;
         } else {
-            // $search = $this->request->getPost('search')['value'];
-            // $sWhere = "(LOWER(code) LIKE LOWER('%$search%') OR name_vi like '%" . $search . "%')";
-            // $where =  $Document_model->where($sWhere);
-            // $totalFiltered = $where->countAllResults();
-            $where = $History_model;
+            $search = $this->request->getPost('search')['value'];
+            $sWhere = "description like '%" . $search . "%'";
+            $where =  $History_model->where($sWhere);
+            $totalFiltered = $where->countAllResults(false);
         }
 
-        $where = $History_model;
+        if (isset($orders)) {
+            foreach ($orders as $order) {
+                $data = $order['data'];
+                $dir = $order['dir'];
+                switch ($data) {
+                    default:
+                        $where->orderby($data, $dir);
+                        break;
+                    case 'status':
+                        $where->orderby('status_id', $dir);
+                        break;
+                    case 'type':
+                        $where->orderby('type_id', $dir);
+                        break;
+                }
+            }
+        }
         $posts = $where->asObject()->orderby("id", "DESC")->paginate($limit, '', $page);
 
         // $History_model->relation($posts, array('files', "status"));

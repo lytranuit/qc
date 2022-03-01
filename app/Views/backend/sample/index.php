@@ -68,6 +68,13 @@
                 "type": "POST",
                 'data': function(data) {
                     data['<?= csrf_token() ?>'] = "<?= csrf_hash() ?>";
+
+                    let orders = data['order'];
+                    for (let i in orders) {
+                        let order = orders[i];
+                        let column = order['column'];
+                        orders[i]['data'] = data['columns'][column]['data'];
+                    }
                 }
             },
             "columns": [{
@@ -98,7 +105,8 @@
                     "data": "date_storage"
                 },
                 {
-                    "data": "action"
+                    "data": "action",
+                    "orderable": false
                 }
             ],
 
