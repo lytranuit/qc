@@ -21,11 +21,13 @@ class Sample extends BaseController
             }
             $SampleModel = model("SampleModel");
             $SampleTimeModel = model("SampleTimeModel");
+
             $data = $this->request->getPost();
+            $factory_id = session()->factory_id;
+            $data['factory_id'] = $factory_id;
             $obj = $SampleModel->create_object($data);
             $id = $SampleModel->insert($obj);
 
-            $factory_id = session()->factory_id;
             $location_id = $data['location_id'];
             if (isset($data['time'])) {
                 if (isset($data['time']['insert'])) {
