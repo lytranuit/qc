@@ -72,6 +72,13 @@
                         </li>
                     </ul>
                 </li>
+                
+                <li>
+                    <a href="<?= base_url() ?>/admin/history" class="">
+                        <i class="metismenu-icon fas fa-history"></i>
+                        AuditTrail
+                    </a>
+                </li>
                 <!-- <li class="">
                     <a href="<?= base_url() ?>/admin/sample/take" class="">
                         <i class="metismenu-icon fas fa-hand-holding"></i>
