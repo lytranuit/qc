@@ -25,21 +25,11 @@ class SampleModel extends BaseModel
                 $builder = $this->db->table('sample_time');
                 $row_a->time = $builder->where('sample_id', $id)->get()->getResult();
             }
-            if (in_array("location", $relation)) {
-                $location_id = $row_a->location_id;
-                $builder = $this->db->table('location');
-                $row_a->location = $builder->where('id', $location_id)->get()->getFirstRow();
-            }
         } else {
             if (in_array("time", $relation)) {
                 $id = $row_a['id'];
                 $builder = $this->db->table('sample_time');
                 $row_a['time'] = $builder->where('sample_id', $id)->get()->getResult("array");
-            }
-            if (in_array("location", $relation)) {
-                $location_id = $row_a['location_id'];
-                $builder = $this->db->table('location');
-                $row_a['location'] = $builder->where('id', $location_id)->get()->getFirstRow("array");
             }
         }
         return $row_a;

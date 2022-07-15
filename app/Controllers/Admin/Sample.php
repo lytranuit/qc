@@ -162,6 +162,9 @@ class Sample extends BaseController
     { /////// trang ca nhan
         $SampleModel = model("SampleModel");
         $SampleModel->delete($id);
+
+        $SampleTimeModel = model("SampleTimeModel");
+        $SampleTimeModel->where("sample_id", $id)->delete();
         header('Location: ' . $_SERVER['HTTP_REFERER']);
         exit;
     }

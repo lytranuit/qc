@@ -39,12 +39,11 @@
                         Tổng quan
                     </a>
                 </li>
-                </li>
                 <li class="app-sidebar__heading">Lưu mẫu</li>
-                <li>
-                    <a href="<?= base_url() ?>/admin/location" class="">
-                        <i class="metismenu-icon fas fa-map-marker-alt"></i>
-                        Vị trí lưu mẫu
+                <li class="">
+                    <a href="<?= base_url() ?>/admin/sample" class="">
+                        <i class="metismenu-icon fas fa-file"></i>
+                        Mẫu
                     </a>
                 </li>
                 <li>
@@ -53,18 +52,32 @@
                         Điều kiện
                     </a>
                 </li>
-                <li class="">
-                    <a href="<?= base_url() ?>/admin/sample" class="">
-                        <i class="metismenu-icon fas fa-file"></i>
-                        Mẫu
+                <li class="mm-active">
+                    <a href="<?= base_url() ?>/admin/sample/take" class="">
+                        <i class="metismenu-icon fas fa-file-excel"></i>
+                        Xuất Excel
                     </a>
+                    <ul class="mm-collapse mm-show">
+                        <li>
+                            <a href="<?= base_url() ?>/admin/export/month" class="">
+                                Hàng tháng </a>
+                        </li>
+                        <li>
+                            <a href="<?= base_url() ?>/admin/export/year" class="">
+                                Hàng năm </a>
+                        </li>
+                        <li>
+                            <a href="<?= base_url() ?>/admin/export/index" class="">
+                                Tổng thể </a>
+                        </li>
+                    </ul>
                 </li>
-                <li class="">
+                <!-- <li class="">
                     <a href="<?= base_url() ?>/admin/sample/take" class="">
                         <i class="metismenu-icon fas fa-hand-holding"></i>
                         Lấy mẫu bằng QR
                     </a>
-                </li>
+                </li> -->
                 <!-- <li class="app-sidebar__heading">Auditrail</li>
                 <li>
                     <a href="<?= base_url() ?>/admin/history" class="">

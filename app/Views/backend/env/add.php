@@ -20,6 +20,15 @@
                                 <div class="col-12 col-lg-4 pt-1">
                                     <input class="form-control form-control-sm" type='text' name="name" required="" placeholder="Tên" />
                                 </div>
+                                <b class="col-12 col-lg-2 col-form-label">Điều kiện:<i class="text-danger">*</i></b>
+                                <div class="col-12 col-lg-4 pt-1">
+                                    <select class="form-control form-control-sm type_id" name="type_id" required>
+                                        <option value="1">Lão hóa</option>
+                                        <option value="2">Trung gian</option>
+                                        <option value="3">Dài hạn (ASEAN)</option>
+                                        <option value="4">Dài hạn (EU)</option>
+                                    </select>
+                                </div>
                             </div>
                             <div class="form-group row">
                                 <b class="col-12 col-lg-12 col-form-label">Khoảng thời gian:</b>

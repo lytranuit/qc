@@ -19,23 +19,31 @@
                                 <div class="col-12 col-lg-4 pt-1">
                                     <input class="form-control form-control-sm" type='text' name="name" required="" placeholder="Tên" />
                                 </div>
-                                <b class="col-12 col-lg-2 col-form-label">Mã sản phẩm:<i class="text-danger">*</i></b>
-                                <div class="col-12 col-lg-4 pt-1">
-                                    <input class="form-control form-control-sm" type='text' name="code" required="" placeholder="Mã sản phẩm" />
-                                </div>
-                            </div>
-                            <div class="form-group row">
                                 <b class="col-12 col-lg-2 col-form-label">Số lô:<i class="text-danger">*</i></b>
                                 <div class="col-12 col-lg-4 pt-1">
                                     <input class="form-control form-control-sm" type='text' name="code_batch" required="" placeholder="Số lô" />
                                 </div>
-                                <b class="col-12 col-lg-2 col-form-label">Vị trí lưu mẫu:<i class="text-danger">*</i></b>
+
+                            </div>
+                            <div class="form-group row">
+                                <b class="col-12 col-lg-2 col-form-label">Mã sản phẩm:</b>
                                 <div class="col-12 col-lg-4 pt-1">
-                                    <select class="form-control form-control-sm" name="location_id" required>
-                                        <?php foreach ($location as $row) : ?>
-                                            <option value="<?= $row->id ?>"><?= $row->name ?></option>
-                                        <?php endforeach ?>
-                                    </select>
+                                    <input class="form-control form-control-sm" type='text' name="code" placeholder="Mã sản phẩm" />
+                                </div>
+                                <b class="col-12 col-lg-2 col-form-label">Mã số nghiên cứu:</b>
+                                <div class="col-12 col-lg-4 pt-1">
+                                    <input class="form-control form-control-sm" type='text' name="code_research" placeholder="Mã số nghiên cứu" />
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <b class="col-12 col-lg-2 col-form-label">Số đề cương:</b>
+                                <div class="col-12 col-lg-4 pt-1">
+                                    <input class="form-control form-control-sm" type='text' name="outline_number" placeholder="Số đề cương" />
+                                </div>
+                                <b class="col-12 col-lg-2 col-form-label">Số phân tích:</b>
+                                <div class="col-12 col-lg-4 pt-1">
+                                    <input class="form-control form-control-sm" type='text' name="code_analysis" placeholder="Số phân tích" />
                                 </div>
                             </div>
 
@@ -47,22 +55,6 @@
                                 <b class="col-12 col-lg-2 col-form-label">Ngày lưu mẫu:<i class="text-danger">*</i></b>
                                 <div class="col-12 col-lg-4 pt-1">
                                     <input class="form-control form-control-sm" type='date' name="date_storage" required="" placeholder="Ngày lưu mẫu vào tủ" />
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <b class="col-12 col-lg-2 col-form-label">Số đề cương:</b>
-                                <div class="col-12 col-lg-4 pt-1">
-                                    <input class="form-control form-control-sm" type='text' name="outline_number" placeholder="Số đề cương" />
-                                </div>
-                                <b class="col-12 col-lg-2 col-form-label">Số phân tích:</b>
-                                <div class="col-12 col-lg-4 pt-1">
-                                    <input class="form-control form-control-sm" type='text' name="code_analysis" placeholder="Số phân tích" />
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <b class="col-12 col-lg-2 col-form-label">Mã số nghiên cứu:</b>
-                                <div class="col-12 col-lg-4 pt-1">
-                                    <input class="form-control form-control-sm" type='text' name="code_research" placeholder="Mã số nghiên cứu" />
                                 </div>
                             </div>
                         </div>
@@ -112,25 +104,34 @@
                 <button class="btn btn-sm btn-success add_time">+ Thêm</button>
                 <div class="list_time">
                     <div class="form-group row pt-1">
-                        <div class="col-2 text-center">
+                        <div class="col text-center">
+                            <b>Tên</b>
+                        </div>
+                        <div class="col text-center">
+                            <b>Vị trí</b>
+                        </div>
+                        <div class="col text-center">
                             <b>Điều kiện</b>
                         </div>
-                        <div class="col-1 text-center">
+                        <div class="col text-center">
                             <b>Thời gian</b>
                         </div>
-                        <div class="col-1 text-center">
-                            <b>Loại</b>
+                        <div class="col text-center">
+                            <b>Loại thời gian</b>
                         </div>
-                        <div class="col-2 text-center">
+                        <div class="col text-center">
                             <b>So với</b>
                         </div>
-                        <div class="col-2 text-center">
+                        <div class="col text-center">
                             <b>Ngày lấy mẫu lý thuyết</b>
                         </div>
-                        <div class="col-2 text-center">
+                        <div class="col text-center">
                             <b>Ngày lấy mẫu thực tế</b>
                         </div>
-                        <div class="col-2 text-center">
+                        <div class="col text-center">
+                            <b>Số lượng lấy mẫu</b>
+                        </div>
+                        <div class="col text-center">
                             <b>Ghi chú</b>
                         </div>
                     </div>
@@ -142,14 +143,25 @@
 </div>
 
 <template class="times">
-    <div class="form-group row py-2 item" data-id="{{id}}">
-        <div class="col-2">
-            <input type="text" name="name" class="form-control form-control-sm name" placeholder="Điều kiện">
+    <div class="form-group row py-2 item align-items-center" data-id="{{id}}">
+        <div class="col">
+            <input type="text" name="name" class="form-control form-control-sm name" placeholder="Tên">
         </div>
-        <div class="col-1">
+        <div class="col">
+            <input type="text" name="location" class="form-control form-control-sm location" placeholder="Vị trí">
+        </div>
+        <div class="col">
+            <select class="form-control form-control-sm type_id" name="type_id">
+                <option value="1">Lão hóa</option>
+                <option value="2">Trung gian</option>
+                <option value="3">Dài hạn (ASEAN)</option>
+                <option value="4">Dài hạn (EU)</option>
+            </select>
+        </div>
+        <div class="col">
             <input type="number" name="time" class="form-control form-control-sm time" placeholder="Thời gian">
         </div>
-        <div class="col-1">
+        <div class="col">
             <select class="form-control form-control-sm type_time" name="type_time">
                 <option value="d">Ngày</option>
                 <option value="w">Tuần</option>
@@ -157,21 +169,27 @@
                 <option value="y">Năm</option>
             </select>
         </div>
-        <div class="col-2">
+        <div class="col">
             <select class="form-control form-control-sm based" name="based">
                 <option value="date_manufacture">So với ngày sản xuất</option>
                 <option value="date_storage">So với ngày lưu mẫu</option>
             </select>
         </div>
-        <div class="col-2">
+        <div class="col">
             <input type="date" name="date_theory" class="form-control form-control-sm date_theory" readonly placeholder="Ngày lấy mẫu lý thuyết">
         </div>
-        <div class="col-2">
+        <div class="col">
             <input type="date" name="date_reality" class="form-control form-control-sm date_reality" placeholder="Ngày lấy mẫu thực tế">
         </div>
-        <div class="col-2">
+        <div class="col">
+            <input type="number" name="num_get" class="form-control form-control-sm date_reality" placeholder="Sô lượng">
+        </div>
+        <div class="col">
             <textarea type="text" name="note" class="form-control form-control-sm note" rows="1" placeholder="Ghi chú" style="width:60%;display:inline-block;vertical-align: middle;"></textarea>
             <button class="btn btn-sm btn-danger remove_time d-inline-block"><i class="fas fa-trash-alt"></i> Xóa</button>
+            <span class="btn btn-success rounded-circle btn-icon ml-2 status d-none">
+                <i class="fas fa-check"></i>
+            </span>
         </div>
     </div>
 </template>
@@ -219,6 +237,7 @@
             let times = env.time;
             for (let obj of times) {
                 obj.name = name;
+                obj.type_id = env.type_id
                 add_time();
                 let row = $(".item").last();
                 fillForm(row, obj);
@@ -300,13 +319,44 @@
                 return false;
             }
         });
+
     });
+
+
+    function fix_row() {
+        $(".list_time > .row").each(function(item) {
+            $(".col:eq(1)", $(this)).css({
+                "max-width": "120px"
+            });
+            $(".col:eq(2)", $(this)).css({
+                "max-width": "180px"
+            });
+            $(".col:eq(3)", $(this)).css({
+                "max-width": "100px"
+            });
+            $(".col:eq(4)", $(this)).css({
+                "max-width": "120px"
+            });
+            $(".col:eq(5)", $(this)).css({
+                "max-width": "200px"
+            });
+            $(".col:eq(6)", $(this)).css({
+                "max-width": "150px"
+            });
+            $(".col:eq(7)", $(this)).css({
+                "max-width": "150px"
+            });
+            $(".col:eq(8)", $(this)).css({
+                "max-width": "100px"
+            });
+        })
+    }
 
     function add_time(item = {}) {
         var template = $(".times").html();
         var rendered = Mustache.render(template, item);
         $(".list_time").append(rendered);
-
+        fix_row();
     }
 
     function calculate_date(row) {
@@ -322,7 +372,7 @@
     function done(row) {
         let time = $(".date_reality", row).val();
         if (moment(time).isValid()) {
-            $(row).addClass("bg-success");
+            $(".status", row).removeClass("d-none");
         }
     }
 </script>
