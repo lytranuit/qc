@@ -8,7 +8,10 @@
             <section class="card card-fluid">
                 <h5 class="card-header">
                     <div class="d-inline-block w-100">
-                        <button type="submit" name="dangtin" class="btn btn-sm btn-primary float-right">Save</button>
+
+                        <?php if (in_groups(array("admin", "editor"))) : ?>
+                            <button type="submit" name="dangtin" class="btn btn-sm btn-primary float-right">Save</button>
+                        <?php endif ?>
                     </div>
                 </h5>
                 <div class="card-body">
