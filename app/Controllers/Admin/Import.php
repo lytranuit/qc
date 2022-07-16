@@ -233,7 +233,7 @@ class Import extends BaseController
 
     public function qca()
     {
-        // die();
+        die();
         //Đường dẫn file
         $file = APPPATH . '../assets/up/LICH LAY MAU DOD NONBETA MN1.xlsx';
 
@@ -451,6 +451,7 @@ class Import extends BaseController
     }
     public function qcb()
     {
+        die();
         //Đường dẫn file
         $file = APPPATH . '../assets/up/qcb.xlsx';
 
