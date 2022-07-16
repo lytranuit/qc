@@ -335,7 +335,7 @@ class Import extends BaseController
                 $code_research = $row[4];
                 $code_analysis = null;
                 $code = $row[5];
-                $note = $row[14];
+                $note = $row[15];
                 $location = $row[10];
                 $time_text = $row[11];
                 $factory_id = 3;
