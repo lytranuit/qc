@@ -30,7 +30,7 @@
                         </div>
                         <div class="col-md-4">
                             <div class="col-12 col-lg-4 pt-1">
-                                <button class="btn btn-sm btn-primary">Xuất File</button>
+                                <button class="btn btn-sm btn-primary export">Xuất File</button>
                             </div>
                         </div>
                     </div>
@@ -74,6 +74,18 @@
                 form.submit();
                 return false;
             }
+        });
+        $(".export").click(async function(e) {
+            e.preventDefault();
+            $(".page-loader-wrapper").show();
+            let url = await $.ajax({
+                "url": path + "admin/export/exportyear",
+                "data": $("#form-dang-tin").serialize(),
+                "type": "POST",
+                "dataType": "JSON"
+            })
+            $(".page-loader-wrapper").hide();
+            location.href = url;
         });
     });
 </script>

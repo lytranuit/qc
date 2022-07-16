@@ -20,6 +20,8 @@ class Export extends BaseController
     }
     public function index()
     {
+        $SampleModel = model("SampleModel");
+        $this->data['samples'] = $SampleModel->where("factory_id", session()->factory_id)->findAll();
         return view($this->data['content'], $this->data);
     }
     public function exportmonth()
@@ -125,14 +127,14 @@ class Export extends BaseController
         $name = time() . ".xlsx";
         $file = "assets/excel/$name";
         $writer->save($file);
-        header("Cache-Control: public"); // needed for internet explorer
-        // header("Content-Type: application/zip");
-        header("Content-Transfer-Encoding: Binary");
-        header("Content-Length:" . filesize($file));
-        header("Content-Disposition: attachment; filename=$name");
-        readfile($file);
+        // header("Cache-Control: public"); // needed for internet explorer
+        // // header("Content-Type: application/zip");
+        // header("Content-Transfer-Encoding: Binary");
+        // header("Content-Length:" . filesize($file));
+        // header("Content-Disposition: attachment; filename=$name");
+        // readfile($file);
         // die();
-        // echo json_encode(base_url($file));
+        echo json_encode(base_url($file));
     }
     public function exportyear()
     {
@@ -416,14 +418,14 @@ class Export extends BaseController
         $name = time() . ".xlsx";
         $file = "assets/excel/$name";
         $writer->save($file);
-        header("Cache-Control: public"); // needed for internet explorer
-        // header("Content-Type: application/zip");
-        header("Content-Transfer-Encoding: Binary");
-        header("Content-Length:" . filesize($file));
-        header("Content-Disposition: attachment; filename=$name");
-        readfile($file);
+        // header("Cache-Control: public"); // needed for internet explorer
+        // // header("Content-Type: application/zip");
+        // header("Content-Transfer-Encoding: Binary");
+        // header("Content-Length:" . filesize($file));
+        // header("Content-Disposition: attachment; filename=$name");
+        // readfile($file);
         // die();
-        // echo json_encode(base_url($file));
+        echo json_encode(base_url($file));
     }
 
     public function export()
@@ -432,7 +434,14 @@ class Export extends BaseController
         $SampleTimeModel = model("SampleTimeModel", false);
         $where = $SampleTimeModel->where("factory_id", session()->factory_id);
 
-
+        $types = isset($_POST['types']) ? $_POST['types'] : [];
+        $samples = isset($_POST['samples']) ? $_POST['samples'] : [];
+        if (!empty($types)) {
+            $where = $where->whereIn('type_id', $types);
+        }
+        if (!empty($samples)) {
+            $where = $where->whereIn('sample_id', $samples);
+        }
         $posts = $where->orderby("type_id", "ASC")->orderby("time", "ASC")->orderby("date_theory", "ASC")->asObject()->findAll();
         $SampleTimeModel->relation($posts, array("sample"));
         // echo "<pre>";
@@ -713,14 +722,14 @@ class Export extends BaseController
         $name = time() . ".xlsx";
         $file = "assets/excel/$name";
         $writer->save($file);
-        header("Cache-Control: public"); // needed for internet explorer
-        // header("Content-Type: application/zip");
-        header("Content-Transfer-Encoding: Binary");
-        header("Content-Length:" . filesize($file));
-        header("Content-Disposition: attachment; filename=$name");
-        readfile($file);
+        // header("Cache-Control: public"); // needed for internet explorer
+        // // header("Content-Type: application/zip");
+        // header("Content-Transfer-Encoding: Binary");
+        // header("Content-Length:" . filesize($file));
+        // header("Content-Disposition: attachment; filename=$name");
+        // readfile($file);
         // die();
-        // echo json_encode(base_url($file));
+        echo json_encode(base_url($file));
     }
     function groupBy($arr, $criteria): array
     {
