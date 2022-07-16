@@ -12,10 +12,6 @@
                 <?php if (in_groups(array("admin", "editor"))) : ?>
                     <a class="btn btn-success btn-sm" href="<?= base_url("admin/$controller/add") ?>">Thêm</a>
                 <?php endif ?>
-                <a class="btn btn-primary btn-sm ml-2 text-white export">
-                    <i class="fas fa-file-excel"></i>
-                    Excel
-                </a>
             </h5>
             <div class="card-body">
                 <div class="table-responsive-md">
