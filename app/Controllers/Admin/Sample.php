@@ -28,7 +28,6 @@ class Sample extends BaseController
             $obj = $SampleModel->create_object($data);
             $id = $SampleModel->insert($obj);
 
-            $location_id = $data['location_id'];
             if (isset($data['time'])) {
                 if (isset($data['time']['insert'])) {
                     foreach ($data['time']['insert']['name'] as $key => $row) {
@@ -40,9 +39,10 @@ class Sample extends BaseController
                             'date_theory' => $data['time']['insert']['date_theory'][$key],
                             'date_reality' => $data['time']['insert']['date_reality'][$key],
                             'note' => $data['time']['insert']['note'][$key],
+                            'location' => $data['time']['insert']['location'][$key],
+                            'num_get' => $data['time']['insert']['num_get'][$key],
                             'sample_id' => $id,
-                            'factory_id' => $factory_id,
-                            'location_id' => $location_id
+                            'factory_id' => $factory_id
                         );
                         $obj = $SampleTimeModel->create_object($array);
                         $SampleTimeModel->insert($obj);
@@ -81,7 +81,6 @@ class Sample extends BaseController
             $SampleModel->update($id, $obj);
 
             $factory_id = session()->factory_id;
-            $location_id = $data['location_id'];
             if (isset($data['time'])) {
                 // echo "<pre>";
                 // print_r($data['time']);
@@ -97,9 +96,10 @@ class Sample extends BaseController
                             'date_theory' => $data['time']['insert']['date_theory'][$key],
                             'date_reality' => $data['time']['insert']['date_reality'][$key],
                             'note' => $data['time']['insert']['note'][$key],
+                            'location' => $data['time']['insert']['location'][$key],
+                            'num_get' => $data['time']['insert']['num_get'][$key],
                             'sample_id' => $id,
                             'factory_id' => $factory_id,
-                            'location_id' => $location_id
                         );
                         $obj = $SampleTimeModel->create_object($array);
                         $SampleTimeModel->insert($obj);
@@ -116,9 +116,10 @@ class Sample extends BaseController
                             'date_theory' => $data['time']['update']['date_theory'][$key],
                             'date_reality' => $data['time']['update']['date_reality'][$key],
                             'note' => $data['time']['update']['note'][$key],
+                            'location' => $data['time']['update']['location'][$key],
+                            'num_get' => $data['time']['update']['num_get'][$key],
                             'sample_id' => $id,
                             'factory_id' => $factory_id,
-                            'location_id' => $location_id
                         );
                         $obj = $SampleTimeModel->create_object($array);
                         $SampleTimeModel->update($row, $obj);

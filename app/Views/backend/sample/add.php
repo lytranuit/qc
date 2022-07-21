@@ -129,6 +129,9 @@
             <input type="text" name="name" class="form-control form-control-sm name" placeholder="Tên">
         </div>
         <div class="col">
+            <input type="text" name="location" class="form-control form-control-sm location" placeholder="Vị trí">
+        </div>
+        <div class="col">
             <select class="form-control form-control-sm type_id" name="type_id">
                 <option value="1">Lão hóa</option>
                 <option value="2">Trung gian</option>
