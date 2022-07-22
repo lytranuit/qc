@@ -41,6 +41,7 @@ class Sample extends BaseController
                             'note' => $data['time']['insert']['note'][$key],
                             'location' => $data['time']['insert']['location'][$key],
                             'num_get' => $data['time']['insert']['num_get'][$key],
+                            'type_id' => $data['time']['insert']['type_id'][$key],
                             'sample_id' => $id,
                             'factory_id' => $factory_id
                         );
@@ -98,6 +99,7 @@ class Sample extends BaseController
                             'note' => $data['time']['insert']['note'][$key],
                             'location' => $data['time']['insert']['location'][$key],
                             'num_get' => $data['time']['insert']['num_get'][$key],
+                            'type_id' => $data['time']['insert']['type_id'][$key],
                             'sample_id' => $id,
                             'factory_id' => $factory_id,
                         );
@@ -118,6 +120,7 @@ class Sample extends BaseController
                             'note' => $data['time']['update']['note'][$key],
                             'location' => $data['time']['update']['location'][$key],
                             'num_get' => $data['time']['update']['num_get'][$key],
+                            'type_id' => $data['time']['update']['type_id'][$key],
                             'sample_id' => $id,
                             'factory_id' => $factory_id,
                         );
@@ -204,9 +207,6 @@ class Sample extends BaseController
                         break;
                     case 'status':
                         $where->orderby('status_id', $dir);
-                        break;
-                    case 'type':
-                        $where->orderby('type_id', $dir);
                         break;
                 }
             }
