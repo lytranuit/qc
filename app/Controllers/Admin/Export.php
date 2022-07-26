@@ -682,7 +682,7 @@ class Export extends BaseController
                 foreach ($post as $time) {
                     if ($time->date_theory > $max_date)
                         $max_date = $time->date_theory;
-                    $count += ($time->num_get ? (int) $time->numget : 0);
+                    $count += ($time->num_get ? (int) $time->num_get : 0);
                     $column = $data_type[$time->type_id][$time->time . "-" . $time->type_time];
                     // echo $column . "<br>";
                     // break;
