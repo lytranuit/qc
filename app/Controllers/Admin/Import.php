@@ -18,9 +18,9 @@ class Import extends BaseController
     }
     public function linhqc()
     {
-        die();
+        // die();
         //Đường dẫn file
-        $file = APPPATH . '../assets/up/FILE THEO DÕI CHO CÁC KHOẢNG THỬ NGHIỆM LINH GUI ANH TRAN.xlsx';
+        $file = APPPATH . '../assets/up/FILE THEO DÕI CHO CÁC KHOẢNG THỬ NGHIỆM LINH.xlsx';
 
         /** Load $inputFileName to a Spreadsheet Object  **/
         // $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($file);
