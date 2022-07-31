@@ -20,7 +20,7 @@ class Import extends BaseController
     {
         // die();
         //Đường dẫn file
-        $file = APPPATH . '../assets/up/FILE THEO DÕI CHO CÁC KHOẢNG THỬ NGHIỆM LINH.xlsx';
+        $file = APPPATH . '../assets/up/FILE THEO DÕI CHO CÁC KHOẢNG THỬ NGHIỆM LINH gửi anh Trân.xlsx';
 
         /** Load $inputFileName to a Spreadsheet Object  **/
         // $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($file);
