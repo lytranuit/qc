@@ -18,7 +18,7 @@ class Import extends BaseController
     }
     public function linhqc()
     {
-        // die();
+        die();
         //Đường dẫn file
         $file = APPPATH . '../assets/up/FILE THEO DÕI CHO CÁC KHOẢNG THỬ NGHIỆM LINH gửi anh Trân.xlsx';
 
@@ -666,7 +666,7 @@ class Import extends BaseController
     }
     public function tramqcb()
     {
-        // die();
+        die();
         //Đường dẫn file
         $file = APPPATH . '../assets/up/tong the qcb.xlsx';
 
