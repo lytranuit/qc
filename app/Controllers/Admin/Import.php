@@ -795,7 +795,7 @@ class Import extends BaseController
                 $num_get = $row[6];
                 $num_get = explode(" ", $num_get);
                 $num_get = $num_get[0];
-                $location = null;
+                $location =  $row[14];
                 $type_id = null;
                 switch ($env_name) {
                     case "Điều kiện lão hóa":
