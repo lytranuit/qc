@@ -111,6 +111,7 @@ class Export extends BaseController
                 $sheet->setCellValue('J' . $rows, $post->date_reality != "" ? \PhpOffice\PhpSpreadsheet\Shared\Date::PHPToExcel($post->date_reality) : "");
 
                 $sheet->setCellValue('K' . $rows, $post->note);
+                $sheet->setCellValue('M' . $rows, $sample->name);
                 $note = "";
 
                 $sheet->getStyle('I' . $rows)->getNumberFormat()->setFormatCode("dd/mm/yyyy");
