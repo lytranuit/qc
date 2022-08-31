@@ -92,6 +92,9 @@
                             <b>Tên</b>
                         </div>
                         <div class="col text-center">
+                            <b>Vị trí</b>
+                        </div>
+                        <div class="col text-center">
                             <b>Điều kiện</b>
                         </div>
                         <div class="col text-center">
@@ -152,6 +155,7 @@
         </div>
         <div class="col">
             <select class="form-control form-control-sm based" name="based">
+                <option value="custom">Tùy chỉnh</option>
                 <option value="date_manufacture">So với ngày sản xuất</option>
                 <option value="date_storage">So với ngày lưu mẫu</option>
             </select>
@@ -270,24 +274,27 @@
     function fix_row() {
         $(".list_time > .row").each(function(item) {
             $(".col:eq(1)", $(this)).css({
-                "max-width": "200px"
-            });
-            $(".col:eq(2)", $(this)).css({
-                "max-width": "100px"
-            });
-            $(".col:eq(3)", $(this)).css({
                 "max-width": "120px"
             });
+            $(".col:eq(2)", $(this)).css({
+                "max-width": "180px"
+            });
+            $(".col:eq(3)", $(this)).css({
+                "max-width": "100px"
+            });
             $(".col:eq(4)", $(this)).css({
-                "max-width": "200px"
+                "max-width": "120px"
             });
             $(".col:eq(5)", $(this)).css({
-                "max-width": "150px"
+                "max-width": "200px"
             });
             $(".col:eq(6)", $(this)).css({
                 "max-width": "150px"
             });
             $(".col:eq(7)", $(this)).css({
+                "max-width": "150px"
+            });
+            $(".col:eq(8)", $(this)).css({
                 "max-width": "100px"
             });
         })
@@ -307,8 +314,13 @@
         let time = $(".time", row).val();
         let type_time = $(".type_time", row).val();
         let based = $(".based", row).val();
-        let date_theory = moment(eval(based)).add(time, type_time);
-        $(".date_theory", row).val(date_theory.format("YYYY-MM-DD"));
+        if (based != "custom") {
+            $(".date_theory", row).prop("readonly", true);
+            let date_theory = moment(eval(based)).add(time, type_time);
+            $(".date_theory", row).val(date_theory.format("YYYY-MM-DD"));
+        } else {
+            $(".date_theory", row).prop("readonly", false);
+        }
     }
 </script>
 

@@ -62,6 +62,7 @@
         </div>
         <div class="col-4">
             <select class="form-control form-control-sm" name="based[]">
+                <option value="custom">Tùy chỉnh</option>
                 <option value="date_manufacture">So với ngày sản xuất</option>
                 <option value="date_storage">So với ngày lưu mẫu</option>
             </select>

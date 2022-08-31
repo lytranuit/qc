@@ -174,6 +174,7 @@
         </div>
         <div class="col">
             <select class="form-control form-control-sm based" name="based">
+                <option value="custom">Tùy chỉnh</option>
                 <option value="date_manufacture">So với ngày sản xuất</option>
                 <option value="date_storage">So với ngày lưu mẫu</option>
             </select>
@@ -368,14 +369,25 @@
         let time = $(".time", row).val();
         let type_time = $(".type_time", row).val();
         let based = $(".based", row).val();
-        let date_theory = moment(eval(based)).add(time, type_time);
-        $(".date_theory", row).val(date_theory.format("YYYY-MM-DD"));
+        if (based != "custom") {
+            $(".date_theory", row).prop("readonly", true);
+            let date_theory = moment(eval(based)).add(time, type_time);
+            $(".date_theory", row).val(date_theory.format("YYYY-MM-DD"));
+        } else {
+            $(".date_theory", row).prop("readonly", false);
+        }
     }
 
     function done(row) {
         let time = $(".date_reality", row).val();
         if (moment(time).isValid()) {
             $(".status", row).removeClass("d-none");
+        }
+        let based = $(".based", row).val();
+        if (based != "custom") {
+            $(".date_theory", row).prop("readonly", true);
+        } else {
+            $(".date_theory", row).prop("readonly", false);
         }
     }
 </script>
