@@ -69,6 +69,10 @@ class Export extends BaseController
                 // $sheet->getStyle("A$rows:N$rows")->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('858687');
                 $env_name = "";
                 $time_name = "";
+
+                $sample = $post->sample;
+                if (!isset($sample->name))
+                    continue;
                 switch ($post->type_id) {
                     case 1:
                         $env_name = "Lão hóa";
@@ -97,7 +101,6 @@ class Export extends BaseController
                         $time_name = $post->time . " Năm";
                         break;
                 }
-                $sample = $post->sample;
                 $sheet->setCellValueExplicit('A' . $rows, ++$key, \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING2);
                 $sheet->setCellValueExplicit('B' . $rows, $sample->outline_number, \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING2);
                 $sheet->setCellValueExplicit('C' . $rows, $sample->name, \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING2);
@@ -374,6 +377,8 @@ class Export extends BaseController
             foreach ($r as $post) {
 
                 $sample = $post[0]->sample;
+                if (!isset($sample->name))
+                    continue;
                 $sheet->setCellValueExplicit('A' . $rows, ++$key, \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING2);
                 $sheet->setCellValueExplicit('B' . $rows, $sample->outline_number, \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING2);
                 $sheet->setCellValueExplicit('C' . $rows, $sample->name, \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING2);
