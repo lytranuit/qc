@@ -669,6 +669,8 @@ class Export extends BaseController
             foreach ($r as $post) {
 
                 $sample = $post[0]->sample;
+                if (!isset($sample->name))
+                    continue;
                 $sheet->setCellValueExplicit('A' . $rows, ++$key, \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING2);
                 $sheet->setCellValueExplicit('B' . $rows, $sample->outline_number, \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING2);
                 $sheet->setCellValueExplicit('C' . $rows, $sample->name, \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING2);
