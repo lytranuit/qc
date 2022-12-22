@@ -863,6 +863,7 @@ class Import extends BaseController
     }
     public function edit211222()
     {
+        return;
         $SampleModel = model("SampleModel");
         $SampleTimeModel = model("SampleTimeModel");
         $db = db_connect();
