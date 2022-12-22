@@ -861,4 +861,51 @@ class Import extends BaseController
             }
         }
     }
+    public function edit211222()
+    {
+        $SampleModel = model("SampleModel");
+        $SampleTimeModel = model("SampleTimeModel");
+        $db = db_connect();
+        $query = $db->query("SELECT m1.*
+        FROM sample_time m1 LEFT JOIN sample_time m2
+         ON (m1.sample_id = m2.sample_id AND m1.type_id = m2.type_id AND m1.time < m2.time)
+        WHERE m2.id IS NULL AND m1.type_id IN(3,4) AND m1.date_reality IS NULL AND m1.date_theory > NOW()");
+        $results = $query->getResult();
+        foreach ($results as $row) {
+            $id = $row->id;
+            $based = $row->based;
+            $sample_id = $row->sample_id;
+            $time = $row->time;
+            $type_time = $row->type_time;
+            if ($row->based == 'custom')
+                continue;
+
+            $sample = $SampleModel->where(array('id' => $sample_id))->asObject()->first();
+            if (!$sample) {
+                continue;
+            }
+            // var_dump($sample);
+            // die();
+            if ($based == 'date_manufacture') {
+                $date = $sample->date_manufacture;
+            } elseif ($based == 'date_storage') {
+                $date = $sample->date_storage;
+            }
+            switch ($type_time) {
+                case "w":
+                    $type_time_text = "week";
+                    break;
+                case "d":
+                    $type_time_text = "days";
+                    break;
+                default:
+                    $type_time_text = "months";
+                    break;
+            }
+            $date_test = date("Y-m-d", strtotime($date . " +$time $type_time_text"));
+            $date_theory = date("Y-m-01", strtotime($date_test . " +1 months"));
+
+            $SampleTimeModel->update($id, array('based' => 'custom', 'date_theory' => $date_theory));
+        }
+    }
 }
