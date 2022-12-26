@@ -909,4 +909,154 @@ class Import extends BaseController
             $SampleTimeModel->update($id, array('based' => 'custom', 'date_theory' => $date_theory));
         }
     }
+    public function chungqca()
+    {
+        $db = db_connect();
+        // die();
+        //Đường dẫn file
+        $file = APPPATH . '../assets/up/DANH DACH MAU DOD THAY DOI THOI DIEM LAY MAU KET THUC-NON-24.12.xlsx';
+
+        /** Load $inputFileName to a Spreadsheet Object  **/
+        // $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($file);
+        // print_r($spreadsheet);
+        // die();
+        //Tiến hành xác thực file
+        $objFile = \PhpOffice\PhpSpreadsheet\IOFactory::identify($file);
+        $objData = \PhpOffice\PhpSpreadsheet\IOFactory::createReader($objFile);
+
+        //Chỉ đọc dữ liệu
+        // $objData->setReadDataOnly(true);
+        // Load dữ liệu sang dạng đối tượng
+        $objPHPExcel = $objData->load($file);
+        //Lấy ra số trang sử dụng phương thức getSheetCount();
+        // Lấy Ra tên trang sử dụng getSheetNames();
+        //Chọn trang cần truy xuất
+        // $sheet = $objPHPExcel->setActiveSheetIndex(0);
+
+        // //Lấy ra số dòng cuối cùng
+        // $Totalrow = $sheet->getHighestRow();
+        // //Lấy ra tên cột cuối cùng
+        // $LastColumn = $sheet->getHighestColumn();
+        // //Chuyển đổi tên cột đó về vị trí thứ, VD: C là 3,D là 4
+        // $TotalCol = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::columnIndexFromString($LastColumn);
+
+        //Tạo mảng chứa dữ liệu
+        $data = [];
+
+        $count_sheet = $objPHPExcel->getSheetCount();
+        // print_r($count_sheet);
+        // die();
+        for ($k = 0; $k < $count_sheet; $k++) {
+
+            $sheet = $objPHPExcel->setActiveSheetIndex($k);
+            $sheet_name = $sheet->getTitle();
+            // if (strpos($sheet_name, "#") == false) continue;
+            // print_r($sheet_name);die();
+            //Lấy ra số dòng cuối cùng
+            $Totalrow = $sheet->getHighestRow();
+            //Lấy ra tên cột cuối cùng
+            $LastColumn = $sheet->getHighestColumn();
+            //Chuyển đổi tên cột đó về vị trí thứ, VD: C là 3,D là 4
+            $TotalCol = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::columnIndexFromString($LastColumn);
+
+            //Tạo mảng chứa dữ liệu
+            $data = [];
+
+            //Tiến hành lặp qua từng ô dữ liệu
+            //----Lặp dòng, Vì dòng đầu là tiêu đề cột nên chúng ta sẽ lặp giá trị từ dòng 2
+            $row = 5;
+            for ($i = $row; $i <= $Totalrow; $i++) {
+                //----Lặp cột
+                for ($j = 0; $j < $TotalCol; $j++) {
+                    // Tiến hành lấy giá trị của từng ô đổ vào mảng
+                    $cell = $sheet->getCellByColumnAndRow($j, $i);
+
+                    $data[$i -  $row][$j] = $cell->getValue();
+                    ///CHUYEN RICH TEXT
+                    if ($data[$i -  $row][$j] instanceof \PhpOffice\PhpSpreadsheet\RichText\RichText) {
+                        $data[$i -  $row][$j] = $data[$i -  $row][$j]->getPlainText();
+                    }
+
+                    ////CHUYEN DATE 
+                    // if (\PhpOffice\PhpSpreadsheet\Shared\Date::isDateTime($cell) && $data[$i - 1][$j] > 0) {
+                    //     if (is_numeric($data[$i - 1][$j])) {
+                    //         $data[$i - 1][$j] =  $cell->getFormattedValue();
+                    //     }
+                    // }
+                }
+            }
+
+
+            // echo "<pre>";
+            // echo $sheet_name . "<br>";
+            // print_r($data);
+            // die();
+            $SampleModel = model("SampleModel");
+            $SampleTimeModel = model("SampleTimeModel");
+            // $SampleModel->where("factory_id", 2)->delete();
+            // $SampleTimeModel->where("factory_id", 2)->delete();
+            $prev_name = "";
+            $prev_code_batch = "";
+            $prev_env_name = "";
+            foreach ($data as $row) {
+
+                $name = $row[2];
+                if ($name == "") continue;
+                // $row[1] = trim($row[1]);
+                // $explode =  explode(".", $row[1]);
+                // if (count($explode) < 2) continue;
+
+                // $version = $row[2];
+                $stt = $row[1];
+                $outline_number = $row[6];
+                $code_research = $row[4];
+                $code = $row[5];
+                $code_batch = $row[3];
+                $code_analysis = null;
+                // if (is_numeric($row[12])) {
+                //     $date_manufacture = date("Y-m-d", \PhpOffice\PhpSpreadsheet\Shared\Date::excelToTimestamp($row[12]));
+                // } else {
+                //     $date_manufacture = NULL;
+                // }
+                // if (is_numeric($row[11])) {
+                //     $date_storage = date("Y-m-d", \PhpOffice\PhpSpreadsheet\Shared\Date::excelToTimestamp($row[11]));
+                // } else {
+                //     $date_storage = NULL;
+                // }
+                // $time_text = $row[15];
+
+                if (is_numeric($row[12])) {
+                    $date_theory = date("Y-m-d", \PhpOffice\PhpSpreadsheet\Shared\Date::excelToTimestamp($row[12]));
+                    $date_theory = date("Y-m-01", strtotime($date_theory . " +1 months"));
+                } else {
+                    $date_theory = NULL;
+                }
+
+                $sql = "SELECT a.id FROM `sample_time` AS a JOIN sample AS b ON a.`sample_id` = b.id WHERE b.deleted_at IS NULL AND a.name = '$code_batch' and b.code_research ='$code_research'";
+                if ($code != '') {
+                    $sql .= " AND b.code ='$code'";
+                }
+                if ($outline_number != '') {
+                    $sql .= " AND b.outline_number ='$outline_number'";
+                }
+                $query = $db->query($sql);
+                $results = $query->getResult();
+                if (count($results) != 1) {
+                    echo "$stt - $name - $code_batch - $code_research - $code - $outline_number ";
+                    echo "<br>";
+                    continue;
+                }
+                foreach ($results as $result) {
+                    $id_update = $result->id;
+                    $array = array(
+                        'date_theory' => $date_theory,
+                        'based' => "custom",
+                    );
+                    // print_r($array);
+
+                    $SampleTimeModel->update($id_update, $array);
+                }
+            }
+        }
+    }
 }

@@ -195,6 +195,10 @@ class Sample extends BaseController
             // echo "1";die();
         } else {
             $where->like("name", $search);
+            $where->orLike("code", $search);
+            $where->orLike("code_research", $search);
+            $where->orLike("outline_number", $search);
+            $where->orLike("code_batch", $search);
             $totalFiltered = $where->countAllResults(false);
         }
         if (isset($orders)) {
