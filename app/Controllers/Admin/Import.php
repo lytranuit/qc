@@ -1062,7 +1062,7 @@ class Import extends BaseController
     public function tramqcb230623()
     {
         // $db = db_connect();
-        die();
+        // die();
         //Đường dẫn file
         $file = APPPATH . '../assets/up/TONG THE_23.09.22.xlsx';
 
@@ -1096,6 +1096,11 @@ class Import extends BaseController
         $count_sheet = $objPHPExcel->getSheetCount();
         // print_r($count_sheet);
         // die();
+
+        $SampleModel = model("SampleModel");
+        $SampleTimeModel = model("SampleTimeModel");
+        $SampleModel->where("factory_id", 2)->delete();
+        $SampleTimeModel->where("factory_id", 2)->delete();
         for ($k = 0; $k < $count_sheet; $k++) {
 
             $sheet = $objPHPExcel->setActiveSheetIndex($k);
@@ -1142,10 +1147,6 @@ class Import extends BaseController
             // print_r($data);
             // die();
 
-            $SampleModel = model("SampleModel");
-            $SampleTimeModel = model("SampleTimeModel");
-            $SampleModel->where("factory_id", 2)->delete();
-            $SampleTimeModel->where("factory_id", 2)->delete();
             $prev_name = "";
             $prev_code_batch = "";
             $prev_env_name = "";
@@ -1181,11 +1182,10 @@ class Import extends BaseController
                     $date_theory = NULL;
                 }
 
-                // if (is_numeric($row[12])) {
-                //     $date_reality = date("Y-m-d", \PhpOffice\PhpSpreadsheet\Shared\Date::excelToTimestamp($row[12]));
-                // } else {
                 $date_reality = NULL;
-                // }
+                if ($date_theory <= date("Y-m-d")) {
+                    $date_reality = $date_theory;
+                }
                 $env_code = $row[12];
                 $env_name = trim($row[11]);
                 $note = $row[15];
