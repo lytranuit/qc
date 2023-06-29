@@ -1062,7 +1062,7 @@ class Import extends BaseController
     public function tramqcb230623()
     {
         // $db = db_connect();
-        // die();
+        die();
         //Đường dẫn file
         $file = APPPATH . '../assets/up/TONG THE_23.09.22.xlsx';
 
