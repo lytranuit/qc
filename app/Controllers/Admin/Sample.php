@@ -181,8 +181,7 @@ class Sample extends BaseController
         $orders = $this->request->getVar('order');
         $page = ($start / $limit) + 1;
         $where = $SampleModel->where("factory_id", session()->factory_id);
-        // echo "<pre>";
-        // print_r($where);
+
         $totalData = $where->countAllResults(false);
 
         //echo "<pre>";
@@ -194,11 +193,13 @@ class Sample extends BaseController
             // $where = $Document_model;
             // echo "1";die();
         } else {
+            $where->groupStart();
             $where->like("name", $search);
             $where->orLike("code", $search);
             $where->orLike("code_research", $search);
             $where->orLike("outline_number", $search);
             $where->orLike("code_batch", $search);
+            $where->groupEnd();
             $totalFiltered = $where->countAllResults(false);
         }
         if (isset($orders)) {
@@ -215,6 +216,9 @@ class Sample extends BaseController
                 }
             }
         }
+        // echo "<pre>";
+        // print_r($where->getCompiledSelect());
+        // die();
         // $where = $Document_model;
         $posts = $where->asObject()->orderby("id", "DESC")->paginate($limit, '', $page);
 
