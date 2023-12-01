@@ -24,9 +24,7 @@
                                 <div class="col-12 col-lg-4 pt-1">
                                     <select class="form-control form-control-sm type_id" name="type_id" required>
                                         <option value="1">Lão hóa</option>
-                                        <option value="2">Trung gian</option>
-                                        <option value="3">Dài hạn (ASEAN)</option>
-                                        <option value="4">Dài hạn (EU)</option>
+                                        <option value="3">Dài hạn</option>
                                     </select>
                                 </div>
                             </div>
