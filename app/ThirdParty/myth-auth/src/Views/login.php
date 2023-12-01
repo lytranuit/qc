@@ -152,20 +152,12 @@
                                     </ol>
                                     <div class="carousel-inner" role="listbox">
                                         <div class="carousel-item active">
-                                            <img class="d-block img-fluid" src="<?= base_url("assets/images/nhamay2.jpg") ?>" alt="First slide">
+                                            <img class="d-block img-fluid" src="<?= base_url("assets/images/z4695140180255_f4e4d09310a5dc09c8374286b0f1183c.jpg") ?>" alt="First slide">
                                             <div class="carousel-caption d-none d-md-block">
                                                 <div class="banner-text">
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="carousel-item">
-                                            <img class="d-block img-fluid" src="<?= base_url("assets/images/hinh-nha-may-hoang-van-thu.jpg") ?>" alt="First slide">
-                                            <div class="carousel-caption d-none d-md-block">
-                                                <div class="banner-text">
-                                                </div>
-                                            </div>
-                                        </div>
-
                                     </div>
 
                                 </div>
