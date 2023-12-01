@@ -72,7 +72,7 @@
                         </li>
                     </ul>
                 </li>
-                <?php if (in_groups(array("admin", "editor"))) : ?>
+                <?php if (in_groups(array("admin"))) : ?>
                     <li>
                         <a href="<?= base_url() ?>/admin/history" class="">
                             <i class="metismenu-icon fas fa-history"></i>
