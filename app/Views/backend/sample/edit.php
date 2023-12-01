@@ -60,6 +60,16 @@
                                     <input class="form-control form-control-sm" type='date' name="date_storage" required="" placeholder="Ngày lưu mẫu vào tủ" />
                                 </div>
                             </div>
+                            <div class="form-group row">
+                                <b class="col-12 col-lg-2 col-form-label">Tổng số:<i class="text-danger">*</i></b>
+                                <div class="col-12 col-lg-4 pt-1">
+                                    <input class="form-control form-control-sm" type='number' name="amount" required="" />
+                                </div>
+                                <b class="col-12 col-lg-2 col-form-label">Còn lại:<i class="text-danger">*</i></b>
+                                <div class="col-12 col-lg-4 pt-1">
+                                    <input class="form-control form-control-sm" type='number' name="remain" readonly/>
+                                </div>
+                            </div>
                         </div>
                         <div class="col-md-4">
                             <div class="row">
@@ -126,13 +136,13 @@
                             <b>So với</b>
                         </div>
                         <div class="col text-center">
+                            <b>Số lượng lấy mẫu</b>
+                        </div>
+                        <div class="col text-center">
                             <b>Ngày lấy mẫu lý thuyết</b>
                         </div>
                         <div class="col text-center">
                             <b>Ngày lấy mẫu thực tế</b>
-                        </div>
-                        <div class="col text-center">
-                            <b>Số lượng lấy mẫu</b>
                         </div>
                         <div class="col text-center">
                             <b>Ghi chú</b>
@@ -156,9 +166,7 @@
         <div class="col">
             <select class="form-control form-control-sm type_id" name="type_id">
                 <option value="1">Lão hóa</option>
-                <option value="2">Trung gian</option>
-                <option value="3">Dài hạn (ASEAN)</option>
-                <option value="4">Dài hạn (EU)</option>
+                <option value="3">Dài hạn</option>
             </select>
         </div>
         <div class="col">
@@ -180,13 +188,13 @@
             </select>
         </div>
         <div class="col">
+            <input type="number" name="num_get" class="form-control form-control-sm num_get">
+        </div>
+        <div class="col">
             <input type="date" name="date_theory" class="form-control form-control-sm date_theory" readonly placeholder="Ngày lấy mẫu lý thuyết">
         </div>
         <div class="col">
             <input type="date" name="date_reality" class="form-control form-control-sm date_reality" placeholder="Ngày lấy mẫu thực tế">
-        </div>
-        <div class="col">
-            <input type="number" name="num_get" class="form-control form-control-sm date_reality" placeholder="Sô lượng">
         </div>
         <div class="col">
             <textarea type="text" name="note" class="form-control form-control-sm note" rows="1" placeholder="Ghi chú" style="width:60%;display:inline-block;vertical-align: middle;"></textarea>
@@ -225,6 +233,7 @@
                 fillForm(row, item);
                 done(row);
             }
+            check_remain();
         }
         $(".add_time").click(function(e) {
             e.preventDefault();
@@ -271,10 +280,11 @@
             calculate_date(parent);
         });
 
-        $(document).on("change", ".date_reality", function(e) {
+        $(document).on("change", ".date_reality,.num_get", function(e) {
             e.preventDefault();
             let parent = $(this).closest(".item");
             done(parent);
+            check_remain();
         });
 
 
@@ -345,13 +355,13 @@
                 "max-width": "200px"
             });
             $(".col:eq(6)", $(this)).css({
-                "max-width": "150px"
+                "max-width": "100px"
             });
             $(".col:eq(7)", $(this)).css({
                 "max-width": "150px"
             });
             $(".col:eq(8)", $(this)).css({
-                "max-width": "100px"
+                "max-width": "150px"
             });
         })
     }
@@ -380,8 +390,10 @@
 
     function done(row) {
         let time = $(".date_reality", row).val();
+        // console.log($(".date_reality", row));
         if (moment(time).isValid()) {
             $(".status", row).removeClass("d-none");
+            $(row).addClass("done");
         }
         let based = $(".based", row).val();
         if (based != "custom") {
@@ -389,6 +401,21 @@
         } else {
             $(".date_theory", row).prop("readonly", false);
         }
+
+      
+    }
+    function check_remain(){
+        var tong = parseInt($("[name='amount']").val());
+        var num_get_tong = 0;
+        $(".num_get").map(function(item){
+            let parent = $(this).closest(".item");
+            if(!parent.hasClass("done"))
+                return;
+            var value = $(this).val() || 0;
+            num_get_tong += parseInt(value);
+        });
+        var remain = tong - num_get_tong;
+        $("[name='remain']").val(remain);
     }
 </script>
 
