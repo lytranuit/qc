@@ -56,7 +56,7 @@
                 <div class="float-right">
                     <i class="fa fa-print report-main-icon bg-icon-danger"></i>
                 </div>
-                <span class="badge badge-light text-purple">Mẫu quá hạn</span>
+                <span class="badge badge-light text-danger">Mẫu quá hạn</span>
                 <h3 class="my-3"><?= $num_sample_expire ?></h3>
             </div>
             <!--end card-body-->
@@ -102,7 +102,7 @@
     </div>
     <div class="col-md-6 pt-2 pt-md-0" id="sample">
         <div class="card card-fluid">
-            <div class="card-header">
+            <div class="card-header text-danger">
                 Quá ngày lấy mẫu
             </div>
             <div class="card-body">
