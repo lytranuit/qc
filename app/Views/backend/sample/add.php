@@ -64,8 +64,19 @@
                                 </div>
                                 <b class="col-12 col-lg-2 col-form-label">Còn lại:<i class="text-danger">*</i></b>
                                 <div class="col-12 col-lg-4 pt-1">
-                                    <input class="form-control form-control-sm" type='number' name="remain" readonly/>
+                                    <input class="form-control form-control-sm" type='number' name="remain" readonly />
                                 </div>
+                            </div>
+                            <div class="form-group row">
+                                <b class="col-12 col-lg-2 col-form-label">Thông báo cho:<i class="text-danger">*</i></b>
+                                <div class="col-12 col-lg-10 pt-1">
+                                    <select name="alerts[]" class="form-control form-control-sm chosen" multiple="">
+                                        <?php foreach ($users as $row) : ?>
+                                            <option value="<?= $row->Email ?>"><?= $row->FullName ?> (<?= $row->Email ?>)</option>
+                                        <?php endforeach ?>
+                                    </select>
+                                </div>
+
                             </div>
                         </div>
                         <div class="col-md-4">
@@ -191,7 +202,9 @@
 
 
 <!-- Style --->
-<?= $this->section("style") ?>
+<?= $this->section('style') ?>
+
+<link rel="stylesheet" href="<?= base_url("assets/lib/chosen/chosen.min.css") ?>" ?>
 <?= $this->endSection() ?>
 
 <!-- Script --->
@@ -199,9 +212,11 @@
 
 <script src="<?= base_url("assets/lib/mustache/mustache.min.js") ?>"></script>
 <script src="<?= base_url("assets/lib/moment/js/moment.js") ?>"></script>
+<script src="<?= base_url("assets/lib/chosen/chosen.jquery.js") ?>"></script>
 <script type='text/javascript'>
     var controller = '<?= $controller ?>';
     $(document).ready(function() {
+        $(".chosen").chosen();
         $(".add_time").click(function(e) {
             e.preventDefault();
             add_time();
@@ -337,7 +352,7 @@
             $(".date_theory", row).prop("readonly", false);
         }
     }
-    
+
     function done(row) {
         let time = $(".date_reality", row).val();
         // console.log($(".date_reality", row));
@@ -352,14 +367,15 @@
             $(".date_theory", row).prop("readonly", false);
         }
 
-      
+
     }
-    function check_remain(){
+
+    function check_remain() {
         var tong = parseInt($("[name='amount']").val());
         var num_get_tong = 0;
-        $(".num_get").map(function(item){
+        $(".num_get").map(function(item) {
             let parent = $(this).closest(".item");
-            if(!parent.hasClass("done"))
+            if (!parent.hasClass("done"))
                 return;
             var value = $(this).val() || 0;
             num_get_tong += parseInt(value);

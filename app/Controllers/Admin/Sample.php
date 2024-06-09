@@ -23,6 +23,8 @@ class Sample extends BaseController
             $SampleTimeModel = model("SampleTimeModel");
 
             $data = $this->request->getPost();
+
+            $data["emails"] = isset($data["alerts"]) && count($data["alerts"]) > 0 ? implode(',', $data["alerts"]) : '';
             $factory_id = session()->factory_id;
             $data['factory_id'] = $factory_id;
             $obj = $SampleModel->create_object($data);
@@ -55,6 +57,7 @@ class Sample extends BaseController
             //load_editor($this->data);
 
             $EnvModel = model("EnvModel");
+            $UserSQLModel = model("UserSQLModel");
             $envs = $EnvModel->asObject()->findAll();
             $EnvModel->relation($envs, array("time"));
 
@@ -64,6 +67,12 @@ class Sample extends BaseController
             $location = $LocationModel->where("factory_id", session()->factory_id)->asObject()->findAll();
 
             $this->data['location'] = $location;
+
+
+            $this->data['users'] = $UserSQLModel->where("deleted_at", null)->select(['Id', 'Email', 'FullName'])->asObject()->findAll();
+            // echo "<pre>";
+            // print_r($users);
+            // die();
             return view($this->data['content'], $this->data);
         }
     }
@@ -75,7 +84,10 @@ class Sample extends BaseController
             $SampleModel = model("SampleModel");
             $SampleTimeModel = model("SampleTimeModel");
             $data = $this->request->getPost();
-
+            $data["emails"] = isset($data["alerts"]) && count($data["alerts"]) > 0 ? implode(',', $data["alerts"]) : '';
+            // echo "<pre>";
+            // print_r($data);
+            // die();
             $obj_old = $SampleModel->where(array('id' => $id))->asArray()->first();
             $obj = $SampleModel->create_object($data);
             // print_r($obj);die();
@@ -141,12 +153,15 @@ class Sample extends BaseController
         } else {
             $SampleModel = model("SampleModel");
             $EnvModel = model("EnvModel");
+            $UserSQLModel = model("UserSQLModel");
             $tin = $SampleModel->where(array('id' => $id))->asObject()->first();
 
             $SampleModel->relation($tin, array("time"));
             $this->data['tin'] = $tin;
 
-
+            // echo "<pre>";
+            // print_r($tin);
+            // die();
 
             $envs = $EnvModel->asObject()->findAll();
             $EnvModel->relation($envs, array("time"));
@@ -158,6 +173,8 @@ class Sample extends BaseController
             $location = $LocationModel->where("factory_id", session()->factory_id)->asObject()->findAll();
 
             $this->data['location'] = $location;
+
+            $this->data['users'] = $UserSQLModel->where("deleted_at", null)->select(['Id', 'Email', 'FullName'])->asObject()->findAll();
             return view($this->data['content'], $this->data);
         }
     }

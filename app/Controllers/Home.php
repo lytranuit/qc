@@ -2,130 +2,61 @@
 
 namespace App\Controllers;
 
+use CodeIgniter\Controller;
 
-class Home extends BaseController
+class Home extends Controller
 {
     public function index()
     {
+        // echo 1;
+        // die();
         return redirect()->to(base_url('admin'));
     }
 
-    function cron()
+    public function cron()
     {
 
-        $document_model = model("DocumentModel");
-        $option_model = model("OptionModel");
+        $SampleTimeModel = model("SampleTimeModel");
+        $EmailSQLModel = model("EmailSQLModel");
+        $query = $SampleTimeModel->where([
+            'date_reality' => null,
+            "date_theory >=" => date("Y-m-d"),
+            "date_theory <=" => date("Y-m-d", strtotime("+1 day"))
+        ]);
+        // $sql = $query->builder();
+        // echo 1;
+        // echo "<pre>";
+        // print_r($sql->getCompiledSelect());
+        // die();
+        $data = $query->asObject()->findAll();
 
-        $mail_review = $option_model->get_options_group("mail_review");
-        if ($mail_review['is_send']) {
-            $before_send = $mail_review['before_send'];
-            $where = $document_model->where("date_review !=", "0000-00-00")->where("date_review <", date("Y-m-d", strtotime("+$before_send day")));
-            if ($mail_review['type_send'] == 1)
-                $where->where("time_send_review", NULL);
-            $documents = $where->orderby("date_review", "DESC")->findAll();
-            // echo "<pre>";
-            // print_r($documents);
-            // die();
-            if (!empty($documents)) {
-                $email = \Config\Services::email();
-                // echo "<pre>";
-                // print_r($email);
-                // die();
-                // $config['protocol'] = 'sendmail';
-                // $config['mailPath'] = '/usr/sbin/sendmail';
-                // $config['charset']  = 'iso-8859-1';
-                // $config['wordWrap'] = true;
-
-                // $email->initialize($config);
-
-
-                $email->setFrom('lytranuit@gmail.com', "PYMEPHARCO SENDER");
-                $email->setTo(explode(",", $mail_review['email_to']));
-                // $email->setCC('another@another-example.com');
-                // $email->setBCC('them@their-example.com');
-
-                $data['documents'] = $documents;
-                $message = view("backend/template/review", $data);
-                // echo $message;die();
-                $email->setSubject($mail_review['email_subject']);
-                $email->setMessage($message);
-                // echo "<pre>";
-                // print_r($email);
-                // die();
-                if (!$email->send()) {
-                    // Will only print the email headers, excluding the message subject and body
-                    echo $email->printDebugger();
-                    file_put_contents(FCPATH . "writable/logs/email_review_error_" . time() . ".txt", $email->printDebugger());
-                } else {
-                    $ids = array_map(function ($item) {
-                        return $item->id;
-                    }, $documents);
-                    $document_model->update($ids, array('time_send_review' => date("Y-m-d H:i:s")));
-                    $content = implode(",", $ids) . "\r\n";
-                    $content .= $mail_review['email_to'];
-
-                    $dir = FCPATH . "writable/logs/" . date("Y-m-d");
-                    if (!is_dir($dir))
-                        mkdir($dir, 0777, true);
-                    file_put_contents($dir . "/email_review_" . time() . ".txt", $content);
-                }
+        $SampleTimeModel->relation($data, ["sample"]);
+        // echo "<pre>";
+        // print_r($data);
+        // die();
+        foreach ($data as $row) {
+            if (!isset($row->sample->emails) || $row->sample->emails == "") {
+                continue;
             }
-        }
-
-        $mail_expire = $option_model->get_options_group("mail_expire");
-        if ($mail_expire['is_send']) {
-            $before_send = $mail_expire['before_send'];
-            $where = $document_model->where("date_expire !=", "0000-00-00")->where("date_expire <", date("Y-m-d", strtotime("+$before_send day")));
-            if ($mail_expire['type_send'] == 1)
-                $where->where("time_send_expire", NULL);
-            $documents = $where->orderby("date_expire", "DESC")->findAll();
+            $data1['data'] = $row;
+            $data1['link'] = site_url("/admin/sample/edit/" . $row->sample->id);
             // echo "<pre>";
-            // print_r($documents);
+            // print_r($data1);
             // die();
-            if (!empty($documents)) {
-                $email = \Config\Services::email();
-                // echo "<pre>";
-                // print_r($email);
-                // die();
-                // $config['protocol'] = 'sendmail';
-                // $config['mailPath'] = '/usr/sbin/sendmail';
-                // $config['charset']  = 'iso-8859-1';
-                // $config['wordWrap'] = true;
-
-                // $email->initialize($config);
-
-
-                $email->setFrom('lytranuit@gmail.com', "PYMEPHARCO SENDER");
-                $email->setTo(explode(",", $mail_expire['email_to']));
-                // $email->setCC('another@another-example.com');
-                // $email->setBCC('them@their-example.com');
-
-                $data['documents'] = $documents;
-                $message = view("backend/template/expire", $data);
-                // echo $message;die();
-                $email->setSubject($mail_expire['email_subject']);
-                $email->setMessage($message);
-                // echo "<pre>";
-                // print_r($email);
-                // die();
-                if (!$email->send()) {
-                    // Will only print the email headers, excluding the message subject and body
-                    echo $email->printDebugger();
-                    file_put_contents(FCPATH . "writable/logs/email_expire_error_" . time() . ".txt", $email->printDebugger());
-                } else {
-                    $ids = array_map(function ($item) {
-                        return $item->id;
-                    }, $documents);
-                    $document_model->update($ids, array('time_send_expire' => date("Y-m-d H:i:s")));
-
-                    $content = implode(",", $ids) . "\r\n";
-                    $content .= $mail_expire['email_to'];
-                    $dir = FCPATH . "writable/logs/" . date("Y-m-d");
-                    if (!is_dir($dir))
-                        mkdir($dir, 0777, true);
-                    file_put_contents($dir . "/email_expire_" . time() . ".txt", $content);
-                }
-            }
+            $message = view("backend/template/DueSampleTime", $data1);
+            echo "<pre>";
+            print_r($message);
+            die();
+            $id = $EmailSQLModel->insert(
+                [
+                    "email_to" => $row->sample->emails,
+                    "subject" => "[Nhắc nhở] Lấy mẫu thời gian độ ổn định.",
+                    "body" => $message,
+                    "email_type" => "DueSampleTime",
+                    "status" => 1
+                ]
+            );
         }
+        // ((d.date_theory >= timecheck && d.date_theory <= timecheck1) || d.date_theory == timecheck5));
     }
 }
