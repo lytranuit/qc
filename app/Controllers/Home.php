@@ -57,6 +57,9 @@ class Home extends Controller
                 ]
             );
         }
+        echo "<pre>";
+        print_r($data);
+        die();
         // ((d.date_theory >= timecheck && d.date_theory <= timecheck1) || d.date_theory == timecheck5));
     }
 }
