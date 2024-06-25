@@ -44,9 +44,9 @@ class Home extends Controller
             // print_r($data1);
             // die();
             $message = view("backend/template/DueSampleTime", $data1);
-            echo "<pre>";
-            print_r($message);
-            die();
+            // echo "<pre>";
+            // print_r($message);
+            // die();
             $id = $EmailSQLModel->insert(
                 [
                     "email_to" => $row->sample->emails,
