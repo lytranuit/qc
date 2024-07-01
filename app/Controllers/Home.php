@@ -56,6 +56,10 @@ class Home extends Controller
                     "status" => 1
                 ]
             );
+            echo $id;
+            echo "<br>";
+            // print_r($message);
+            // die();
         }
         echo "<pre>";
         print_r($data);
