@@ -86,6 +86,24 @@ class Home extends BaseController
         $data = array();
         if (!empty($posts)) {
             foreach ($posts as $post) {
+                $env_name = "";
+                switch ($post->type_id) {
+                    case 1:
+                        $env_name = "Lão hóa";
+                        break;
+                    case 2:
+                        $env_name = "Trung gian";
+                        break;
+                    case 3:
+                        $env_name = "Dài hạn (Vùng IV)";
+                        break;
+                    case 4:
+                        $env_name = "Dài hạn (Vùng III)";
+                        break;
+                    case 5:
+                        $env_name = "Dài hạn (Vùng I và II)";
+                        break;
+                }
                 $nestedData['id'] =  '<a href="' . base_url("admin/sample/edit/" . $post->sample_id) . '"><i class="fas fa-pencil-alt mr-2"></i>' . $post->sample_id . '</a>';
                 $nestedData['name'] = '<a href="' . base_url("admin/sample/edit/" . $post->sample_id) . '">' . $post->name_sample . '</a>';
                 $nestedData['code'] = $post->code;
@@ -96,7 +114,7 @@ class Home extends BaseController
                 $nestedData['date_manufacture'] = $post->date_manufacture;
                 $nestedData['date_storage'] = $post->date_storage;
                 $nestedData['date_theory'] = date("d/m/Y", strtotime($post->date_theory));
-                $nestedData['env'] = $post->name;
+                $nestedData['env'] = $env_name;
                 $nestedData['time'] = $post->time . " " . ($post->type_time == "M" ? "Tháng" : ($post->type_time == "d" ? "Ngày" : ($post->type_time == "w" ? "Tuần" : ($post->type_time == "y" ? "Năm" : ""))));
                 $data[] = $nestedData;
             }
@@ -121,7 +139,7 @@ class Home extends BaseController
         $page = ($start / $limit) + 1;
         $where = $SampleModel->join("sample_time", "sample.id = sample_time.sample_id")->select("*,sample.name as name_sample");
         $where = $where->where("(date_reality IS NULL OR date_reality = '0000-00-00') AND date_theory < CURDATE()");
-        
+
         $where = $where->where("sample_time.factory_id", session()->factory_id);
         // echo "<pre>";
         // print_r($rows);
@@ -163,6 +181,24 @@ class Home extends BaseController
         $data = array();
         if (!empty($posts)) {
             foreach ($posts as $post) {
+                $env_name = "";
+                switch ($post->type_id) {
+                    case 1:
+                        $env_name = "Lão hóa";
+                        break;
+                    case 2:
+                        $env_name = "Trung gian";
+                        break;
+                    case 3:
+                        $env_name = "Dài hạn (Vùng IV)";
+                        break;
+                    case 4:
+                        $env_name = "Dài hạn (Vùng III)";
+                        break;
+                    case 5:
+                        $env_name = "Dài hạn (Vùng I và II)";
+                        break;
+                }
                 $nestedData['id'] =  '<a href="' . base_url("admin/sample/edit/" . $post->sample_id) . '"><i class="fas fa-pencil-alt mr-2"></i>' . $post->sample_id . '</a>';
                 $nestedData['name'] = '<a href="' . base_url("admin/sample/edit/" . $post->sample_id) . '">' . $post->name_sample . '</a>';
                 $nestedData['code'] = $post->code;
@@ -173,7 +209,7 @@ class Home extends BaseController
                 $nestedData['date_manufacture'] = $post->date_manufacture;
                 $nestedData['date_storage'] = $post->date_storage;
                 $nestedData['date_theory'] = date("d/m/Y", strtotime($post->date_theory));
-                $nestedData['env'] = $post->name;
+                $nestedData['env'] = $env_name;
                 $nestedData['time'] = $post->time . " " . ($post->type_time == "M" ? "Tháng" : ($post->type_time == "d" ? "Ngày" : ($post->type_time == "w" ? "Tuần" : ($post->type_time == "y" ? "Năm" : ""))));
                 $data[] = $nestedData;
             }

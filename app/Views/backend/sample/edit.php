@@ -177,10 +177,10 @@
         <div class="col">
             <select class="form-control form-control-sm type_id" name="type_id">
                 <option value="1">Lão hóa</option>
-                <option value="2">Trung hạn</option>
+                <option value="2">Trung gian</option>
                 <option value="3">Dài hạn (Vùng IV)</option>
                 <option value="4">Dài hạn (Vùng II)</option>
-                <option value="5">Dài hạn (Vùng I)</option>
+                <option value="5">Dài hạn (Vùng I và II)</option>
             </select>
         </div>
         <div class="col">
