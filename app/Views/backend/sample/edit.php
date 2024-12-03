@@ -156,7 +156,7 @@
                             <b>Ngày lấy mẫu thực tế</b>
                         </div>
                         <div class="col text-center">
-                            <b>Ghi chú</b>
+                            <b>Chỉ tiêu</b>
                         </div>
                     </div>
                 </div>
@@ -177,7 +177,10 @@
         <div class="col">
             <select class="form-control form-control-sm type_id" name="type_id">
                 <option value="1">Lão hóa</option>
-                <option value="3">Dài hạn</option>
+                <option value="2">Trung hạn</option>
+                <option value="3">Dài hạn(Vùng IV)</option>
+                <option value="4">Dài hạn(Vùng II)</option>
+                <option value="5">Dài hạn(Vùng I)</option>
             </select>
         </div>
         <div class="col">
@@ -208,7 +211,7 @@
             <input type="date" name="date_reality" class="form-control form-control-sm date_reality" placeholder="Ngày lấy mẫu thực tế">
         </div>
         <div class="col">
-            <textarea type="text" name="note" class="form-control form-control-sm note" rows="1" placeholder="Ghi chú" style="width:60%;display:inline-block;vertical-align: middle;"></textarea>
+            <textarea type="text" name="note" class="form-control form-control-sm note" rows="1" placeholder="Chỉ tiêu" style="width:60%;display:inline-block;vertical-align: middle;"></textarea>
             <button class="btn btn-sm btn-danger remove_time d-inline-block"><i class="fas fa-trash-alt"></i> Xóa</button>
             <span class="btn btn-success rounded-circle btn-icon ml-2 status d-none">
                 <i class="fas fa-check"></i>

@@ -42,7 +42,7 @@ class Export extends BaseController
         // echo "<pre>";
         // print_r($posts);
         // die();
-        $file = APPPATH . '../assets/template/month.xlsx';
+        $file = APPPATH . '../assets/template/month_1.xlsx';
         $inputFileType = \PhpOffice\PhpSpreadsheet\IOFactory::identify($file);
         /**  Create a new Reader of the type defined in $inputFileType  **/
         $reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReader($inputFileType);
@@ -53,16 +53,16 @@ class Export extends BaseController
         $spreadsheet = $reader->load($file);
         $sheet = $spreadsheet->getActiveSheet();
         $objRichText2 = new \PhpOffice\PhpSpreadsheet\RichText\RichText();
-        $objRichText2->createText("KẾ HOẠCH NGHIÊN CỨU ĐỘ ỔN ĐỊNH HÀNG THÁNG - " . $month . "/" . $year . "\n");
-        $payable = $objRichText2->createTextRun("MONTHLY PLANNING FOR STABILITY STUDY - " . $month . "/" . $year . "");
+        $objRichText2->createText("KẾ HOẠCH NGHIÊN CỨU ĐỘ ỔN ĐỊNH HÀNG THÁNG - [" . $month . "/" . $year . "]\n");
+        $payable = $objRichText2->createTextRun("MONTHLY PLANNING FOR STABILITY STUDY - [" . $month . "/" . $year . "]");
         $payable->getFont()->setItalic(true);
-        $payable->getFont()->setBold(true);
-        $payable->getFont()->setName("Arial");
-        $payable->getFont()->setSize("14");
-        $sheet->getCell("A2")->setValue($objRichText2);
+        $payable->getFont()->setBold(false);
+        $payable->getFont()->setName("Times New Roman");
+        $payable->getFont()->setSize("12");
+        $sheet->getCell("C1")->setValue($objRichText2);
 
         if (!empty($posts)) {
-            $rows = 6;
+            $rows = 5;
             $key = 0;
             $sheet->insertNewRowBefore($rows + 1, count($posts));
             foreach ($posts as $post) {
@@ -75,23 +75,26 @@ class Export extends BaseController
                     continue;
                 switch ($post->type_id) {
                     case 1:
-                        $env_name = "Lão hóa";
+                        $env_name = "40°C ± 2°C / 75% ± 5% RH";
                         break;
                     case 2:
-                        $env_name = "Trung gian";
+                        $env_name = "30°C ± 2°C / 65% ± 5% RH";
                         break;
                     case 3:
-                        $env_name = "Dài hạn(ASEAN)";
+                        $env_name = "30°C ± 2°C / 75% ± 5% RH";
                         break;
                     case 4:
-                        $env_name = "Dài hạn(EU)";
+                        $env_name = "30°C ± 2°C / 65% ± 5% RH";
+                        break;
+                    case 5:
+                        $env_name = "25°C ± 2°C / 60% ± 5% RH";
                         break;
                 }
                 switch ($post->type_time) {
                     case "M":
-                        $time_name = $post->time . " Tháng";
+                        $time_name = $post->time;
                         break;
-                    case "ư":
+                    case "w":
                         $time_name = $post->time . " Tuần";
                         break;
                     case "d":
@@ -101,24 +104,35 @@ class Export extends BaseController
                         $time_name = $post->time . " Năm";
                         break;
                 }
+                $weeks = $this->convertToWeeks($post->time, $post->type_time);
+                $chechlech = "<7";
+                if ($weeks > 4 && $weeks < 6) {
+                    $chechlech = 7;
+                } elseif ($weeks > 6 && $weeks < 39) {
+                    $chechlech = 14;
+                } elseif ($weeks > 39) {
+                    $chechlech = 28;
+                }
+
                 $sheet->setCellValueExplicit('A' . $rows, ++$key, \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING2);
-                $sheet->setCellValueExplicit('B' . $rows, $sample->outline_number, \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING2);
-                $sheet->setCellValueExplicit('C' . $rows, $sample->name, \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING2);
+                $sheet->setCellValueExplicit('B' . $rows, $sample->name, \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING2);
+                $sheet->setCellValueExplicit('C' . $rows, $sample->code_batch, \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING2);
                 $sheet->setCellValueExplicit('D' . $rows, $sample->code, \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING2);
-                $sheet->setCellValueExplicit('E' . $rows, $sample->code_batch, \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING2);
+                $sheet->setCellValueExplicit('E' . $rows, $sample->outline_number, \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING2);
                 $sheet->setCellValue('F' . $rows, $sample->date_storage != "" ? \PhpOffice\PhpSpreadsheet\Shared\Date::PHPToExcel($sample->date_storage) : "");
 
                 $sheet->setCellValue('G' . $rows, $env_name);
                 $sheet->setCellValue('H' . $rows, $time_name);
                 $sheet->setCellValue('I' . $rows, $post->date_theory != "" ? \PhpOffice\PhpSpreadsheet\Shared\Date::PHPToExcel($post->date_theory) : "");
-                $sheet->setCellValue('J' . $rows, $post->date_reality != "" ? \PhpOffice\PhpSpreadsheet\Shared\Date::PHPToExcel($post->date_reality) : "");
+                $sheet->setCellValue('K' . $rows, $chechlech);
+                $sheet->setCellValue('K' . $rows, $post->date_reality != "" ? \PhpOffice\PhpSpreadsheet\Shared\Date::PHPToExcel($post->date_reality) : "");
 
-                $sheet->setCellValue('K' . $rows, $post->note);
-                $sheet->setCellValue('M' . $rows, $post->name);
+                $sheet->setCellValue('L' . $rows, $post->note);
+                $sheet->setCellValue('M' . $rows, "NA");
                 $note = "";
 
                 $sheet->getStyle('I' . $rows)->getNumberFormat()->setFormatCode("dd/mm/yyyy");
-                $sheet->getStyle('J' . $rows)->getNumberFormat()->setFormatCode("dd/mm/yyyy");
+                $sheet->getStyle('K' . $rows)->getNumberFormat()->setFormatCode("dd/mm/yyyy");
                 $sheet->getStyle('F' . $rows)->getNumberFormat()->setFormatCode("dd/mm/yyyy");
 
                 $sheet->getRowDimension($rows)->setRowHeight(-1);
@@ -750,5 +764,31 @@ class Export extends BaseController
             array_push($accumulator[$key], $item);
             return $accumulator;
         }, []);
+    }
+    function convertToWeeks($n, $type)
+    {
+        // Quy đổi về số ngày từ loại đơn vị
+        switch ($type) {
+            case 'w': // Tuần
+                $days = $n * 7;
+                break;
+            case 'M': // Tháng
+                $days = $n * 30.44; // Trung bình 1 tháng có 30.44 ngày
+                break;
+            case 'y': // Năm
+                $days = $n * 365.25; // Trung bình 1 năm có 365.25 ngày (tính cả năm nhuận)
+                break;
+            case 'd': // Ngày
+                $days = $n;
+                break;
+            default:
+                $days = $n;
+                break;
+        }
+
+        // Chuyển đổi từ ngày sang tuần
+        $weeks = $days / 7;
+
+        return $weeks;
     }
 }
