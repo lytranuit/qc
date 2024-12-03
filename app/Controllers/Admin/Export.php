@@ -124,7 +124,7 @@ class Export extends BaseController
                 $sheet->setCellValue('G' . $rows, $env_name);
                 $sheet->setCellValue('H' . $rows, $time_name);
                 $sheet->setCellValue('I' . $rows, $post->date_theory != "" ? \PhpOffice\PhpSpreadsheet\Shared\Date::PHPToExcel($post->date_theory) : "");
-                $sheet->setCellValue('K' . $rows, $chechlech);
+                $sheet->setCellValue('J' . $rows, $chechlech);
                 $sheet->setCellValue('K' . $rows, $post->date_reality != "" ? \PhpOffice\PhpSpreadsheet\Shared\Date::PHPToExcel($post->date_reality) : "");
 
                 $sheet->setCellValue('L' . $rows, $post->note);
