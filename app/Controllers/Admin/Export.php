@@ -42,12 +42,17 @@ class Export extends BaseController
         // echo "<pre>";
         // print_r($posts);
         // die();
-        usort($posts, function($a, $b) {
+        usort($posts, function ($a, $b) {
             // So sánh theo date_theory trước
             $dateComparison = strcmp($a->date_theory, $b->date_theory);
             if ($dateComparison === 0) {
                 // Nếu date_theory giống nhau, so sánh theo sample->code
-                return strcmp($a->sample->code, $b->sample->code);
+                $codeComparison = strcmp($a->sample->code, $b->sample->code);
+                if ($codeComparison === 0) {
+                    // Nếu sample->code giống nhau, so sánh theo sample->code_batch
+                    return strcmp($a->sample->code_batch, $b->sample->code_batch);
+                }
+                return $codeComparison;
             }
             return $dateComparison;
         });
