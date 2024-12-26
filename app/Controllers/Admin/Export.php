@@ -39,9 +39,18 @@ class Export extends BaseController
 
         $posts = $where->orderby("date_theory", "ASC")->asObject()->findAll();
         $SampleTimeModel->relation($posts, array("sample"));
-        echo "<pre>";
-        print_r($posts);
-        die();
+        // echo "<pre>";
+        // print_r($posts);
+        // die();
+        usort($posts, function($a, $b) {
+            // So sánh theo date_theory trước
+            $dateComparison = strcmp($a->date_theory, $b->date_theory);
+            if ($dateComparison === 0) {
+                // Nếu date_theory giống nhau, so sánh theo sample->code
+                return strcmp($a->sample->code, $b->sample->code);
+            }
+            return $dateComparison;
+        });
         $file = APPPATH . '../assets/template/month_1.xlsx';
         $inputFileType = \PhpOffice\PhpSpreadsheet\IOFactory::identify($file);
         /**  Create a new Reader of the type defined in $inputFileType  **/
