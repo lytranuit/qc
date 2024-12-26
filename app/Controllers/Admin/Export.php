@@ -37,11 +37,11 @@ class Export extends BaseController
         $where = $SampleTimeModel->where("factory_id", session()->factory_id)->where("MONTH(date_theory)", $month)->where("YEAR(date_theory)", $year);
 
 
-        $posts = $where->orderby("date_theory", "ASC")->orderBy("code", "ASC")->asObject()->findAll();
+        $posts = $where->orderby("date_theory", "ASC")->asObject()->findAll();
         $SampleTimeModel->relation($posts, array("sample"));
-        // echo "<pre>";
-        // print_r($posts);
-        // die();
+        echo "<pre>";
+        print_r($posts);
+        die();
         $file = APPPATH . '../assets/template/month_1.xlsx';
         $inputFileType = \PhpOffice\PhpSpreadsheet\IOFactory::identify($file);
         /**  Create a new Reader of the type defined in $inputFileType  **/
