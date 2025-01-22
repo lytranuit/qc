@@ -50,7 +50,12 @@ class Export extends BaseController
                 $codeComparison = strcmp($a->sample->code, $b->sample->code);
                 if ($codeComparison === 0) {
                     // Nếu sample->code giống nhau, so sánh theo sample->code_batch
-                    return strcmp($a->sample->code_batch, $b->sample->code_batch);
+                    $codeBatchComparison = strcmp($a->sample->code_batch, $b->sample->code_batch);
+                    if ($codeBatchComparison === 0) {
+                        // Nếu sample->code_batch giống nhau, so sánh theo type_id
+                        return strcmp($a->type_id, $b->type_id);
+                    }
+                    return $codeBatchComparison;
                 }
                 return $codeComparison;
             }
