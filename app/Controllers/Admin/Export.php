@@ -127,9 +127,9 @@ class Export extends BaseController
                 $chechlech = "<7";
                 if ($weeks > 4 && $weeks < 6) {
                     $chechlech = 7;
-                } elseif ($weeks > 6 && $weeks < 39) {
+                } elseif ($weeks > 6 && $weeks < 40) {
                     $chechlech = 14;
-                } elseif ($weeks > 39) {
+                } elseif ($weeks > 40) {
                     $chechlech = 28;
                 }
 
