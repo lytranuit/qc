@@ -196,19 +196,7 @@ class Export extends BaseController
         // echo "<pre>";
         // print_r($r);
         // die();
-        $data_type = array();
-        foreach ($posts as $post) {
-            if (!array_key_exists($post->type_id, $data_type)) {
-                $data_type[$post->type_id] = array();
-            }
-            if (!array_key_exists($post->time . "-" . $post->type_time,  $data_type[$post->type_id])) {
-                $data_type[$post->type_id][$post->time . "-" . $post->type_time] = 0;
-            }
-            $data_type[$post->type_id][$post->time . "-" . $post->type_time]++;
-        }
-        // echo "<pre>";
-        // print_r($data_type);
-        // die();
+
         $file = APPPATH . '../assets/template/year2.xlsx';
         $inputFileType = \PhpOffice\PhpSpreadsheet\IOFactory::identify($file);
         /**  Create a new Reader of the type defined in $inputFileType  **/
@@ -227,20 +215,38 @@ class Export extends BaseController
         $payable->getFont()->setName("Times New Roman");
         $payable->getFont()->setSize("12");
         $sheet->getCell("C1")->setValue($objRichText2);
+
+
+        $data_type = array();
+        foreach ($posts as $post) {
+            if (!array_key_exists($post->type_id, $data_type)) {
+                $data_type[$post->type_id] = 0;
+            }
+            $data_type[$post->type_id]++;
+            // if (!array_key_exists($post->time . "-" . $post->type_time,  $data_type[$post->type_id])) {
+            //     $data_type[$post->type_id][$post->time . "-" . $post->type_time] = 0;
+            // }
+            // $data_type[$post->type_id][$post->time . "-" . $post->type_time]++;
+        }
+        // echo "<pre>";
+        // print_r($data_type);
+        // die();
         ///HEADER
         $column = 6;
         foreach ($data_type as $key => $type) {
-            $max = count($type);
+            // $max = count($type);
             // echo $max . "<br>";
             $column_name = Coordinate::stringFromColumnIndex($column);
             // echo $column_name . "<br>";
-            $num_column = $max * 4;
+            $num_column = 5;
             // echo $column_name_end . "<br>";
             $sheet->insertNewColumnBefore($column_name, $num_column);
 
 
             $column_name_end = Coordinate::stringFromColumnIndex($column + $num_column - 1);
             $sheet->mergeCells($column_name . "4:" . $column_name_end . "4");
+
+
             switch ($key) {
                 case 1:
                     $objRichText2 = new \PhpOffice\PhpSpreadsheet\RichText\RichText();
@@ -307,96 +313,78 @@ class Export extends BaseController
             }
 
             $start_column = $column;
-            foreach ($type as $key1 => $t) {
-                $explode = explode("-", $key1);
-                $time = $explode[0];
-                $type_time = $explode[1];
-                switch ($type_time) {
-                    case "M":
-                        $time_name = $time . " Tháng";
-                        $time_name_en = $time . " Months";
-                        break;
-                    case "w":
-                        $time_name = $time . " Tuần";
-                        $time_name_en = $time . " Weeks";
-                        break;
-                    case "d":
-                        $time_name = $time . " Ngày";
-                        $time_name_en = $time . " Days";
-                        break;
-                    case "y":
-                        $time_name = $time . " Năm";
-                        $time_name_en = $time . " Years";
-                        break;
-                }
-                $data_type[$key][$key1] = $start_column;
-                $column_name_1 = Coordinate::stringFromColumnIndex($start_column);
-                $column_name_end_1 = Coordinate::stringFromColumnIndex($start_column + 4 - 1);
-                $sheet->mergeCells($column_name_1 . "5:" . $column_name_end_1 . "5");
+            $data_type[$key] = $start_column;
+            $start_column_1 = $start_column;
 
-                $objRichText2 = new \PhpOffice\PhpSpreadsheet\RichText\RichText();
-                $objRichText2->createText("$time_name\n");
-                $payable = $objRichText2->createTextRun($time_name_en);
-                $payable->getFont()->setItalic(true);
-                $payable->getFont()->setBold(false);
-                $payable->getFont()->setName("Times New Roman");
-                $payable->getFont()->setSize("10");
-                $sheet->getCell($column_name_1 . "5")->setValue($objRichText2);
+            $column_name_2 = Coordinate::stringFromColumnIndex($start_column_1);
+            $objRichText2 = new \PhpOffice\PhpSpreadsheet\RichText\RichText();
+            $objRichText2->createText("Vị trí lưu mẫu\n");
+            $payable = $objRichText2->createTextRun("Stored location");
+            $payable->getFont()->setItalic(true);
+            $payable->getFont()->setBold(false);
+            $payable->getFont()->setName("Times New Roman");
+            $payable->getFont()->setSize("10");
+            $sheet->getCell($column_name_2 . "5")->setValue($objRichText2);
+            $sheet->getColumnDimension($column_name_2)->setWidth(15);
+            $sheet->getStyle($column_name_2 . "5")->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+
+            $start_column_1++;
+
+            $column_name_2 = Coordinate::stringFromColumnIndex($start_column_1);
+            $objRichText2 = new \PhpOffice\PhpSpreadsheet\RichText\RichText();
+            $objRichText2->createText("Thời điểm kiểm mẫu (tháng)\n");
+            $payable = $objRichText2->createTextRun("Testing interval (month)");
+            $payable->getFont()->setItalic(true);
+            $payable->getFont()->setBold(false);
+            $payable->getFont()->setName("Times New Roman");
+            $payable->getFont()->setSize("10");
+            $sheet->getCell($column_name_2 . "5")->setValue($objRichText2);
+            $sheet->getStyle($column_name_2 . "5")->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+            $sheet->getColumnDimension($column_name_2)->setWidth(20);
+            $start_column_1++;
 
 
-                $start_column_1 = $start_column;
+            $column_name_2 = Coordinate::stringFromColumnIndex($start_column_1);
+            $objRichText2 = new \PhpOffice\PhpSpreadsheet\RichText\RichText();
+            $objRichText2->createText("Ngày lấy mẫu\n");
+            $payable = $objRichText2->createTextRun("Sampling date");
+            $payable->getFont()->setItalic(true);
+            $payable->getFont()->setBold(false);
+            $payable->getFont()->setName("Times New Roman");
+            $payable->getFont()->setSize("10");
+            $sheet->getCell($column_name_2 . "5")->setValue($objRichText2);
+            $sheet->getStyle($column_name_2 . "5")->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
 
-                $column_name_2 = Coordinate::stringFromColumnIndex($start_column_1);
-                $objRichText2 = new \PhpOffice\PhpSpreadsheet\RichText\RichText();
-                $objRichText2->createText("Vị trí lưu mẫu\n");
-                $payable = $objRichText2->createTextRun("Stored location");
-                $payable->getFont()->setItalic(true);
-                $payable->getFont()->setBold(false);
-                $payable->getFont()->setName("Times New Roman");
-                $payable->getFont()->setSize("10");
-                $sheet->getCell($column_name_2 . "6")->setValue($objRichText2);
-                $start_column_1++;
-
-                $column_name_2 = Coordinate::stringFromColumnIndex($start_column_1);
-                $objRichText2 = new \PhpOffice\PhpSpreadsheet\RichText\RichText();
-                $objRichText2->createText("Ngày lấy mẫu\n");
-                $payable = $objRichText2->createTextRun("Sampling date");
-                $payable->getFont()->setItalic(true);
-                $payable->getFont()->setBold(false);
-                $payable->getFont()->setName("Times New Roman");
-                $payable->getFont()->setSize("10");
-                $sheet->getCell($column_name_2 . "6")->setValue($objRichText2);
-                $start_column_1++;
+            $start_column_1++;
 
 
 
-                $column_name_2 = Coordinate::stringFromColumnIndex($start_column_1);
-                $objRichText2 = new \PhpOffice\PhpSpreadsheet\RichText\RichText();
-                $objRichText2->createText("Số lượng lấy\n");
-                $payable = $objRichText2->createTextRun("Sample quantity");
-                $payable->getFont()->setItalic(true);
-                $payable->getFont()->setBold(false);
-                $payable->getFont()->setName("Times New Roman");
-                $payable->getFont()->setSize("10");
-                $sheet->getCell($column_name_2 . "6")->setValue($objRichText2);
-                $start_column_1++;
+            $column_name_2 = Coordinate::stringFromColumnIndex($start_column_1);
+            $objRichText2 = new \PhpOffice\PhpSpreadsheet\RichText\RichText();
+            $objRichText2->createText("Số lượng lấy\n");
+            $payable = $objRichText2->createTextRun("Sample quantity");
+            $payable->getFont()->setItalic(true);
+            $payable->getFont()->setBold(false);
+            $payable->getFont()->setName("Times New Roman");
+            $payable->getFont()->setSize("10");
+            $sheet->getCell($column_name_2 . "5")->setValue($objRichText2);
+            $sheet->getStyle($column_name_2 . "5")->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
 
-                $column_name_2 = Coordinate::stringFromColumnIndex($start_column_1);
-                $objRichText2 = new \PhpOffice\PhpSpreadsheet\RichText\RichText();
-                $objRichText2->createText("Chỉ tiêu\n");
-                $payable = $objRichText2->createTextRun("Tests");
-                $payable->getFont()->setItalic(true);
-                $payable->getFont()->setBold(false);
-                $payable->getFont()->setName("Times New Roman");
-                $payable->getFont()->setSize("10");
-                $sheet->getCell($column_name_2 . "6")->setValue($objRichText2);
-                $start_column_1++;
+            $start_column_1++;
 
+            $column_name_2 = Coordinate::stringFromColumnIndex($start_column_1);
+            $objRichText2 = new \PhpOffice\PhpSpreadsheet\RichText\RichText();
+            $objRichText2->createText("Chỉ tiêu\n");
+            $payable = $objRichText2->createTextRun("Tests");
+            $payable->getFont()->setItalic(true);
+            $payable->getFont()->setBold(false);
+            $payable->getFont()->setName("Times New Roman");
+            $payable->getFont()->setSize("10");
+            $sheet->getCell($column_name_2 . "5")->setValue($objRichText2);
+            $sheet->getStyle($column_name_2 . "5")->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
 
-                $start_column = $start_column + 4;
-            }
-
-
+            $sheet->getColumnDimension($column_name_2)->setWidth(20);
+            $start_column_1++;
 
             $column = $column + $num_column;
         }
@@ -410,19 +398,39 @@ class Export extends BaseController
         $payable->getFont()->setBold(true);
         $payable->getFont()->setName("Times New Roman");
         $payable->getFont()->setSize("10");
+        $sheet->getStyle("F3:" . $column_name_3 . "3")->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+
 
         $sheet->getCell("F3")->setValue($objRichText2);
 
 
         $r = $this->groupBy($posts, function ($item) {
-            return $item->sample_id;
+            return $item->sample_id . "-" . $item->time . "-" . $item->type_time;
         });
+        // echo "<pre>";
+        // print_r($r);
+        // die();
         $r = array_values($r);
+        usort($r, function ($a, $b) {
+            $codeComparison = strcmp($a[0]->sample->code, $b[0]->sample->code);
+            if ($codeComparison === 0) {
+                $batchComparison = strcmp($a[0]->sample->code_batch, $b[0]->sample->code_batch);
+                if ($batchComparison === 0) {
+                    $sampleComparison = $a[0]->sample_id <=> $b[0]->sample_id;
+                    if ($sampleComparison === 0) {
+                        return $a[0]->time <=> $b[0]->time;
+                    }
+                    return $sampleComparison;
+                }
+                return $batchComparison;
+            }
+            return $codeComparison;
+        });
         // echo "<pre>";
         // print_r($r);
         // die();
         if (!empty($r)) {
-            $rows = 7;
+            $rows = 6;
             $sheet->insertNewRowBefore($rows + 1, count($r));
             $key = 0;
 
@@ -431,6 +439,8 @@ class Export extends BaseController
                 $sample = $post[0]->sample;
                 if (!isset($sample->name))
                     continue;
+                // $explode = explode("-", $key1);
+
                 $sheet->setCellValueExplicit('A' . $rows, ++$key, \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING2);
                 $sheet->setCellValueExplicit('B' . $rows, $sample->name, \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING2);
                 $sheet->setCellValueExplicit('C' . $rows, $sample->code_batch, \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING2);
@@ -440,13 +450,38 @@ class Export extends BaseController
                 // $sheet->getStyle('F' . $rows)->getNumberFormat()->setFormatCode("dd/mm/yyyy");
 
                 foreach ($post as $time) {
-                    $column = $data_type[$time->type_id][$time->time . "-" . $time->type_time];
+                    $column = $data_type[$time->type_id];
+
+                    $time1 = $time->time;
+                    $type_time = $time->type_time;
+                    switch ($type_time) {
+                        case "M":
+                            $time_name = $time1 . " Tháng";
+                            $time_name_en = $time1 . " Months";
+                            break;
+                        case "w":
+                            $time_name = $time1 . " Tuần";
+                            $time_name_en = $time1 . " Weeks";
+                            break;
+                        case "d":
+                            $time_name = $time1 . " Ngày";
+                            $time_name_en = $time1 . " Days";
+                            break;
+                        case "y":
+                            $time_name = $time1 . " Năm";
+                            $time_name_en = $time1 . " Years";
+                            break;
+                    }
                     // echo $column . "<br>";
                     // break;
 
 
                     $column_name = Coordinate::stringFromColumnIndex($column);
                     $sheet->setCellValueExplicit($column_name . $rows, $time->location, \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING2);
+                    $column++;
+
+                    $column_name = Coordinate::stringFromColumnIndex($column);
+                    $sheet->setCellValueExplicit($column_name . $rows, $time_name, \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING2);
                     $column++;
 
                     $column_name = Coordinate::stringFromColumnIndex($column);
@@ -519,7 +554,7 @@ class Export extends BaseController
             if (!array_key_exists($post->type_id, $data_type)) {
                 $data_type[$post->type_id] = array();
             }
-            if (!array_key_exists($post->time . "-" . $post->type_time,  $data_type[$post->type_id])) {
+            if (!array_key_exists($post->time . "-" . $post->type_time, $data_type[$post->type_id])) {
                 $data_type[$post->type_id][$post->time . "-" . $post->type_time] = 0;
             }
             $data_type[$post->type_id][$post->time . "-" . $post->type_time]++;
