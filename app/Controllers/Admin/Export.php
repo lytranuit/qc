@@ -72,16 +72,24 @@ class Export extends BaseController
         $spreadsheet = $reader->load($file);
         $sheet = $spreadsheet->getActiveSheet();
         $objRichText2 = new \PhpOffice\PhpSpreadsheet\RichText\RichText();
-        $objRichText2->createText("KẾ HOẠCH NGHIÊN CỨU ĐỘ ỔN ĐỊNH HÀNG THÁNG - [" . $month . "/" . $year . "]\n");
-        $payable = $objRichText2->createTextRun("MONTHLY PLANNING FOR STABILITY STUDY - [" . $month . "/" . $year . "]");
-        $payable->getFont()->setItalic(true);
-        $payable->getFont()->setBold(false);
+        $objRichText2->createText("KẾ HOẠCH NGHIÊN CỨU ĐỘ ỔN ĐỊNH HÀNG THÁNG\n");
+        $payable = $objRichText2->createTextRun("MONTHLY PLANNING FOR STABILITY STUDY");
+        $payable->getFont()->setItalic(false);
+        $payable->getFont()->setBold(true);
         $payable->getFont()->setName("Times New Roman");
         $payable->getFont()->setSize("12");
         $sheet->getCell("C1")->setValue($objRichText2);
 
+        $objRichText2 = new \PhpOffice\PhpSpreadsheet\RichText\RichText();
+        $objRichText2->createText($month . "/" . $year);
+        $payable->getFont()->setItalic(false);
+        $payable->getFont()->setBold(true);
+        $payable->getFont()->setName("Times New Roman");
+        $payable->getFont()->setSize("12");
+        $sheet->getCell("L2")->setValue($objRichText2);
+
         if (!empty($posts)) {
-            $rows = 5;
+            $rows = 6;
             $key = 0;
             $sheet->insertNewRowBefore($rows + 1, count($posts));
             foreach ($posts as $post) {
