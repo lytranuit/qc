@@ -28,11 +28,13 @@ class Export extends BaseController
     {
         $SampleModel = model("SampleModel", false);
         $SampleTimeModel = model("SampleTimeModel", false);
+        $FactoryModel = model("FactoryModel", false);
 
         $monthyear = isset($_POST['monthyear']) ? $_POST['monthyear'] : "";
         $explode = explode("-", $monthyear);
         $year = isset($explode[0]) ? $explode[0] : 0;
         $month = isset($explode[1]) ? $explode[1] : 0;
+        $factory = $FactoryModel->where("id", session()->factory_id)->asObject()->first();
 
         $where = $SampleTimeModel->where("factory_id", session()->factory_id)->where("MONTH(date_theory)", $month)->where("YEAR(date_theory)", $year);
 
@@ -80,6 +82,15 @@ class Export extends BaseController
         $payable->getFont()->setSize("12");
         $sheet->getCell("C1")->setValue($objRichText2);
 
+        if ($factory != null) {
+            $objRichText2 = new \PhpOffice\PhpSpreadsheet\RichText\RichText();
+            $objRichText2->createText($factory->name);
+            $payable->getFont()->setItalic(false);
+            $payable->getFont()->setBold(true);
+            $payable->getFont()->setName("Times New Roman");
+            $payable->getFont()->setSize("12");
+            $sheet->getCell("D2")->setValue($objRichText2);
+        }
         $objRichText2 = new \PhpOffice\PhpSpreadsheet\RichText\RichText();
         $objRichText2->createText($month . "/" . $year);
         $payable->getFont()->setItalic(false);
