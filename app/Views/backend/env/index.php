@@ -19,7 +19,7 @@
                         <thead>
                             <tr>
                                 <th>Id</th>
-                                <th>Điều kiện môi trường</th>
+                                <th>Điều kiện lưu mẫu</th>
                                 <th>Hành động</th>
                             </tr>
                         </thead>

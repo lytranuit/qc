@@ -43,7 +43,7 @@
                 <li class="">
                     <a href="<?= base_url() ?>/admin/sample" class="">
                         <i class="metismenu-icon fas fa-file"></i>
-                        Mẫu
+                        Theo dõi tổng thể
                     </a>
                 </li>
                 <li>
@@ -66,10 +66,10 @@
                             <a href="<?= base_url() ?>/admin/export/year" class="">
                                 Hàng năm </a>
                         </li>
-                        <li>
+                        <!-- <li>
                             <a href="<?= base_url() ?>/admin/export/index" class="">
                                 Tổng thể </a>
-                        </li>
+                        </li> -->
                     </ul>
                 </li>
                 <?php if (in_groups(array("admin"))) : ?>

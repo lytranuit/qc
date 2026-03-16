@@ -56,7 +56,7 @@
                 <div class="float-right">
                     <i class="fa fa-print report-main-icon bg-icon-danger"></i>
                 </div>
-                <span class="badge badge-light text-danger">Mẫu quá hạn</span>
+                <span class="badge badge-light text-danger">Mẫu đến hạn</span>
                 <h3 class="my-3"><?= $num_sample_expire ?></h3>
             </div>
             <!--end card-body-->
@@ -103,7 +103,7 @@
     <div class="col-md-6 pt-2 pt-md-0" id="sample">
         <div class="card card-fluid">
             <div class="card-header text-danger">
-                Quá ngày lấy mẫu
+                Đến hạn lấy mẫu
             </div>
             <div class="card-body">
                 <div class="table-responsive-md">
@@ -117,6 +117,7 @@
                                 <th>Điều kiện</th>
                                 <th>Thời gian</th>
                                 <th>Ngày lấy mẫu</th>
+                                <th>Chêch lệch</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -235,6 +236,9 @@
                 },
                 {
                     "data": "date_theory"
+                },
+                {
+                    "data": "chechlech"
                 }
             ]
         });

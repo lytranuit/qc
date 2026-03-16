@@ -35,11 +35,12 @@ class BaseModel extends Model
     {
         $db = $this->db;
         $array = $db->getFieldNames($this->table);
+        // print_r($array);die();
         $obj = array();
         foreach ($array as $key) {
             if (isset($data[$key])) {
                 $obj[$key] = $data[$key];
-                if (($key == "date_expire" || $key == "date_effect" || $key == "date_review" || $key == "date_theory" || $key == "date_reality") && $data[$key] == "")
+                if (($key == "date_effect" || $key == "date_review" || $key == "date_theory" || $key == "date_reality") && $data[$key] == "")
                     $obj[$key] = null;
             } else
                 continue;

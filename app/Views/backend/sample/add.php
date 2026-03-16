@@ -30,9 +30,19 @@
                                 <div class="col-12 col-lg-4 pt-1">
                                     <input class="form-control form-control-sm" type='text' name="code" placeholder="Mã sản phẩm" />
                                 </div>
-                                <b class="col-12 col-lg-2 col-form-label">Mã số nghiên cứu:</b>
+                                <b class="col-12 col-lg-2 col-form-label">Mục đích nghiên cứu:</b>
                                 <div class="col-12 col-lg-4 pt-1">
-                                    <input class="form-control form-control-sm" type='text' name="code_research" placeholder="Mã số nghiên cứu" />
+                                    <select class="form-control form-control-sm" id="code_research_select">
+                                        <option value="">-- Chọn mục đích --</option>
+                                        <option value="3 lô sản xuất đầu tiên">3 lô sản xuất đầu tiên</option>
+                                        <option value="Lô nghiên cứu hằng năm">Lô nghiên cứu hằng năm</option>
+                                        <option value="Lô thẩm định do thay đổi công thức pha chế">Lô thẩm định do thay đổi công thức pha chế</option>
+                                        <option value="Lô thẩm định do thay đổi quy trình sản xuất">Lô thẩm định do thay đổi quy trình sản xuất</option>
+                                        <option value="Nghiên cứu hạn dùng sau khi mở nắp">Nghiên cứu hạn dùng sau khi mở nắp</option>
+                                        <option value="custom">Tùy chỉnh (Tự điền nội dung)</option>
+                                    </select>
+                                    <input class="form-control form-control-sm mt-1 code_research_custom_input" type="text" placeholder="Tự điền nội dung" style="display:none;" />
+                                    <input type="hidden" name="code_research" id="code_research" />
                                 </div>
                             </div>
 
@@ -41,9 +51,9 @@
                                 <div class="col-12 col-lg-4 pt-1">
                                     <input class="form-control form-control-sm" type='text' name="outline_number" placeholder="Số đề cương" />
                                 </div>
-                                <b class="col-12 col-lg-2 col-form-label">Số phân tích:</b>
+                                <b class="col-12 col-lg-2 col-form-label">Số quyết định:</b>
                                 <div class="col-12 col-lg-4 pt-1">
-                                    <input class="form-control form-control-sm" type='text' name="code_analysis" placeholder="Số phân tích" />
+                                    <input class="form-control form-control-sm" type='text' name="decision_number" placeholder="Số quyết định" />
                                 </div>
                             </div>
 
@@ -55,6 +65,13 @@
                                 <b class="col-12 col-lg-2 col-form-label">Ngày lưu mẫu:<i class="text-danger">*</i></b>
                                 <div class="col-12 col-lg-4 pt-1">
                                     <input class="form-control form-control-sm" type='date' name="date_storage" required="" placeholder="Ngày lưu mẫu vào tủ" />
+                                </div>
+                            </div>
+                            
+                            <div class="form-group row">
+                                <b class="col-12 col-lg-2 col-form-label">Hạn dùng:</b>
+                                <div class="col-12 col-lg-4 pt-1">
+                                    <input class="form-control form-control-sm" type='date' name="date_expire" placeholder="Hạn dùng" />
                                 </div>
                             </div>
                             <div class="form-group row">
@@ -218,7 +235,27 @@
 <script src="<?= base_url("assets/lib/chosen/chosen.jquery.js") ?>"></script>
 <script type='text/javascript'>
     var controller = '<?= $controller ?>';
+    function updateCodeResearch() {
+        let val = $("#code_research_select").val();
+        if(val === "custom") {
+            let txt = $(".code_research_custom_input").val().trim();
+            $("#code_research").val(txt);
+        } else {
+            $("#code_research").val(val);
+        }
+    }
+
     $(document).ready(function() {
+        $("#code_research_select").change(function(){
+            if($(this).val() === "custom") {
+                $(".code_research_custom_input").show();
+            } else {
+                $(".code_research_custom_input").hide();
+            }
+            updateCodeResearch();
+        });
+        $(".code_research_custom_input").on('input', updateCodeResearch);
+
         $(".chosen").chosen();
         $(".add_time").click(function(e) {
             e.preventDefault();

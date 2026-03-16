@@ -211,6 +211,22 @@ class Home extends BaseController
                 $nestedData['date_theory'] = date("d/m/Y", strtotime($post->date_theory));
                 $nestedData['env'] = $env_name;
                 $nestedData['time'] = $post->time . " " . ($post->type_time == "M" ? "Tháng" : ($post->type_time == "d" ? "Ngày" : ($post->type_time == "w" ? "Tuần" : ($post->type_time == "y" ? "Năm" : ""))));
+
+                $weeks = $this->convertToWeeks($post->time, $post->type_time);
+                $chechlech = 7;
+                if ($weeks > 4 && $weeks < 6) {
+                    $chechlech = 7;
+                } elseif ($weeks > 6 && $weeks < 40) {
+                    $chechlech = 14;
+                } elseif ($weeks > 40) {
+                    $chechlech = 28;
+                }
+                $nestedData['chechlech'] = $chechlech;
+                $targetDate = strtotime("+$chechlech days", strtotime($post->date_theory));
+                if (strtotime("now") > $targetDate) {
+                    $nestedData['DT_RowClass'] = 'text-danger';
+                }
+
                 $data[] = $nestedData;
             }
         }
@@ -271,5 +287,32 @@ class Home extends BaseController
         // Saving the document as OOXML file...
         $objWriter = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'Word2007');
         $objWriter->save(time() . '.docx');
+    }
+
+    function convertToWeeks($n, $type)
+    {
+        // Quy đổi về số ngày từ loại đơn vị
+        switch ($type) {
+            case 'w': // Tuần
+                $days = $n * 7;
+                break;
+            case 'M': // Tháng
+                $days = $n * 30.44; // Trung bình 1 tháng có 30.44 ngày
+                break;
+            case 'y': // Năm
+                $days = $n * 365.25; // Trung bình 1 năm có 365.25 ngày (tính cả năm nhuận)
+                break;
+            case 'd': // Ngày
+                $days = $n;
+                break;
+            default:
+                $days = $n;
+                break;
+        }
+
+        // Chuyển đổi từ ngày sang tuần
+        $weeks = $days / 7;
+
+        return $weeks;
     }
 }
