@@ -92,9 +92,6 @@
                     "data": "code_batch"
                 },
                 {
-                    "data": "code_analysis"
-                },
-                {
                     "data": "date_manufacture"
                 },
                 {
