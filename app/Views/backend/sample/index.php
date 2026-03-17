@@ -24,7 +24,6 @@
                                 <th>Mục đích nghiên cứu</th>
                                 <th>Số đề cương</th>
                                 <th>Số lô</th>
-                                <th>Hạn dùng</th>
                                 <th>Ngày sản xuất</th>
                                 <th>Ngày lưu mẫu</th>
                                 <th>Hành động</th>
@@ -90,9 +89,6 @@
                 },
                 {
                     "data": "code_batch"
-                },
-                {
-                    "data": "date_expire"
                 },
                 {
                     "data": "date_manufacture"

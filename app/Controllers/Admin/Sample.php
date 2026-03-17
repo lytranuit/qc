@@ -255,7 +255,6 @@ class Sample extends BaseController
 
                 $nestedData['date_manufacture'] = date("d/m/Y", strtotime($post->date_manufacture));
                 $nestedData['date_storage'] = date("d/m/Y", strtotime($post->date_storage));
-                $nestedData['date_expire'] = $post->date_expire != "" ? date("d/m/Y", strtotime($post->date_expire)) : "";
 
                 $nestedData['action'] = "";
                 if (in_groups(array('admin', 'editor')))
