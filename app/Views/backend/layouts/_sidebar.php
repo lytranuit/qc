@@ -3,7 +3,8 @@
         <div><img src="<?= base_url("assets/images/logo.png") ?>" width="150" /></div>
         <div class="header__pane ml-auto">
             <div>
-                <button type="button" class="hamburger close-sidebar-btn hamburger--elastic" data-class="closed-sidebar">
+                <button type="button" class="hamburger close-sidebar-btn hamburger--elastic"
+                    data-class="closed-sidebar">
                     <span class="hamburger-box">
                         <span class="hamburger-inner"></span>
                     </span>
@@ -49,7 +50,13 @@
                 <li>
                     <a href="<?= base_url() ?>/admin/env" class="">
                         <i class="metismenu-icon fas fa-info-circle"></i>
-                        Điều kiện
+                        Điều kiện lưu mẫu
+                    </a>
+                </li>
+                <li>
+                    <a href="<?= base_url() ?>/admin/storage" class="">
+                        <i class="metismenu-icon fas fa-map-marker-alt"></i>
+                        Khu vực lưu mẫu
                     </a>
                 </li>
                 <li class="mm-active">
@@ -60,11 +67,18 @@
                     <ul class="mm-collapse mm-show">
                         <li>
                             <a href="<?= base_url() ?>/admin/export/month" class="">
-                                Hàng tháng </a>
+                                Kế hoạch hàng tháng
+                            </a>
                         </li>
                         <li>
                             <a href="<?= base_url() ?>/admin/export/year" class="">
-                                Hàng năm </a>
+                                Kế hoạch hàng năm
+                            </a>
+                        </li>
+                        <li>
+                            <a href="<?= base_url() ?>/admin/export/list" class="">
+                                Danh sách mẫu lưu
+                            </a>
                         </li>
                         <!-- <li>
                             <a href="<?= base_url() ?>/admin/export/index" class="">
@@ -72,7 +86,7 @@
                         </li> -->
                     </ul>
                 </li>
-                <?php if (in_groups(array("admin"))) : ?>
+                <?php if (in_groups(array("admin"))): ?>
                     <li>
                         <a href="<?= base_url() ?>/admin/history" class="">
                             <i class="metismenu-icon fas fa-history"></i>
@@ -93,7 +107,7 @@
                         Auditrail
                     </a>
                 </li> -->
-                <?php if (in_groups("admin")) : ?>
+                <?php if (in_groups("admin")): ?>
                     <li class="app-sidebar__heading">Cài đặt</li>
                     <!-- <li>
                         <a href="<?= base_url() ?>/admin/settings" class="">

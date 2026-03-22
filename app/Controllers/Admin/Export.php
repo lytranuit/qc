@@ -18,6 +18,142 @@ class Export extends BaseController
     {
         return view($this->data['content'], $this->data);
     }
+    public function list()
+    {
+        $StorageModel = model("StorageModel");
+        $this->data['storages'] = $StorageModel->where("factory_id", session()->factory_id)->asObject()->findAll();
+        return view($this->data['content'], $this->data);
+    }
+    public function exportlist()
+    {
+        ini_set('memory_limit', '1000M');
+        $SampleTimeModel = model("SampleTimeModel", false);
+        $FactoryModel = model("FactoryModel", false);
+        $StorageModel = model("StorageModel", false);
+
+        $storage_id = isset($_POST['storage_id']) ? $_POST['storage_id'] : "";
+        $factory = $FactoryModel->where("id", session()->factory_id)->asObject()->first();
+
+        $where = $SampleTimeModel->where("factory_id", session()->factory_id);
+        $where = $where->where('date_reality', null);
+        if (!empty($storage_id)) {
+            $where = $where->where('storage_id', $storage_id);
+        }
+
+        $posts = $where->orderby("date_theory", "ASC")->asObject()->findAll();
+        $SampleTimeModel->relation($posts, array("sample"));
+
+        // Lấy storage name map
+        $storage = $StorageModel->where("id", $storage_id)->asObject()->first();
+
+
+        // Group by sample_id: sum num_get, merge location bằng dấu ,
+        $grouped = [];
+        foreach ($posts as $post) {
+            $sid = $post->sample_id;
+            if (!isset($grouped[$sid])) {
+                $grouped[$sid] = (object) [
+                    'sample' => $post->sample,
+                    'num_get' => 0,
+                    'locations' => [],
+                ];
+            }
+            $grouped[$sid]->num_get += (int) ($post->num_get ?? 0);
+            $loc = trim($post->location ?? '');
+            if ($loc !== '' && !in_array($loc, $grouped[$sid]->locations)) {
+                $grouped[$sid]->locations[] = $loc;
+            }
+        }
+        // Chuyển thành mảng và sắp xếp theo code, code_batch
+        $grouped = array_values($grouped);
+        usort($grouped, function ($a, $b) {
+            $codeComparison = strcmp($a->sample->code ?? '', $b->sample->code ?? '');
+            if ($codeComparison === 0) {
+                return strcmp($a->sample->code_batch ?? '', $b->sample->code_batch ?? '');
+            }
+            return $codeComparison;
+        });
+
+        // Tạo spreadsheet mới
+        $file = APPPATH . '../assets/template/A09_04_Stability_Study_Samples.xlsx';
+        $inputFileType = \PhpOffice\PhpSpreadsheet\IOFactory::identify($file);
+        /**  Create a new Reader of the type defined in $inputFileType  **/
+        $reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReader($inputFileType);
+        /**  Load $inputFileName to a Spreadsheet Object  **/
+        $spreadsheet = $reader->load($file);
+        $sheet = $spreadsheet->getActiveSheet();
+
+        // Tiêu đề
+        $titleText = "";
+        if (!empty($storage_id) && $storage) {
+            switch ($storage->env_type) {
+                case 1:
+                    $env_name = "40°C ± 2°C / 75% ± 5% RH";
+                    break;
+                case 2:
+                    $env_name = "30°C ± 2°C / 65% ± 5% RH";
+                    break;
+                case 3:
+                    $env_name = "30°C ± 2°C / 75% ± 5% RH";
+                    break;
+                case 4:
+                    $env_name = "30°C ± 2°C / 65% ± 5% RH";
+                    break;
+                case 5:
+                    $env_name = "25°C ± 2°C / 60% ± 5% RH";
+                    break;
+            }
+            $titleText = $storage->name . (isset($storage->code) && $storage->code ? ' (' . $storage->code . ')' : '');
+            $sheet->setCellValue('E2', $titleText);
+            $sheet->getStyle('E2')->getFont()->setBold(true)->setSize(11)->setName('Times New Roman');
+            $sheet->getStyle('E2')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+
+            $sheet->setCellValue('I2', $env_name);
+            $sheet->getStyle('I2')->getFont()->setBold(true)->setSize(11)->setName('Times New Roman');
+            $sheet->getStyle('I2')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+        }
+
+
+        // Header row
+        $headerRow = 4;
+
+
+        // Data rows
+        $rows = $headerRow + 1;
+        $key = 0;
+
+        $sheet->insertNewRowBefore($rows + 1, count($grouped));
+        foreach ($grouped as $item) {
+            $sample = $item->sample;
+            if (!isset($sample->name))
+                continue;
+
+            $sheet->setCellValueExplicit('A' . $rows, ++$key, \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING2);
+            $sheet->setCellValueExplicit('B' . $rows, $sample->name, \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING2);
+            $sheet->setCellValueExplicit('C' . $rows, $sample->code, \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING2);
+            $sheet->setCellValueExplicit('D' . $rows, $sample->code_batch, \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING2);
+            $sheet->setCellValue('E' . $rows, $sample->date_manufacture != "" ? \PhpOffice\PhpSpreadsheet\Shared\Date::PHPToExcel($sample->date_manufacture) : "");
+
+            $sheet->setCellValue('F' . $rows, $sample->date_storage != "" ? \PhpOffice\PhpSpreadsheet\Shared\Date::PHPToExcel($sample->date_storage) : "");
+            $sheet->setCellValue('G' . $rows, implode(', ', $item->locations));
+            $sheet->setCellValue('H' . $rows, $item->num_get);
+
+            $sheet->setCellValueExplicit('I' . $rows, $sample->unit, \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING2);
+
+            // Format date columns
+            $sheet->getStyle('F' . $rows)->getNumberFormat()->setFormatCode("dd/mm/yyyy");
+            $sheet->getStyle('E' . $rows)->getNumberFormat()->setFormatCode("dd/mm/yyyy");
+
+            $sheet->getRowDimension($rows)->setRowHeight(-1);
+            $rows++;
+        }
+
+        $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
+        $name = time() . ".xlsx";
+        $file = "assets/excel/$name";
+        $writer->save($file);
+        echo json_encode(base_url($file));
+    }
     public function index()
     {
         $SampleModel = model("SampleModel");
@@ -113,24 +249,24 @@ class Export extends BaseController
                     continue;
                 switch ($post->type_id) {
                     case 1:
-                        $env_name = "40°C ± 2°C / 75% ± 5% RH";
+                        $env_name = "40°C ± 2°C / 75% ± 5% RH"; // LÃO HÓA 
                         break;
                     case 2:
-                        $env_name = "30°C ± 2°C / 65% ± 5% RH";
+                        $env_name = "30°C ± 2°C / 65% ± 5% RH"; // TRUNG HẠN
                         break;
                     case 3:
-                        $env_name = "30°C ± 2°C / 75% ± 5% RH";
+                        $env_name = "30°C ± 2°C / 75% ± 5% RH"; //Dài hạn vùng IV
                         break;
                     case 4:
-                        $env_name = "30°C ± 2°C / 65% ± 5% RH";
+                        $env_name = "30°C ± 2°C / 65% ± 5% RH"; // Dài hạn vùng III
                         break;
                     case 5:
-                        $env_name = "25°C ± 2°C / 60% ± 5% RH";
+                        $env_name = "25°C ± 2°C / 60% ± 5% RH"; /// Dài hạn vùng I&II
                         break;
                 }
                 switch ($post->type_time) {
                     case "M":
-                        $time_name = $post->time;
+                        $time_name = $post->time . " Tháng";
                         break;
                     case "w":
                         $time_name = $post->time . " Tuần";
@@ -141,6 +277,9 @@ class Export extends BaseController
                     case "y":
                         $time_name = $post->time . " Năm";
                         break;
+                }
+                if ($post->based == 'custom') {
+                    $time_name = "Hạn dùng";
                 }
                 $weeks = $this->convertToWeeks($post->time, $post->type_time);
                 $chechlech = "<7";
@@ -490,6 +629,9 @@ class Export extends BaseController
                             $time_name = $time1 . " Năm";
                             $time_name_en = $time1 . " Years";
                             break;
+                    }
+                    if ($time->based == 'custom') {
+                        $time_name = "Hạn dùng";
                     }
                     // echo $column . "<br>";
                     // break;

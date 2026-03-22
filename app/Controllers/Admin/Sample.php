@@ -68,11 +68,10 @@ class Sample extends BaseController
 
             $this->data['location'] = $location;
 
+            $StorageModel = model("StorageModel");
+            $this->data['storages'] = $StorageModel->where("factory_id", session()->factory_id)->asObject()->findAll();
 
             $this->data['users'] = $UserSQLModel->where("deleted_at", null)->select(['Id', 'Email', 'FullName'])->asObject()->findAll();
-            // echo "<pre>";
-            // print_r($users);
-            // die();
             return view($this->data['content'], $this->data);
         }
     }
@@ -112,6 +111,7 @@ class Sample extends BaseController
                             'location' => $data['time']['insert']['location'][$key],
                             'num_get' => $data['time']['insert']['num_get'][$key],
                             'type_id' => $data['time']['insert']['type_id'][$key],
+                            'storage_id' => $data['time']['insert']['storage_id'][$key],
                             'sample_id' => $id,
                             'factory_id' => $factory_id,
                         );
@@ -133,6 +133,7 @@ class Sample extends BaseController
                             'location' => $data['time']['update']['location'][$key],
                             'num_get' => $data['time']['update']['num_get'][$key],
                             'type_id' => $data['time']['update']['type_id'][$key],
+                            'storage_id' => $data['time']['update']['storage_id'][$key],
                             'sample_id' => $id,
                             'factory_id' => $factory_id,
                         );
@@ -173,6 +174,9 @@ class Sample extends BaseController
             $location = $LocationModel->where("factory_id", session()->factory_id)->asObject()->findAll();
 
             $this->data['location'] = $location;
+
+            $StorageModel = model("StorageModel");
+            $this->data['storages'] = $StorageModel->where("factory_id", session()->factory_id)->asObject()->findAll();
 
             $this->data['users'] = $UserSQLModel->where("deleted_at", null)->select(['Id', 'Email', 'FullName'])->asObject()->findAll();
             return view($this->data['content'], $this->data);
@@ -245,7 +249,7 @@ class Sample extends BaseController
         $data = array();
         if (!empty($posts)) {
             foreach ($posts as $post) {
-                $nestedData['id'] =  '<a href="' . base_url("admin/" . $this->data['controller'] . "/edit/" . $post->id) . '"><i class="fas fa-pencil-alt mr-2"></i>' . $post->id . '</a>';
+                $nestedData['id'] = '<a href="' . base_url("admin/" . $this->data['controller'] . "/edit/" . $post->id) . '"><i class="fas fa-pencil-alt mr-2"></i>' . $post->id . '</a>';
                 $nestedData['name'] = '<a href="' . base_url("admin/" . $this->data['controller'] . "/edit/" . $post->id) . '">' . $post->name . '</a>';
                 $nestedData['code'] = $post->code;
                 $nestedData['code_research'] = $post->code_research;
@@ -357,8 +361,8 @@ class Sample extends BaseController
 
             $SampleTimeModel = model("SampleTimeModel");
             $data = $this->request->getPost();
-            $sample_time_id  = $data['sample_time_id'];
-            $sample_id  = $data['id'];
+            $sample_time_id = $data['sample_time_id'];
+            $sample_id = $data['id'];
             unset($data['id']);
             if ($sample_time_id > 0) {
 
