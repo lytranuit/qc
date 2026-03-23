@@ -8,7 +8,7 @@ class BaseModel extends Model
 {
     protected $primaryKey = 'id';
 
-    protected $returnType     = 'object';
+    protected $returnType = 'object';
     protected $useSoftDeletes = true;
 
     protected $allowedFields = [];
@@ -64,8 +64,10 @@ class BaseModel extends Model
 
         $list_id = $params['id'];
         $result = $params['result'];
-        if (empty($list_id)) return;
-        if ($result != 1) return;
+        if (empty($list_id))
+            return;
+        if ($result != 1)
+            return;
         foreach ($list_id as $id) {
             $this->trail($id, 'delete', null, $id, null);
         }
@@ -85,7 +87,8 @@ class BaseModel extends Model
     public function trail($status, $event, $set = NULL, $previous_values = NULL, $description = null)
     {
         $table = $this->table;
-        if (!$status) return 1;  // event not performed
+        if (!$status)
+            return 1;  // event not performed
         if ($event == 'update') {
             $this->diff_on_update($previous_values, $set);
             //data has not been update
@@ -93,15 +96,17 @@ class BaseModel extends Model
                 return 1;
         }
         $old_value = $new_value = null;
-        if (!empty($previous_values)) $old_value = json_encode($previous_values, JSON_UNESCAPED_UNICODE);
-        if (!empty($set)) $new_value = json_encode($set, JSON_UNESCAPED_UNICODE); // For delete event it stores where condition
+        if (!empty($previous_values))
+            $old_value = json_encode($previous_values, JSON_UNESCAPED_UNICODE);
+        if (!empty($set))
+            $new_value = json_encode($set, JSON_UNESCAPED_UNICODE); // For delete event it stores where condition
 
 
         if (is_null($description)) {
             if ($event === 'insert') {
-                $description =   "USER '" . user()->name . "' added a $this->table";
+                $description = "USER '" . user()->name . "' added a $this->table";
             } elseif ($event == "update") {
-                $description =   "USER '" . user()->name . "' edited a $this->table";
+                $description = "USER '" . user()->name . "' edited a $this->table";
             } elseif ($event == "delete") {
                 $description = "USER '" . user()->name . "' removed a $this->table";
             }
@@ -119,6 +124,7 @@ class BaseModel extends Model
                 'ip_address' => $request->getIPAddress(),
                 'user_agent' => $request->getUserAgent(),
                 'description' => $description,
+                'factory_id' => session()->factory_id,
                 'created_at' => date('Y-m-d H:i:s'),
             )
         );
@@ -145,11 +151,11 @@ class BaseModel extends Model
         $new_value = $new;
     }
     protected $useTimestamps = true;
-    protected $createdField  = 'created_at';
-    protected $updatedField  = 'updated_at';
-    protected $deletedField  = 'deleted_at';
+    protected $createdField = 'created_at';
+    protected $updatedField = 'updated_at';
+    protected $deletedField = 'deleted_at';
 
     //protected $validationRules    = [];
     //protected $validationMessages = [];
-    protected $skipValidation     = true;
+    protected $skipValidation = true;
 }

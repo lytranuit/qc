@@ -25,7 +25,10 @@ class History extends BaseController
         $orders = $this->request->getVar('order');
         $page = ($start / $limit) + 1;
         $where = $History_model;
-
+        $where->groupStart()
+            ->where("factory_id !=", 4)
+            ->orWhere("factory_id IS NULL")
+            ->groupEnd();
         $totalData = $where->countAllResults(false);
         //echo "<pre>";
         //print_r($totalData);
@@ -37,7 +40,7 @@ class History extends BaseController
         } else {
             $search = $this->request->getPost('search')['value'];
             $sWhere = "description like '%" . $search . "%'";
-            $where =  $History_model->where($sWhere);
+            $where = $where->where($sWhere);
             $totalFiltered = $where->countAllResults(false);
         }
 
@@ -71,7 +74,7 @@ class History extends BaseController
                 $nestedData['description'] = $post->description;
                 $nestedData['name'] = $post->name;
                 $nestedData['old_values'] = "<div style='word-break:break-all;'>$post->old_values</div>";
-                $nestedData['new_values'] =  "<div style='word-break:break-all;'>$post->new_values</div>";
+                $nestedData['new_values'] = "<div style='word-break:break-all;'>$post->new_values</div>";
                 $nestedData['action'] = '';
                 $data[] = $nestedData;
             }
