@@ -80,17 +80,29 @@
                             </div>
 
                             <div class="form-group row">
+                                <b class="col-12 col-lg-2 col-form-label">Quy cách:<i class="text-danger">*</i></b>
+                                <div class="col-12 col-lg-10 pt-1">
+                                    <input class="form-control form-control-sm" type='text' name="specification"
+                                        placeholder="Quy cách" />
+                                </div>
+                            </div>
+                            <div class="form-group row">
                                 <b class="col-12 col-lg-2 col-form-label">Hạn dùng:</b>
                                 <div class="col-12 col-lg-4 pt-1">
                                     <input class="form-control form-control-sm" type='date' name="date_expire"
                                         placeholder="Hạn dùng" />
+                                </div>
+                                <b class="col-12 col-lg-2 col-form-label">Đơn vị:</b>
+                                <div class="col-12 col-lg-4 pt-1">
+                                    <input class="form-control form-control-sm" type='text' name="unit"
+                                        placeholder="Đơn vị" />
                                 </div>
                             </div>
                             <div class="form-group row">
                                 <b class="col-12 col-lg-2 col-form-label">Tổng số:<i class="text-danger">*</i></b>
                                 <div class="col-12 col-lg-4 pt-1">
                                     <input class="form-control form-control-sm" type='number' name="amount"
-                                        required="" />
+                                        required="" readonly style="background:#e9ecef;" />
                                 </div>
                                 <b class="col-12 col-lg-2 col-form-label">Còn lại:<i class="text-danger">*</i></b>
                                 <div class="col-12 col-lg-4 pt-1">
@@ -119,7 +131,21 @@
             </section>
         </form>
 
-
+        <!-- Storage Summary Card -->
+        <section class="card card-fluid mt-2 storage-summary-card">
+            <h5 class="card-header d-flex align-items-center" style="gap:8px">
+                <i class="fas fa-warehouse text-primary"></i>
+                <span style="font-size:1rem;font-weight:700;">Khu vực &amp; Điều kiện lưu mẫu</span>
+            </h5>
+            <div class="card-body p-0">
+                <div id="storage-summary-container">
+                    <div class="text-center text-muted p-3 ss-empty">
+                        <i class="fas fa-info-circle mr-1"></i>Thêm dòng ngày lấy mẫu để hiển thị thống kê khu vực lưu
+                        mẫu.
+                    </div>
+                </div>
+            </div>
+        </section>
 
         <section class="card card-fluid mt-2 sample-table-card">
             <h5 class="card-header d-flex align-items-center justify-content-between flex-wrap" style="gap:8px">
@@ -299,6 +325,42 @@
         font-size: 0.78rem;
         flex-shrink: 0;
     }
+
+    /* Storage Summary Table */
+    .storage-summary-card .ss-col-header {
+        font-size: 0.82rem;
+        font-weight: 700;
+        letter-spacing: 0.3px;
+        vertical-align: middle;
+        padding: 10px 8px;
+        white-space: nowrap;
+    }
+
+    .storage-summary-table td {
+        vertical-align: middle;
+        padding: 7px 10px;
+    }
+
+    .ss-row-label {
+        font-weight: 600;
+        font-size: 0.85rem;
+        white-space: nowrap;
+        color: #2c3e50;
+        background: #f8f9fa;
+    }
+
+    .ss-subheader-label {
+        font-size: 0.82rem;
+        font-weight: 600;
+        padding: 6px 10px !important;
+        white-space: nowrap;
+    }
+
+    .storage-summary-table .form-control[readonly] {
+        background: #f0f4f8;
+        color: #555;
+        font-size: 0.8rem;
+    }
 </style>
 <?= $this->endSection() ?>
 
@@ -394,6 +456,7 @@
             if (storage && storage.env_type) {
                 parent.find(".type_id").val(storage.env_type);
             }
+            updateStorageSummary();
         });
 
         $(document).on("change", ".type_id", function () {
@@ -407,6 +470,7 @@
                     parent.find(".storage_id").val(storage.id);
                 }
             }
+            updateStorageSummary();
         });
         $(document).on("change", ".custom_date", function (e) {
             e.preventDefault();
@@ -420,6 +484,7 @@
             let parent = $(this).closest(".item");
             done(parent);
             check_remain();
+            updateStorageSummary();
         });
 
 
@@ -449,6 +514,13 @@
                         append += "<input type='hidden' name='time[insert][" + obj.name + "][]' value='" + obj.value + "' />";
                     }
                 });
+                // Append amount1-5 from storage summary
+                for (let i = 1; i <= 5; i++) {
+                    let $input = $('.ss-amount-input[data-type="' + i + '"]');
+                    if ($input.length) {
+                        append += "<input type='hidden' name='amount" + i + "' value='" + ($input.val() || 0) + "' />";
+                    }
+                }
                 $(form).append(append);
                 form.submit();
                 return false;
@@ -536,6 +608,154 @@
         var remain = tong - num_get_tong;
         $("[name='remain']").val(remain);
     }
+
+    // Tính toán và render bảng tổng hợp động — group by type_id, cho nhập SL lưu mẫu, tính SL còn lại
+    var typeConditions = {
+        1: { label: 'Lão hóa', condition: '40°C ± 2°C<br><span class="text-muted">75% ± 5% RH</span>', color: '#c0392b' },
+        2: { label: 'Trung gian', condition: '30°C ± 2°C<br><span class="text-muted">65% ± 5% RH</span>', color: '#16a085' },
+        3: { label: 'Dài hạn<br><small>(Vùng IV)</small>', condition: '30°C ± 2°C<br><span class="text-muted">75% ± 5% RH</span>', color: '#d35400' },
+        4: { label: 'Dài hạn<br><small>(Vùng II)</small>', condition: '30°C ± 2°C<br><span class="text-muted">75% ± 5% RH</span>', color: '#7f8c8d' },
+        5: { label: 'Dài hạn<br><small>(Vùng I và II)</small>', condition: '25°C ± 2°C<br><span class="text-muted">60% ± 5% RH</span>', color: '#2980b9' }
+    };
+
+    function updateStorageSummary() {
+        var groups = {};
+        var groupOrder = [];
+
+        // Lưu lại giá trị đã nhập trước khi render lại
+        var savedAmounts = {};
+        $('.ss-amount-input').each(function () {
+            savedAmounts[$(this).data('type')] = $(this).val();
+        });
+
+        $(".list_time .item").each(function () {
+            var type = $(this).find('.type_id').val();
+            var storage_id = $(this).find('.storage_id').val() || '';
+            var $opt = $(this).find('.storage_id option:selected');
+            var storage_name = (storage_id && $opt.val()) ? $opt.text() : '';
+            var num = parseInt($(this).find('.num_get').val()) || 0;
+            var is_done = $(this).hasClass('done');
+
+            var key = type;
+            if (!groups[key]) {
+                groups[key] = {
+                    type_id: parseInt(type),
+                    storage_names: [],
+                    total_sampled: 0
+                };
+                groupOrder.push(key);
+            }
+            if (storage_name && groups[key].storage_names.indexOf(storage_name) === -1) {
+                groups[key].storage_names.push(storage_name);
+            }
+            if (is_done) {
+                groups[key].total_sampled += num;
+            }
+        });
+
+        var $container = $('#storage-summary-container');
+
+        if (groupOrder.length === 0) {
+            $container.html('<div class="text-center text-muted p-3 ss-empty"><i class="fas fa-info-circle mr-1"></i>Thêm dòng ngày lấy mẫu để hiển thị thống kê khu vực lưu mẫu.</div>');
+            return;
+        }
+
+        var html = '<div class="table-responsive"><table class="table table-bordered mb-0 storage-summary-table">';
+        html += '<colgroup><col style="min-width:150px;width:150px">';
+        groupOrder.forEach(function () { html += '<col>'; });
+        html += '</colgroup><thead>';
+
+        html += '<tr class="text-center">';
+        html += '<th class="align-middle ss-col-header" style="background:#2c3e50;color:#fff;"></th>';
+        groupOrder.forEach(function (key) {
+            var g = groups[key];
+            var tc = typeConditions[g.type_id] || { label: 'Loại ' + g.type_id, color: '#6c757d' };
+            html += '<th class="ss-col-header" style="background:' + tc.color + ';color:#fff;">' + tc.label + '</th>';
+        });
+        html += '</tr>';
+
+        html += '<tr class="text-center">';
+        html += '<th class="ss-subheader-label" style="background:#ecf0f1;color:#555;">Khu vực lưu mẫu</th>';
+        groupOrder.forEach(function (key) {
+            var g = groups[key];
+            var tc = typeConditions[g.type_id] || { color: '#6c757d' };
+            var areaText = g.storage_names.length > 0 ? g.storage_names.join(', ') : '<span class="text-muted fst-italic">Chưa chọn</span>';
+            html += '<th class="ss-subheader-label" style="background:' + tc.color + '22;color:#333;border-top:2px solid ' + tc.color + '">' + areaText + '</th>';
+        });
+        html += '</tr></thead><tbody>';
+
+        html += '<tr><td class="ss-row-label">Điều kiện lưu mẫu</td>';
+        groupOrder.forEach(function (key) {
+            var tc = typeConditions[groups[key].type_id] || { condition: '' };
+            html += '<td class="text-center small">' + (tc.condition || '') + '</td>';
+        });
+        html += '</tr>';
+
+        html += '<tr><td class="ss-row-label">Số lượng lưu mẫu</td>';
+        groupOrder.forEach(function (key) {
+            var g = groups[key];
+            var savedVal = savedAmounts[g.type_id] !== undefined ? savedAmounts[g.type_id] : 0;
+            html += '<td class="text-center">';
+            html += '<input type="number" class="form-control form-control-sm ss-amount-input text-center" data-type="' + g.type_id + '" value="' + savedVal + '" min="0" style="max-width:100px;margin:0 auto;font-weight:700;font-size:1rem;">';
+            html += '</td>';
+        });
+        html += '</tr>';
+
+        html += '<tr><td class="ss-row-label">SL đã lấy mẫu</td>';
+        groupOrder.forEach(function (key) {
+            var g = groups[key];
+            html += '<td class="text-center"><span class="badge badge-info" style="font-size:1rem;padding:6px 14px;">' + g.total_sampled + '</span></td>';
+        });
+        html += '</tr>';
+
+        html += '<tr><td class="ss-row-label">Số lượng còn lại</td>';
+        groupOrder.forEach(function (key) {
+            var g = groups[key];
+            var amountVal = savedAmounts[g.type_id] !== undefined ? parseInt(savedAmounts[g.type_id]) || 0 : 0;
+            var remain = amountVal - g.total_sampled;
+            var badgeClass = remain < 0 ? 'badge-danger' : (remain === 0 ? 'badge-secondary' : 'badge-warning text-dark');
+            html += '<td class="text-center"><span class="badge ' + badgeClass + ' ss-remain-badge" data-type="' + g.type_id + '" style="font-size:1rem;padding:6px 14px;">' + remain + '</span></td>';
+        });
+        html += '</tr>';
+
+        html += '</tbody></table></div>';
+        $container.html(html);
+    }
+
+    // Tính lại Tổng số = tổng amount1..5
+    function recalcTotalAmount() {
+        var total = 0;
+        $('.ss-amount-input').each(function () {
+            total += parseInt($(this).val()) || 0;
+        });
+        $("[name='amount']").val(total);
+        check_remain();
+    }
+
+    // Khi thay đổi SL lưu mẫu, tính lại SL còn lại
+    $(document).on('input change', '.ss-amount-input', function () {
+        var typeId = $(this).data('type');
+        var amountVal = parseInt($(this).val()) || 0;
+        var totalSampled = 0;
+        $(".list_time .item").each(function () {
+            var rowType = $(this).find('.type_id').val();
+            if (rowType == typeId && $(this).hasClass('done')) {
+                totalSampled += parseInt($(this).find('.num_get').val()) || 0;
+            }
+        });
+        var remain = amountVal - totalSampled;
+        var $badge = $('.ss-remain-badge[data-type="' + typeId + '"]');
+        $badge.text(remain);
+        $badge.removeClass('badge-danger badge-secondary badge-warning text-dark');
+        if (remain < 0) {
+            $badge.addClass('badge-danger');
+        } else if (remain === 0) {
+            $badge.addClass('badge-secondary');
+        } else {
+            $badge.addClass('badge-warning text-dark');
+        }
+        recalcTotalAmount();
+    });
 </script>
 
 <?= $this->endSection() ?>

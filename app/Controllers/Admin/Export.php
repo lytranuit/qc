@@ -279,7 +279,7 @@ class Export extends BaseController
                         break;
                 }
                 if ($post->based == 'custom') {
-                    $time_name = "Hạn dùng";
+                    $time_name = $post->note_type;
                 }
                 $weeks = $this->convertToWeeks($post->time, $post->type_time);
                 $chechlech = "<7";
@@ -631,7 +631,7 @@ class Export extends BaseController
                             break;
                     }
                     if ($time->based == 'custom') {
-                        $time_name = "Hạn dùng";
+                        $time_name = $time->note_type;
                     }
                     // echo $column . "<br>";
                     // break;

@@ -103,8 +103,8 @@
                             <div class="form-group row">
                                 <b class="col-12 col-lg-2 col-form-label">Tổng số:<i class="text-danger">*</i></b>
                                 <div class="col-12 col-lg-4 pt-1">
-                                    <input class="form-control form-control-sm" type='number' name="amount"
-                                        required="" />
+                                    <input class="form-control form-control-sm" type='number' name="amount" required=""
+                                        readonly style="background:#e9ecef;" />
                                 </div>
                                 <b class="col-12 col-lg-2 col-form-label">Còn lại:<i class="text-danger">*</i></b>
                                 <div class="col-12 col-lg-4 pt-1">
@@ -245,7 +245,7 @@
         </td>
         <td class="td-custom-date d-none" colspan="2" style="min-width:200px">
             <div class="text-center" style="gap:4px">
-                Hạn dùng
+                <input type="text" name="note_type" class="form-control form-control-sm note_type" value="Hạn dùng">
             </div>
         </td>
         <td>
@@ -456,6 +456,7 @@
             }
             check_remain();
             updateStorageSummary();
+            recalcTotalAmount();
             // initStorageSummaryFromRows();
         }
         $(".add_time").click(function (e) {
@@ -580,6 +581,15 @@
                         }
                     }
                 });
+                // Append amount1-5 from storage summary
+                for (let i = 1; i <= 5; i++) {
+                    let $input = $('.ss-amount-input[data-type="' + i + '"]');
+                    if ($input.length) {
+                        append += "<input type='hidden' name='amount" + i + "' value='" + ($input.val() || 0) + "' />";
+                    } else {
+                        append += "<input type='hidden' name='amount" + i + "' value='" + (tin['amount' + i] || 0) + "' />";
+                    }
+                }
                 $(form).append(append);
                 form.submit();
                 return false;
@@ -670,7 +680,7 @@
         $("[name='remain']").val(remain);
     }
 
-    // Tính toán và render bảng tổng hợp động — group by (type_id + storage_id), chỉ hiển thị cột có dữ liệu
+    // Tính toán và render bảng tổng hợp động — group by type_id, cho nhập SL lưu mẫu, tính SL còn lại
     var typeConditions = {
         1: { label: 'Lão hóa', condition: '40°C ± 2°C<br><span class="text-muted">75% ± 5% RH</span>', color: '#c0392b' },
         2: { label: 'Trung gian', condition: '30°C ± 2°C<br><span class="text-muted">65% ± 5% RH</span>', color: '#16a085' },
@@ -691,19 +701,24 @@
             var num = parseInt($(this).find('.num_get').val()) || 0;
             var is_done = $(this).hasClass('done');
 
-            var key = type + '_' + storage_id;
+            // Group chỉ theo type_id
+            var key = type;
             if (!groups[key]) {
                 groups[key] = {
                     type_id: parseInt(type),
-                    storage_id: storage_id,
-                    storage_name: storage_name,
-                    total: 0,
-                    remain: 0
+                    storage_names: [],
+                    total_sampled: 0
                 };
                 groupOrder.push(key);
             }
-            groups[key].total += num;
-            if (!is_done) groups[key].remain += num;
+            // Collect unique storage names
+            if (storage_name && groups[key].storage_names.indexOf(storage_name) === -1) {
+                groups[key].storage_names.push(storage_name);
+            }
+            // Tính tổng SL đã lấy mẫu (chỉ các dòng done)
+            if (is_done) {
+                groups[key].total_sampled += num;
+            }
         });
 
         var $container = $('#storage-summary-container');
@@ -713,7 +728,7 @@
             return;
         }
 
-        // Build header — khu vực lưu mẫu hiển thị như sub-header của cột
+        // Build header
         var html = '<div class="table-responsive"><table class="table table-bordered mb-0 storage-summary-table">';
         html += '<colgroup><col style="min-width:150px;width:150px">';
         groupOrder.forEach(function () { html += '<col>'; });
@@ -735,7 +750,7 @@
         groupOrder.forEach(function (key) {
             var g = groups[key];
             var tc = typeConditions[g.type_id] || { color: '#6c757d' };
-            var areaText = g.storage_name || '<span class="text-muted fst-italic">Chưa chọn</span>';
+            var areaText = g.storage_names.length > 0 ? g.storage_names.join(', ') : '<span class="text-muted fst-italic">Chưa chọn</span>';
             html += '<th class="ss-subheader-label" style="background:' + tc.color + '22;color:#333;border-top:2px solid ' + tc.color + '">' + areaText + '</th>';
         });
         html += '</tr></thead><tbody>';
@@ -748,23 +763,75 @@
         });
         html += '</tr>';
 
-        // Row: Số lượng lưu mẫu
+        // Row: Số lượng lưu mẫu (cho nhập)
         html += '<tr><td class="ss-row-label">Số lượng lưu mẫu</td>';
         groupOrder.forEach(function (key) {
-            html += '<td class="text-center"><span class="badge badge-primary" style="font-size:1rem;padding:6px 14px;">' + groups[key].total + '</span></td>';
+            var g = groups[key];
+            var savedAmount = parseInt(tin['amount' + g.type_id]) || 0;
+            html += '<td class="text-center">';
+            html += '<input type="number" class="form-control form-control-sm ss-amount-input text-center" data-type="' + g.type_id + '" value="' + savedAmount + '" min="0" style="max-width:100px;margin:0 auto;font-weight:700;font-size:1rem;">';
+            html += '</td>';
         });
         html += '</tr>';
 
-        // Row: Số lượng còn lại
+        // Row: Số lượng đã lấy mẫu
+        html += '<tr><td class="ss-row-label">SL đã lấy mẫu</td>';
+        groupOrder.forEach(function (key) {
+            var g = groups[key];
+            html += '<td class="text-center"><span class="badge badge-info" style="font-size:1rem;padding:6px 14px;">' + g.total_sampled + '</span></td>';
+        });
+        html += '</tr>';
+
+        // Row: Số lượng còn lại = SL lưu mẫu - SL đã lấy mẫu
         html += '<tr><td class="ss-row-label">Số lượng còn lại</td>';
         groupOrder.forEach(function (key) {
-            html += '<td class="text-center"><span class="badge badge-warning text-dark" style="font-size:1rem;padding:6px 14px;">' + groups[key].remain + '</span></td>';
+            var g = groups[key];
+            var savedAmount = parseInt(tin['amount' + g.type_id]) || 0;
+            var remain = savedAmount - g.total_sampled;
+            var badgeClass = remain < 0 ? 'badge-danger' : (remain === 0 ? 'badge-secondary' : 'badge-warning text-dark');
+            html += '<td class="text-center"><span class="badge ' + badgeClass + ' ss-remain-badge" data-type="' + g.type_id + '" style="font-size:1rem;padding:6px 14px;">' + remain + '</span></td>';
         });
         html += '</tr>';
 
         html += '</tbody></table></div>';
         $container.html(html);
     }
+
+    // Tính lại Tổng số = tổng amount1..5
+    function recalcTotalAmount() {
+        var total = 0;
+        $('.ss-amount-input').each(function () {
+            total += parseInt($(this).val()) || 0;
+        });
+        $("[name='amount']").val(total);
+        check_remain();
+    }
+
+    // Khi thay đổi SL lưu mẫu, tính lại SL còn lại
+    $(document).on('input change', '.ss-amount-input', function () {
+        var typeId = $(this).data('type');
+        var amountVal = parseInt($(this).val()) || 0;
+        // Tính SL đã lấy mẫu cho type_id này
+        var totalSampled = 0;
+        $(".list_time .item").each(function () {
+            var rowType = $(this).find('.type_id').val();
+            if (rowType == typeId && $(this).hasClass('done')) {
+                totalSampled += parseInt($(this).find('.num_get').val()) || 0;
+            }
+        });
+        var remain = amountVal - totalSampled;
+        var $badge = $('.ss-remain-badge[data-type="' + typeId + '"]');
+        $badge.text(remain);
+        $badge.removeClass('badge-danger badge-secondary badge-warning text-dark');
+        if (remain < 0) {
+            $badge.addClass('badge-danger');
+        } else if (remain === 0) {
+            $badge.addClass('badge-secondary');
+        } else {
+            $badge.addClass('badge-warning text-dark');
+        }
+        recalcTotalAmount();
+    });
 </script>
 
 <?= $this->endSection() ?>
