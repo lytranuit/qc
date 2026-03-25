@@ -45,7 +45,7 @@ class Sample extends BaseController
                             'num_get' => $data['time']['insert']['num_get'][$key],
                             'type_id' => $data['time']['insert']['type_id'][$key],
                             'storage_id' => $data['time']['insert']['storage_id'][$key],
-                            'note_type' => $data['time']['insert']['note_type'][$key],
+                            'note_type' => $data['time']['insert']['note_type'][$key] ?? '',
                             'sample_id' => $id,
                             'factory_id' => $factory_id
                         );
@@ -114,7 +114,7 @@ class Sample extends BaseController
                             'num_get' => $data['time']['insert']['num_get'][$key],
                             'type_id' => $data['time']['insert']['type_id'][$key],
                             'storage_id' => $data['time']['insert']['storage_id'][$key],
-                            'note_type' => $data['time']['insert']['note_type'][$key],
+                            'note_type' => $data['time']['insert']['note_type'][$key] ?? '',
                             'sample_id' => $id,
                             'factory_id' => $factory_id,
                         );
@@ -137,7 +137,7 @@ class Sample extends BaseController
                             'num_get' => $data['time']['update']['num_get'][$key],
                             'type_id' => $data['time']['update']['type_id'][$key],
                             'storage_id' => $data['time']['update']['storage_id'][$key],
-                            'note_type' => $data['time']['update']['note_type'][$key],
+                            'note_type' => $data['time']['update']['note_type'][$key] ?? '',
                             'sample_id' => $id,
                             'factory_id' => $factory_id,
                         );

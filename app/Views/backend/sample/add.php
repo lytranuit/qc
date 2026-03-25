@@ -224,7 +224,7 @@
         </td>
         <td class="td-custom-date d-none" colspan="2" style="min-width:200px">
             <div class="text-center" style="gap:4px">
-                Hạn dùng
+                <input type="text" name="note_type" class="form-control form-control-sm note_type" value="Hạn dùng">
             </div>
         </td>
         <td>
