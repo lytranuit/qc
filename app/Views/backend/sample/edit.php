@@ -487,7 +487,7 @@
         $(document).on("click", ".remove_time", function (e) {
             e.preventDefault();
             if (confirm("Bạn thực sự muốn xóa!") == true) {
-                let parent = $(this).closest(".form-group");
+                let parent = $(this).closest(".item");
                 let id = parent.data("id");
                 if (id > 0) {
                     list_delete.push(id);

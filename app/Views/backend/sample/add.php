@@ -101,8 +101,8 @@
                             <div class="form-group row">
                                 <b class="col-12 col-lg-2 col-form-label">Tổng số:<i class="text-danger">*</i></b>
                                 <div class="col-12 col-lg-4 pt-1">
-                                    <input class="form-control form-control-sm" type='number' name="amount"
-                                        required="" readonly style="background:#e9ecef;" />
+                                    <input class="form-control form-control-sm" type='number' name="amount" required=""
+                                        readonly style="background:#e9ecef;" />
                                 </div>
                                 <b class="col-12 col-lg-2 col-form-label">Còn lại:<i class="text-danger">*</i></b>
                                 <div class="col-12 col-lg-4 pt-1">
