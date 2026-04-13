@@ -45,6 +45,8 @@
                                             đổi quy trình sản xuất</option>
                                         <option value="Nghiên cứu hạn dùng sau khi mở nắp">Nghiên cứu hạn dùng sau khi
                                             mở nắp</option>
+                                        <option value="Nghiên cứu độ ổn định lô pilot">Nghiên cứu độ ổn định lô pilot
+                                        </option>
                                         <option value="custom">Tùy chỉnh (Tự điền nội dung)</option>
                                     </select>
                                     <input class="form-control form-control-sm mt-1 code_research_custom_input"
