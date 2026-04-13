@@ -226,7 +226,7 @@
             <input type="text" name="location" class="form-control form-control-sm location" placeholder="Vị trí">
         </td>
         <td>
-            <select class="form-control form-control-sm type_id" name="type_id" readonly>
+            <select class="form-control form-control-sm type_id" name="type_id" tabindex="-1" style="pointer-events: none; background-color: #e9ecef;" readonly>
                 <option value="1">Lão hóa</option>
                 <option value="2">Trung gian</option>
                 <option value="3">Dài hạn (Vùng IV)</option>
