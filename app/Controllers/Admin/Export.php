@@ -128,6 +128,25 @@ class Export extends BaseController
             if (!isset($sample->name))
                 continue;
 
+            // Tính số lượng còn lại (remain) trong tủ (theo env_type của storage)
+            $remain = 0;
+            if (!empty($storage_id) && $storage) {
+                $amount_field = 'amount' . $storage->env_type;
+                $total_amount = isset($sample->$amount_field) ? (int) $sample->$amount_field : 0;
+                
+                $db = \Config\Database::connect();
+                $taken = $db->table('sample_time')
+                    ->selectSum('num_get')
+                    ->where('sample_id', $sample->id)
+                    ->where('type_id', $storage->env_type)
+                    ->where('date_reality IS NOT NULL')
+                    ->get()->getRow()->num_get ?? 0;
+                    
+                $remain = $total_amount - $taken;
+            } else {
+                $remain = $sample->remain ?? 0; // Fallback
+            }
+
             $sheet->setCellValueExplicit('A' . $rows, ++$key, \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING2);
             $sheet->setCellValueExplicit('B' . $rows, $sample->name, \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING2);
             $sheet->setCellValueExplicit('C' . $rows, $sample->code, \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING2);
@@ -136,7 +155,7 @@ class Export extends BaseController
 
             $sheet->setCellValue('F' . $rows, $sample->date_storage != "" ? \PhpOffice\PhpSpreadsheet\Shared\Date::PHPToExcel($sample->date_storage) : "");
             $sheet->setCellValue('G' . $rows, implode(', ', $item->locations));
-            $sheet->setCellValue('H' . $rows, $item->num_get);
+            $sheet->setCellValue('H' . $rows, $remain);
 
             $sheet->setCellValueExplicit('I' . $rows, $sample->unit, \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING2);
 
