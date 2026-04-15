@@ -56,6 +56,19 @@
                             </div>
 
                             <div class="form-group row">
+
+                                <b class="col-12 col-lg-2 col-form-label">Quy cách:</b>
+                                <div class="col-12 col-lg-4 pt-1">
+                                    <input class="form-control form-control-sm" type='text' name="specification"
+                                        placeholder="Quy cách" />
+                                </div>
+                                <b class="col-12 col-lg-2 col-form-label">Dạng bào chế:</b>
+                                <div class="col-12 col-lg-4 pt-1">
+                                    <input class="form-control form-control-sm" type='text' name="dosage_form"
+                                        placeholder="Dạng bào chế" />
+                                </div>
+                            </div>
+                            <div class="form-group row">
                                 <b class="col-12 col-lg-2 col-form-label">Số đề cương:</b>
                                 <div class="col-12 col-lg-4 pt-1">
                                     <input class="form-control form-control-sm" type='text' name="outline_number"

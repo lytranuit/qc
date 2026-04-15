@@ -260,6 +260,8 @@ class Sample extends BaseController
                 $nestedData['outline_number'] = $post->outline_number;
                 $nestedData['code_batch'] = $post->code_batch;
                 $nestedData['code_analysis'] = $post->code_analysis;
+                $nestedData['specification'] = $post->specification;
+                $nestedData['dosage_form'] = $post->dosage_form;
 
                 $nestedData['date_manufacture'] = date("d/m/Y", strtotime($post->date_manufacture));
                 $nestedData['date_storage'] = date("d/m/Y", strtotime($post->date_storage));

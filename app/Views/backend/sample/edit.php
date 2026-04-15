@@ -58,12 +58,17 @@
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <b class="col-12 col-lg-2 col-form-label">Quy cách:<i class="text-danger">*</i></b>
-                                <div class="col-12 col-lg-10 pt-1">
+
+                                <b class="col-12 col-lg-2 col-form-label">Quy cách:</b>
+                                <div class="col-12 col-lg-4 pt-1">
                                     <input class="form-control form-control-sm" type='text' name="specification"
                                         placeholder="Quy cách" />
                                 </div>
-
+                                <b class="col-12 col-lg-2 col-form-label">Dạng bào chế:</b>
+                                <div class="col-12 col-lg-4 pt-1">
+                                    <input class="form-control form-control-sm" type='text' name="dosage_form"
+                                        placeholder="Dạng bào chế" />
+                                </div>
                             </div>
                             <div class="form-group row">
                                 <b class="col-12 col-lg-2 col-form-label">Số đề cương:</b>
@@ -226,7 +231,8 @@
             <input type="text" name="location" class="form-control form-control-sm location" placeholder="Vị trí">
         </td>
         <td>
-            <select class="form-control form-control-sm type_id" name="type_id" tabindex="-1" style="pointer-events: none; background-color: #e9ecef;" readonly>
+            <select class="form-control form-control-sm type_id" name="type_id" tabindex="-1"
+                style="pointer-events: none; background-color: #e9ecef;" readonly>
                 <option value="1">Lão hóa</option>
                 <option value="2">Trung gian</option>
                 <option value="3">Dài hạn (Vùng IV)</option>
