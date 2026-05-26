@@ -66,7 +66,7 @@ class AuthController extends Controller
 	public function attemptLogin()
 	{
 		$rules = [
-			'login'	=> 'required',
+			'login' => 'required',
 			'password' => 'required',
 		];
 		if ($this->config->validFields == ['email']) {
@@ -79,12 +79,72 @@ class AuthController extends Controller
 
 		$login = $this->request->getPost('login');
 		$password = $this->request->getPost('password');
-		$remember = (bool)$this->request->getPost('remember');
+		$remember = (bool) $this->request->getPost('remember');
+
+		// Check login lockout: block after 3 failed attempts within 15 minutes
+		$loginModel = new \Myth\Auth\Models\LoginModel();
+		$cutoff = date('Y-m-d H:i:s', time() - 900); // 900 seconds = 15 minutes
+		$failCount = $loginModel
+			->where('email', $login)
+			->where('success', 0)
+			->where('date >=', $cutoff)
+			->countAllResults();
+
+		if ($failCount >= 3) {
+			return redirect()->back()->withInput()
+				->with('error', lang('Custom.login_timeout'));
+		}
 
 		// Determine credential type
 		$type = filter_var($login, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
 
-		// Try to log them in...
+		// Try external API authentication first (astahealthcare.com)
+		$emailForApi = $login;
+		if (strpos($emailForApi, '@') === false) {
+			$emailForApi = $emailForApi . '@astahealthcare.com';
+		}
+
+		$externalAuthed = false;
+		if (strpos($emailForApi, '@astahealthcare.com') !== false) {
+			try {
+				$client = \Config\Services::curlrequest([
+					'verify' => false,
+				]);
+				$apiResponse = $client->post('https://esign.astahealthcare.com/api/CheckLogin', [
+					'form_params' => [
+						'email' => $emailForApi,
+						'password' => $password,
+					],
+					'timeout' => 5,
+				]);
+				$apiResult = json_decode($apiResponse->getBody(), true);
+				if (isset($apiResult['authed']) && $apiResult['authed'] === true) {
+					$externalAuthed = true;
+				}
+			} catch (\Exception $e) {
+				// API call failed, fallback to local auth
+				$externalAuthed = false;
+			}
+		}
+		if ($externalAuthed) {
+			// External API authenticated - find local user and login directly
+			$user = $this->auth->retrieveUser([$type => $login]);
+			if ($user && $user->isActivated() && !$user->isBanned()) {
+				$this->auth->login($user, $remember);
+
+				$UserModel = model("UserModel");
+				$description = "User " . $user->name . " login successfuly (external API)";
+				$UserModel->trail(1, 'login', null, null, $description);
+
+				$redirectURL = session('redirect_url') ?? site_url('/');
+				unset($_SESSION['redirect_url']);
+
+				return redirect()->to($redirectURL)->withCookies()->with('message', lang('Auth.loginSuccess'));
+			}
+			// User not found locally or banned/inactive, fall through to local auth
+		}
+
+		// Fallback: Try to log them in with local password...
 		if (!$this->auth->attempt([$type => $login, 'password' => $password], $remember)) {
 
 			$UserModel = model("UserModel");
@@ -162,10 +222,10 @@ class AuthController extends Controller
 		// Validate here first, since some things,
 		// like the password, can only be validated properly here.
 		$rules = [
-			'username'  	=> 'required|alpha_numeric_space|min_length[3]|is_unique[users.username]',
-			'email'			=> 'required|valid_email|is_unique[users.email]',
-			'password'	 	=> 'required|strong_password',
-			'pass_confirm' 	=> 'required|matches[password]',
+			'username' => 'required|alpha_numeric_space|min_length[3]|is_unique[users.username]',
+			'email' => 'required|valid_email|is_unique[users.email]',
+			'password' => 'required|strong_password',
+			'pass_confirm' => 'required|matches[password]',
 		];
 
 		if (!$this->validate($rules)) {
@@ -266,7 +326,7 @@ class AuthController extends Controller
 
 		return $this->_render($this->config->views['reset'], [
 			'config' => $this->config,
-			'token'  => $token,
+			'token' => $token,
 		]);
 	}
 
@@ -289,13 +349,13 @@ class AuthController extends Controller
 			$this->request->getPost('email'),
 			$this->request->getPost('token'),
 			$this->request->getIPAddress(),
-			(string)$this->request->getUserAgent()
+			(string) $this->request->getUserAgent()
 		);
 
 		$rules = [
-			'token'		=> 'required',
-			'email'		=> 'required|valid_email',
-			'password'	 => 'required|strong_password',
+			'token' => 'required',
+			'email' => 'required|valid_email',
+			'password' => 'required|strong_password',
 			'pass_confirm' => 'required|matches[password]',
 		];
 
@@ -317,10 +377,10 @@ class AuthController extends Controller
 		}
 
 		// Success! Save the new password, and cleanup the reset hash.
-		$user->password 		= $this->request->getPost('password');
-		$user->reset_hash 		= null;
-		$user->reset_at 		= date('Y-m-d H:i:s');
-		$user->reset_expires    = null;
+		$user->password = $this->request->getPost('password');
+		$user->reset_hash = null;
+		$user->reset_at = date('Y-m-d H:i:s');
+		$user->reset_expires = null;
 		$user->force_pass_reset = false;
 		$users->save($user);
 

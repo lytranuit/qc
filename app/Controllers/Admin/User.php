@@ -202,4 +202,49 @@ class User extends BaseController
             echo json_encode(array('success' => 0, 'msg' => "Tài khoản đã tồn tại!"));
         }
     }
+
+    public function changepass($id)
+    {
+        $User_model = model("Myth\Auth\Authorization\UserModel");
+        $user = $User_model->find($id);
+
+        if (!$user) {
+            echo json_encode(array('code' => 404, 'msg' => 'Không tìm thấy user.'));
+            die();
+        }
+
+        $newpassword = $this->request->getPost('newpassword');
+        $confirmpassword = $this->request->getPost('confirmpassword');
+
+        if (!$newpassword || !$confirmpassword || $newpassword != $confirmpassword) {
+            echo json_encode(array('code' => 403, 'msg' => 'Xác nhận mật khẩu mới không đúng.'));
+            die();
+        }
+
+        $user->setPassword($newpassword);
+        $User_model->save($user);
+        echo json_encode(array('code' => 400, 'msg' => 'Thay đổi mật khẩu thành công.'));
+        die();
+    }
+
+    public function unlock($id)
+    {
+        $User_model = model("Myth\Auth\Authorization\UserModel");
+        $user = $User_model->asObject()->find($id);
+
+        if (!$user) {
+            echo json_encode(array('code' => 404, 'msg' => 'Không tìm thấy user.'));
+            die();
+        }
+
+        // Delete failed login records for this user (by username)
+        $loginModel = new \Myth\Auth\Models\LoginModel();
+        $loginModel
+            ->where('email', $user->username)
+            ->where('success', 0)
+            ->delete();
+
+        echo json_encode(array('code' => 400, 'msg' => 'Đã mở khóa đăng nhập cho user ' . $user->username . '.'));
+        die();
+    }
 }

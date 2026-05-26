@@ -33,6 +33,13 @@
                                 <b class="col-12 col-lg-2 col-form-label">Mât khẩu:<i class="text-danger">*</i></b>
                                 <div class="col-12 col-lg-4 pt-1">
                                     <input type="password" id="password" class="form-control" name="password" minlength="6" required="" aria-required="true">
+                                    <div class="password-requirements mt-1" style="font-size: 12px;">
+                                        <div id="req-length" class="text-danger">&#10007; Ít nhất 6 ký tự</div>
+                                        <div id="req-lower" class="text-danger">&#10007; Ít nhất 1 chữ thường (a-z)</div>
+                                        <div id="req-upper" class="text-danger">&#10007; Ít nhất 1 chữ hoa (A-Z)</div>
+                                        <div id="req-number" class="text-danger">&#10007; Ít nhất 1 số (0-9)</div>
+                                        <div id="req-special" class="text-danger">&#10007; Ít nhất 1 ký tự đặc biệt</div>
+                                    </div>
                                 </div>
                                 <b class="col-12 col-lg-2 col-form-label">Xác nhận mật khẩu:<i class="text-danger">*</i></b>
                                 <div class="col-12 col-lg-4 pt-1">
@@ -127,28 +134,58 @@
 <script src="<?= base_url("assets/lib/image_feature/jquery.image_v2.js") ?>"></script>
 <script src="<?= base_url("assets/lib/chosen/chosen.jquery.js") ?>"></script>
 <script type='text/javascript'>
+    function checkPasswordReq(id, passed) {
+        var el = document.getElementById(id);
+        if (!el) return;
+        var text = el.textContent.replace(/^[\u2713\u2717]\s*/, '');
+        el.className = passed ? 'text-success' : 'text-danger';
+        el.textContent = (passed ? '\u2713 ' : '\u2717 ') + text;
+    }
+
+    function validateStrongPassword(val) {
+        var ok = true;
+        var checks = {
+            'req-length': val.length >= 6,
+            'req-lower': /[a-z]/.test(val),
+            'req-upper': /[A-Z]/.test(val),
+            'req-number': /[0-9]/.test(val),
+            'req-special': /[^a-zA-Z0-9]/.test(val)
+        };
+        for (var id in checks) {
+            checkPasswordReq(id, checks[id]);
+            if (!checks[id]) ok = false;
+        }
+        return ok;
+    }
+
     $(document).ready(function() {
         $(".image_ft").imageFeature();
 
         $("select[name='factories[]']").chosen();
         $("select[name='groups[]']").val(2).chosen();
-        //$('.edit').froalaEditor({
-        //    heightMin: 200,
-        //    heightMax: 500, // Set the image upload URL.
-        //    imageUploadURL: '<?= base_url() ?>admin/uploadimage',
-        //    // Set request type.
-        //    imageUploadMethod: 'POST',
-        //    // Set max image size to 5MB.
-        //    imageMaxSize: 5 * 1024 * 1024,
-        //    // Allow to upload PNG and JPG.
-        //    imageAllowedTypes: ['jpeg', 'jpg', 'png', 'gif'],
-        //    htmlRemoveTags: [],
-        //});
+
+        // Realtime password validation
+        $('#password').on('input', function() {
+            validateStrongPassword($(this).val());
+        });
+
+        // Add custom validator method
+        $.validator.addMethod('strongPassword', function(value, element) {
+            return this.optional(element) || validateStrongPassword(value);
+        }, 'Mật khẩu phải có ít nhất 6 ký tự, gồm chữ hoa, chữ thường, số và ký tự đặc biệt.');
+
         $.validator.setDefaults({
             debug: true,
             success: "valid",
         });
         $("#form-dang-tin").validate({
+            rules: {
+                password: {
+                    required: true,
+                    minlength: 6,
+                    strongPassword: true
+                }
+            },
             highlight: function(input) {
                 $(input).parents('.form-line').addClass('error');
             },

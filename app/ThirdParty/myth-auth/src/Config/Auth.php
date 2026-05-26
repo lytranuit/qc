@@ -271,7 +271,7 @@ class Auth extends BaseConfig
      *
      * @var int
      */
-    public $minimumPasswordLength = 8;
+    public $minimumPasswordLength = 6;
 
     /**
      * --------------------------------------------------------------------
