@@ -21,7 +21,7 @@ class Home extends Controller
         $query = $SampleTimeModel->where([
             'date_reality' => null,
             "date_theory >=" => date("Y-m-d"),
-            "date_theory <=" => date("Y-m-d", strtotime("+1 day"))
+            "date_theory <=" => date("Y-m-d", strtotime("+3 day"))
         ]);
         // $sql = $query->builder();
         // echo 1;
