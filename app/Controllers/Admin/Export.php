@@ -690,7 +690,7 @@ class Export extends BaseController
                     if ($time->num_get !== null && $time->num_get !== '') {
                         $qty_str = $time->num_get;
                         if (!empty($sample->unit)) {
-                            $qty_str .= ' ' . $sample->unit;
+                            $qty_str .= ' ' . mb_strtolower($sample->unit, 'UTF-8');
                         }
                     }
                     $sheet->setCellValueExplicit($column_name . $rows, $qty_str, \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING2);
