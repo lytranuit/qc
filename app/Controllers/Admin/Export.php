@@ -430,7 +430,7 @@ class Export extends BaseController
                     $objRichText2 = new \PhpOffice\PhpSpreadsheet\RichText\RichText();
                     $objRichText2->createText("Lão hóa\n");
                     $payable = $objRichText2->createTextRun("Accelerated\n");
-                    // $payable->getFont()->setItalic(true);
+                    $payable->getFont()->setItalic(false);
                     // $payable->getFont()->setBold(true);
                     $payable->getFont()->setName("Times New Roman");
                     $payable->getFont()->setSize("10");
@@ -445,7 +445,7 @@ class Export extends BaseController
                     $objRichText2 = new \PhpOffice\PhpSpreadsheet\RichText\RichText();
                     $objRichText2->createText("Trung gian\n");
                     $payable = $objRichText2->createTextRun("Intermediate\n");
-                    // $payable->getFont()->setItalic(true);
+                    $payable->getFont()->setItalic(false);
                     // $payable->getFont()->setBold(true);
                     $payable->getFont()->setName("Times New Roman");
                     $payable->getFont()->setSize("10");
@@ -461,7 +461,7 @@ class Export extends BaseController
                     $objRichText2 = new \PhpOffice\PhpSpreadsheet\RichText\RichText();
                     $objRichText2->createText("Dài hạn (ASEAN)\n");
                     $payable = $objRichText2->createTextRun("Long time (ASEAN)\n");
-                    // $payable->getFont()->setItalic(true);
+                    $payable->getFont()->setItalic(false);
                     // $payable->getFont()->setBold(true);
                     $payable->getFont()->setName("Times New Roman");
                     $payable->getFont()->setSize("10");
@@ -477,7 +477,7 @@ class Export extends BaseController
                     $objRichText2 = new \PhpOffice\PhpSpreadsheet\RichText\RichText();
                     $objRichText2->createText("Dài hạn (EU)\n");
                     $payable = $objRichText2->createTextRun("Long time (EU)\n");
-                    // $payable->getFont()->setItalic(true);
+                    $payable->getFont()->setItalic(false);
                     // $payable->getFont()->setBold(true);
                     $payable->getFont()->setName("Times New Roman");
                     $payable->getFont()->setSize("10");
