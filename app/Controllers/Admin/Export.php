@@ -357,7 +357,7 @@ class Export extends BaseController
         $SampleTimeModel = model("SampleTimeModel", false);
         $FactoryModel = model("FactoryModel", false);
 
-        $factory = $FactoryModel->where("id", session()->factory_id)->first();
+        $factory = $FactoryModel->where("id", session()->factory_id)->asObject()->first();
         // print_r($factory);
         // die();
 
