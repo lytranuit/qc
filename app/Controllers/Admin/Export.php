@@ -632,8 +632,14 @@ class Export extends BaseController
                 // $sheet->setCellValue('F' . $rows, $sample->date_storage != "" ? \PhpOffice\PhpSpreadsheet\Shared\Date::PHPToExcel($sample->date_storage) : "");
                 // $sheet->getStyle('F' . $rows)->getNumberFormat()->setFormatCode("dd/mm/yyyy");
 
+                // Điền NA mặc định cho tất cả các ô thuộc các điều kiện nghiên cứu của dòng này
+                for ($c = 6; $c < $column; $c++) {
+                    $col_name = Coordinate::stringFromColumnIndex($c);
+                    $sheet->setCellValueExplicit($col_name . $rows, "NA", \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING2);
+                }
+
                 foreach ($post as $time) {
-                    $column = $data_type[$time->type_id];
+                    $col_idx = $data_type[$time->type_id];
 
                     $time1 = $time->time;
                     $type_time = $time->type_time;
@@ -662,26 +668,37 @@ class Export extends BaseController
                     // break;
 
 
-                    $column_name = Coordinate::stringFromColumnIndex($column);
-                    $sheet->setCellValueExplicit($column_name . $rows, $time->location, \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING2);
-                    $column++;
+                    $column_name = Coordinate::stringFromColumnIndex($col_idx);
+                    $sheet->setCellValueExplicit($column_name . $rows, !empty($time->location) ? $time->location : "NA", \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING2);
+                    $col_idx++;
 
-                    $column_name = Coordinate::stringFromColumnIndex($column);
-                    $sheet->setCellValueExplicit($column_name . $rows, $time_name, \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING2);
-                    $column++;
+                    $column_name = Coordinate::stringFromColumnIndex($col_idx);
+                    $sheet->setCellValueExplicit($column_name . $rows, !empty($time_name) ? $time_name : "NA", \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING2);
+                    $col_idx++;
 
-                    $column_name = Coordinate::stringFromColumnIndex($column);
-                    $sheet->setCellValue($column_name . $rows, $time->date_theory != "" ? \PhpOffice\PhpSpreadsheet\Shared\Date::PHPToExcel($time->date_theory) : "");
-                    $sheet->getStyle($column_name . $rows)->getNumberFormat()->setFormatCode("dd/mm/yyyy");
-                    $column++;
+                    $column_name = Coordinate::stringFromColumnIndex($col_idx);
+                    if ($time->date_theory != "") {
+                        $sheet->setCellValue($column_name . $rows, \PhpOffice\PhpSpreadsheet\Shared\Date::PHPToExcel($time->date_theory));
+                        $sheet->getStyle($column_name . $rows)->getNumberFormat()->setFormatCode("dd/mm/yyyy");
+                    } else {
+                        $sheet->setCellValueExplicit($column_name . $rows, "NA", \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING2);
+                    }
+                    $col_idx++;
 
-                    $column_name = Coordinate::stringFromColumnIndex($column);
-                    $sheet->setCellValue($column_name . $rows, $time->num_get);
-                    $column++;
+                    $column_name = Coordinate::stringFromColumnIndex($col_idx);
+                    $qty_str = "NA";
+                    if ($time->num_get !== null && $time->num_get !== '') {
+                        $qty_str = $time->num_get;
+                        if (!empty($sample->unit)) {
+                            $qty_str .= ' ' . $sample->unit;
+                        }
+                    }
+                    $sheet->setCellValueExplicit($column_name . $rows, $qty_str, \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING2);
+                    $col_idx++;
 
-                    $column_name = Coordinate::stringFromColumnIndex($column);
-                    $sheet->setCellValueExplicit($column_name . $rows, $time->note, \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING2);
-                    $column++;
+                    $column_name = Coordinate::stringFromColumnIndex($col_idx);
+                    $sheet->setCellValueExplicit($column_name . $rows, !empty($time->note) ? $time->note : "NA", \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING2);
+                    $col_idx++;
                 }
 
 
