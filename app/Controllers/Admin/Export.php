@@ -503,8 +503,8 @@ class Export extends BaseController
             $objRichText2 = new \PhpOffice\PhpSpreadsheet\RichText\RichText();
             $objRichText2->createText("Vị trí lưu mẫu\n");
             $payable = $objRichText2->createTextRun("Stored location");
-            $payable->getFont()->setItalic(true);
-            $payable->getFont()->setBold(false);
+            // $payable->getFont()->setItalic(true);
+            // $payable->getFont()->setBold(false);
             $payable->getFont()->setName("Times New Roman");
             $payable->getFont()->setSize("10");
             $sheet->getCell($column_name_2 . "5")->setValue($objRichText2);
@@ -517,8 +517,8 @@ class Export extends BaseController
             $objRichText2 = new \PhpOffice\PhpSpreadsheet\RichText\RichText();
             $objRichText2->createText("Thời điểm kiểm mẫu (tháng)\n");
             $payable = $objRichText2->createTextRun("Testing interval (month)");
-            $payable->getFont()->setItalic(true);
-            $payable->getFont()->setBold(false);
+            // $payable->getFont()->setItalic(true);
+            // $payable->getFont()->setBold(false);
             $payable->getFont()->setName("Times New Roman");
             $payable->getFont()->setSize("10");
             $sheet->getCell($column_name_2 . "5")->setValue($objRichText2);
@@ -531,8 +531,8 @@ class Export extends BaseController
             $objRichText2 = new \PhpOffice\PhpSpreadsheet\RichText\RichText();
             $objRichText2->createText("Ngày lấy mẫu\n");
             $payable = $objRichText2->createTextRun("Sampling date");
-            $payable->getFont()->setItalic(true);
-            $payable->getFont()->setBold(false);
+            // $payable->getFont()->setItalic(true);
+            // $payable->getFont()->setBold(false);
             $payable->getFont()->setName("Times New Roman");
             $payable->getFont()->setSize("10");
             $sheet->getCell($column_name_2 . "5")->setValue($objRichText2);
@@ -546,8 +546,8 @@ class Export extends BaseController
             $objRichText2 = new \PhpOffice\PhpSpreadsheet\RichText\RichText();
             $objRichText2->createText("Số lượng lấy\n");
             $payable = $objRichText2->createTextRun("Sample quantity");
-            $payable->getFont()->setItalic(true);
-            $payable->getFont()->setBold(false);
+            // $payable->getFont()->setItalic(true);
+            // $payable->getFont()->setBold(false);
             $payable->getFont()->setName("Times New Roman");
             $payable->getFont()->setSize("10");
             $sheet->getCell($column_name_2 . "5")->setValue($objRichText2);
@@ -559,8 +559,8 @@ class Export extends BaseController
             $objRichText2 = new \PhpOffice\PhpSpreadsheet\RichText\RichText();
             $objRichText2->createText("Chỉ tiêu\n");
             $payable = $objRichText2->createTextRun("Tests");
-            $payable->getFont()->setItalic(true);
-            $payable->getFont()->setBold(false);
+            // $payable->getFont()->setItalic(true);
+            // $payable->getFont()->setBold(false);
             $payable->getFont()->setName("Times New Roman");
             $payable->getFont()->setSize("10");
             $sheet->getCell($column_name_2 . "5")->setValue($objRichText2);
