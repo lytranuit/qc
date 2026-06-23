@@ -355,6 +355,11 @@ class Export extends BaseController
         ini_set('memory_limit', '1000M');
         $SampleModel = model("SampleModel", false);
         $SampleTimeModel = model("SampleTimeModel", false);
+        $FactoryModel = model("FactoryModel", false);
+
+        $factory = $FactoryModel->where("id", session()->factory_id)->first();
+        // print_r($factory);
+        // die();
 
         $year = isset($_POST['year']) ? $_POST['year'] : 0;
 
@@ -392,7 +397,7 @@ class Export extends BaseController
         // $payable->getFont()->setName("Times New Roman");
         // $payable->getFont()->setSize("12");
         // $sheet->getCell("C1")->setValue($objRichText2);
-        $sheet->getCell("D2")->setValue("");
+        $sheet->getCell("D2")->setValue($factory->name);
         $sheet->getCell("O2")->setValue($year);
 
         $data_type = array();
