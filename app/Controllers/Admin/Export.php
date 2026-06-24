@@ -577,8 +577,8 @@ class Export extends BaseController
         $objRichText2 = new \PhpOffice\PhpSpreadsheet\RichText\RichText();
         $objRichText2->createText("Điều kiện nghiên cứu / ");
         $payable = $objRichText2->createTextRun("Study condition");
-        $payable->getFont()->setItalic(true);
-        $payable->getFont()->setBold(true);
+        // $payable->getFont()->setItalic(true);
+        // $payable->getFont()->setBold(true);
         $payable->getFont()->setName("Times New Roman");
         $payable->getFont()->setSize("10");
         $sheet->getStyle("F3:" . $column_name_3 . "3")->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
