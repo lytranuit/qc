@@ -16,7 +16,7 @@
                 </h5>
                 <div class="card-body">
                     <div class="row">
-                        <div class="col-md-8">
+                        <div class="col-md-12">
                             <div class="form-group row">
                                 <b class="col-12 col-lg-2 col-form-label">Tên sản phẩm:<i class="text-danger">*</i></b>
                                 <div class="col-12 col-lg-4 pt-1">
@@ -131,7 +131,7 @@
 
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        <!-- <div class="col-md-4">
                             <div class="row">
                                 <div class="col-12 pt-2 pt-md-0">
                                     <div class="card no-shadow border">
@@ -152,7 +152,7 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
                     </div>
 
                 </div>
