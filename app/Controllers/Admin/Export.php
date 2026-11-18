@@ -433,30 +433,42 @@ class Export extends BaseController
             switch ($key) {
                 case 1:
                     $objRichText2 = new \PhpOffice\PhpSpreadsheet\RichText\RichText();
-                    $objRichText2->createText("Lão hóa\n");
+                    $payable = $objRichText2->createTextRun("Lão hóa\n");
+                    $payable->getFont()->setItalic(false);
+                    $payable->getFont()->setBold(true);
+                    $payable->getFont()->setName("Times New Roman");
+                    $payable->getFont()->setSize("10");
+
                     $payable = $objRichText2->createTextRun("Accelerated\n");
                     $payable->getFont()->setItalic(false);
-                    // $payable->getFont()->setBold(true);
+                    $payable->getFont()->setBold(true);
                     $payable->getFont()->setName("Times New Roman");
                     $payable->getFont()->setSize("10");
 
                     $payable = $objRichText2->createTextRun("40°C ± 2°C/75% ± 5% RH");
-                    // $payable->getFont()->setBold(true);
+                    $payable->getFont()->setItalic(false);
+                    $payable->getFont()->setBold(true);
                     $payable->getFont()->setName("Times New Roman");
                     $payable->getFont()->setSize("10");
                     $sheet->getCell($column_name . "4")->setValue($objRichText2);
                     break;
                 case 2:
                     $objRichText2 = new \PhpOffice\PhpSpreadsheet\RichText\RichText();
-                    $objRichText2->createText("Trung gian\n");
+                    $payable = $objRichText2->createTextRun("Trung gian\n");
+                    $payable->getFont()->setItalic(false);
+                    $payable->getFont()->setBold(true);
+                    $payable->getFont()->setName("Times New Roman");
+                    $payable->getFont()->setSize("10");
+
                     $payable = $objRichText2->createTextRun("Intermediate\n");
                     $payable->getFont()->setItalic(false);
-                    // $payable->getFont()->setBold(true);
+                    $payable->getFont()->setBold(true);
                     $payable->getFont()->setName("Times New Roman");
                     $payable->getFont()->setSize("10");
 
                     $payable = $objRichText2->createTextRun("30°C ± 2°C/65% ± 5% RH");
-                    // $payable->getFont()->setBold(true);
+                    $payable->getFont()->setItalic(false);
+                    $payable->getFont()->setBold(true);
                     $payable->getFont()->setName("Times New Roman");
                     $payable->getFont()->setSize("10");
                     $sheet->getCell($column_name . "4")->setValue($objRichText2);
@@ -464,15 +476,21 @@ class Export extends BaseController
 
                 case 3:
                     $objRichText2 = new \PhpOffice\PhpSpreadsheet\RichText\RichText();
-                    $objRichText2->createText("Dài hạn (ASEAN)\n");
+                    $payable = $objRichText2->createTextRun("Dài hạn (ASEAN)\n");
+                    $payable->getFont()->setItalic(false);
+                    $payable->getFont()->setBold(true);
+                    $payable->getFont()->setName("Times New Roman");
+                    $payable->getFont()->setSize("10");
+
                     $payable = $objRichText2->createTextRun("Long time (ASEAN)\n");
                     $payable->getFont()->setItalic(false);
-                    // $payable->getFont()->setBold(true);
+                    $payable->getFont()->setBold(true);
                     $payable->getFont()->setName("Times New Roman");
                     $payable->getFont()->setSize("10");
 
                     $payable = $objRichText2->createTextRun("30°C ± 2°C/75% ± 5% RH");
-                    // $payable->getFont()->setBold(true);
+                    $payable->getFont()->setItalic(false);
+                    $payable->getFont()->setBold(true);
                     $payable->getFont()->setName("Times New Roman");
                     $payable->getFont()->setSize("10");
                     $sheet->getCell($column_name . "4")->setValue($objRichText2);
@@ -480,20 +498,32 @@ class Export extends BaseController
 
                 case 4:
                     $objRichText2 = new \PhpOffice\PhpSpreadsheet\RichText\RichText();
-                    $objRichText2->createText("Dài hạn (EU)\n");
+                    $payable = $objRichText2->createTextRun("Dài hạn (EU)\n");
+                    $payable->getFont()->setItalic(false);
+                    $payable->getFont()->setBold(true);
+                    $payable->getFont()->setName("Times New Roman");
+                    $payable->getFont()->setSize("10");
+
                     $payable = $objRichText2->createTextRun("Long time (EU)\n");
                     $payable->getFont()->setItalic(false);
-                    // $payable->getFont()->setBold(true);
+                    $payable->getFont()->setBold(true);
                     $payable->getFont()->setName("Times New Roman");
                     $payable->getFont()->setSize("10");
 
                     $payable = $objRichText2->createTextRun("25°C ± 2°C/60% ± 5% RH");
-                    // $payable->getFont()->setBold(true);
+                    $payable->getFont()->setItalic(false);
+                    $payable->getFont()->setBold(true);
                     $payable->getFont()->setName("Times New Roman");
                     $payable->getFont()->setSize("10");
                     $sheet->getCell($column_name . "4")->setValue($objRichText2);
                     break;
             }
+            $sheet->getStyle($column_name . "4:" . $column_name_end . "4")->getFont()->setBold(true)->setItalic(false)->setName("Times New Roman")->setSize(10);
+            $sheet->getStyle($column_name . "4:" . $column_name_end . "4")->getAlignment()
+                ->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER)
+                ->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER)
+                ->setWrapText(true);
+            $sheet->getStyle($column_name . "4:" . $column_name_end . "4")->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
 
             $start_column = $column;
             $data_type[$key] = $start_column;
@@ -501,10 +531,14 @@ class Export extends BaseController
 
             $column_name_2 = Coordinate::stringFromColumnIndex($start_column_1);
             $objRichText2 = new \PhpOffice\PhpSpreadsheet\RichText\RichText();
-            $objRichText2->createText("Vị trí lưu mẫu\n");
+            $payable = $objRichText2->createTextRun("Vị trí lưu mẫu\n");
+            $payable->getFont()->setItalic(false);
+            $payable->getFont()->setBold(true);
+            $payable->getFont()->setName("Times New Roman");
+            $payable->getFont()->setSize("10");
             $payable = $objRichText2->createTextRun("Stored location");
-            // $payable->getFont()->setItalic(true);
-            // $payable->getFont()->setBold(false);
+            $payable->getFont()->setItalic(false);
+            $payable->getFont()->setBold(true);
             $payable->getFont()->setName("Times New Roman");
             $payable->getFont()->setSize("10");
             $sheet->getCell($column_name_2 . "5")->setValue($objRichText2);
@@ -515,10 +549,14 @@ class Export extends BaseController
 
             $column_name_2 = Coordinate::stringFromColumnIndex($start_column_1);
             $objRichText2 = new \PhpOffice\PhpSpreadsheet\RichText\RichText();
-            $objRichText2->createText("Thời điểm kiểm mẫu (tháng)\n");
+            $payable = $objRichText2->createTextRun("Thời điểm kiểm mẫu (tháng)\n");
+            $payable->getFont()->setItalic(false);
+            $payable->getFont()->setBold(true);
+            $payable->getFont()->setName("Times New Roman");
+            $payable->getFont()->setSize("10");
             $payable = $objRichText2->createTextRun("Testing interval (month)");
-            // $payable->getFont()->setItalic(true);
-            // $payable->getFont()->setBold(false);
+            $payable->getFont()->setItalic(false);
+            $payable->getFont()->setBold(true);
             $payable->getFont()->setName("Times New Roman");
             $payable->getFont()->setSize("10");
             $sheet->getCell($column_name_2 . "5")->setValue($objRichText2);
@@ -529,10 +567,14 @@ class Export extends BaseController
 
             $column_name_2 = Coordinate::stringFromColumnIndex($start_column_1);
             $objRichText2 = new \PhpOffice\PhpSpreadsheet\RichText\RichText();
-            $objRichText2->createText("Ngày lấy mẫu\n");
+            $payable = $objRichText2->createTextRun("Ngày lấy mẫu\n");
+            $payable->getFont()->setItalic(false);
+            $payable->getFont()->setBold(true);
+            $payable->getFont()->setName("Times New Roman");
+            $payable->getFont()->setSize("10");
             $payable = $objRichText2->createTextRun("Sampling date");
-            // $payable->getFont()->setItalic(true);
-            // $payable->getFont()->setBold(false);
+            $payable->getFont()->setItalic(false);
+            $payable->getFont()->setBold(true);
             $payable->getFont()->setName("Times New Roman");
             $payable->getFont()->setSize("10");
             $sheet->getCell($column_name_2 . "5")->setValue($objRichText2);
@@ -544,10 +586,14 @@ class Export extends BaseController
 
             $column_name_2 = Coordinate::stringFromColumnIndex($start_column_1);
             $objRichText2 = new \PhpOffice\PhpSpreadsheet\RichText\RichText();
-            $objRichText2->createText("Số lượng lấy\n");
+            $payable = $objRichText2->createTextRun("Số lượng lấy\n");
+            $payable->getFont()->setItalic(false);
+            $payable->getFont()->setBold(true);
+            $payable->getFont()->setName("Times New Roman");
+            $payable->getFont()->setSize("10");
             $payable = $objRichText2->createTextRun("Sample quantity");
-            // $payable->getFont()->setItalic(true);
-            // $payable->getFont()->setBold(false);
+            $payable->getFont()->setItalic(false);
+            $payable->getFont()->setBold(true);
             $payable->getFont()->setName("Times New Roman");
             $payable->getFont()->setSize("10");
             $sheet->getCell($column_name_2 . "5")->setValue($objRichText2);
@@ -557,16 +603,25 @@ class Export extends BaseController
 
             $column_name_2 = Coordinate::stringFromColumnIndex($start_column_1);
             $objRichText2 = new \PhpOffice\PhpSpreadsheet\RichText\RichText();
-            $objRichText2->createText("Chỉ tiêu\n");
+            $payable = $objRichText2->createTextRun("Chỉ tiêu\n");
+            $payable->getFont()->setItalic(false);
+            $payable->getFont()->setBold(true);
+            $payable->getFont()->setName("Times New Roman");
+            $payable->getFont()->setSize("10");
             $payable = $objRichText2->createTextRun("Tests");
-            // $payable->getFont()->setItalic(true);
-            // $payable->getFont()->setBold(false);
+            $payable->getFont()->setItalic(false);
+            $payable->getFont()->setBold(true);
             $payable->getFont()->setName("Times New Roman");
             $payable->getFont()->setSize("10");
             $sheet->getCell($column_name_2 . "5")->setValue($objRichText2);
             $sheet->getStyle($column_name_2 . "5")->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
 
             $sheet->getColumnDimension($column_name_2)->setWidth(20);
+            $sheet->getStyle($column_name . "5:" . $column_name_end . "5")->getFont()->setBold(true)->setItalic(false)->setName("Times New Roman")->setSize(10);
+            $sheet->getStyle($column_name . "5:" . $column_name_end . "5")->getAlignment()
+                ->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER)
+                ->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER)
+                ->setWrapText(true);
             $start_column_1++;
 
             $column = $column + $num_column;
@@ -575,16 +630,25 @@ class Export extends BaseController
         $column_name_3 = Coordinate::stringFromColumnIndex($column - 1);
         $sheet->mergeCells("F3:" . $column_name_3 . "3");
         $objRichText2 = new \PhpOffice\PhpSpreadsheet\RichText\RichText();
-        $objRichText2->createText("Điều kiện nghiên cứu / ");
+        $payable = $objRichText2->createTextRun("Điều kiện nghiên cứu / ");
+        $payable->getFont()->setItalic(false);
+        $payable->getFont()->setBold(true);
+        $payable->getFont()->setName("Times New Roman");
+        $payable->getFont()->setSize("10");
         $payable = $objRichText2->createTextRun("Study condition");
-        // $payable->getFont()->setItalic(true);
-        // $payable->getFont()->setBold(true);
+        $payable->getFont()->setItalic(false);
+        $payable->getFont()->setBold(true);
         $payable->getFont()->setName("Times New Roman");
         $payable->getFont()->setSize("10");
         $sheet->getStyle("F3:" . $column_name_3 . "3")->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
 
 
         $sheet->getCell("F3")->setValue($objRichText2);
+        $sheet->getStyle("F3:" . $column_name_3 . "3")->getFont()->setBold(true)->setItalic(false)->setName("Times New Roman")->setSize(10);
+        $sheet->getStyle("F3:" . $column_name_3 . "3")->getAlignment()
+            ->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER)
+            ->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER)
+            ->setWrapText(true);
 
 
         $r = $this->groupBy($posts, function ($item) {
